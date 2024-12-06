@@ -7,7 +7,7 @@ This system is prone to errors and inefficiencies.
 
 Our endeavor is to help them to increase their productivity by introducing IT solutions for their manual processes and increase their performance and efficiency
 
-main goal:
+main goals:
   Monitor the tire stock levels,item details and restocking needs in real time.
   Facilitate retail and credit management with ensuring timely reminders.
   Integrate a billing system and employee management for seamless business processes.
