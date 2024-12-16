@@ -1,4 +1,4 @@
-package org.rtss.mosad_backend.repository;
+package org.rtss.mosad_backend.repository.stock_management_repository;
 
 import org.rtss.mosad_backend.entity.stock_management_entity.ItemOtherAccessories;
 import org.springframework.data.jpa.repository.JpaRepository;
