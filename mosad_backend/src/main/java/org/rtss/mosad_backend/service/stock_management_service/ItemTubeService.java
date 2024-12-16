@@ -3,10 +3,9 @@ package org.rtss.mosad_backend.service.stock_management_service;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.rtss.mosad_backend.dto.stock_management_dto.ItemTubeDTO;
-import org.rtss.mosad_backend.dto.stock_management_dto.ItemTubeDTO;
 import org.rtss.mosad_backend.entity.stock_management_entity.ItemTube;
 import org.rtss.mosad_backend.model_mapper.stock_management_model_mapper.ItemTubeDTOMapper;
-import org.rtss.mosad_backend.repository.ItemTubeRepo;
+import org.rtss.mosad_backend.repository.stock_management_repository.ItemTubeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
