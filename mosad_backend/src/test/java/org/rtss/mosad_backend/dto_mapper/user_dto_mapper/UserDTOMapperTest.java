@@ -1,9 +1,9 @@
-package org.rtss.mosad_backend.dto_mapper;
+package org.rtss.mosad_backend.dto_mapper.user_dto_mapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
-import org.rtss.mosad_backend.dto.UserDTO;
+import org.rtss.mosad_backend.dto.user_dtos.UserDTO;
 import org.rtss.mosad_backend.entity.UserContacts;
 import org.rtss.mosad_backend.entity.UserRoles;
 import org.rtss.mosad_backend.entity.Users;
@@ -52,8 +52,8 @@ class UserDTOMapperTest {
 
         //Then
         assertEquals(dto.getUsername(), users.getUsername());
-        assertEquals(dto.getFirst_name(), users.getFirst_name());
-        assertEquals(dto.getLast_name(), users.getLast_name());
+        assertEquals(dto.getFirstName(), users.getFirstName());
+        assertEquals(dto.getLastName(), users.getLastName());
         assertEquals(dto.getEmail(), users.getEmail());
     }
 
@@ -76,8 +76,8 @@ class UserDTOMapperTest {
 
         //then
         assertEquals(users.getUsername(), dto.getUsername());
-        assertEquals(users.getFirst_name(), dto.getFirst_name());
-        assertEquals(users.getLast_name(), dto.getLast_name());
+        assertEquals(users.getFirstName(), dto.getFirstName());
+        assertEquals(users.getLastName(), dto.getLastName());
         assertEquals(users.getEmail(), dto.getEmail());
     }
 
