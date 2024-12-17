@@ -1,15 +1,10 @@
-package org.rtss.mosad_backend.dto_mapper;
+package org.rtss.mosad_backend.dto_mapper.user_dto_mapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.rtss.mosad_backend.dto.UserContactDTO;
+import org.rtss.mosad_backend.dto.user_dtos.UserContactDTO;
 import org.rtss.mosad_backend.entity.UserContacts;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,7 +37,7 @@ class UserContactDTOMapperTest {
 
         //Then
         assertNotNull(userContacts);
-        assertEquals(userContactDto.getContact_num(),userContacts.getContact_num());
+        assertEquals(userContactDto.getContactNum(),userContacts.getContactNum());
     }
 
     @Test

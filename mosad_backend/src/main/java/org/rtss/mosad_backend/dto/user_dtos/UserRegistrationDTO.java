@@ -1,11 +1,16 @@
-package org.rtss.mosad_backend.dto;
+package org.rtss.mosad_backend.dto.user_dtos;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserRegistrationDTO{
+
+    @NotNull(message = "user details object can not be null")
     private UserDTO userDto;
+    @NotNull(message = "user password object can not be null")
     private String password;
+    @NotNull(message = "user role object can not be null")
     private UserRoleDTO userRoleDto;
     private UserContactDTO userContactDto;
 
@@ -61,3 +66,4 @@ public class UserRegistrationDTO{
                 '}';
     }
 }
+
