@@ -12,20 +12,34 @@ const ItemTable = () => {
   const location = useLocation();
   const { title } = location.state || {}; // Extract the title from the state
 
+  const getInitialFormData=(title)=>{
+    switch(title){
+      case "CEAT":
+        console.log("CEAT");
+        return {
+          itemId: "",
+          size: "",
+          pattern: "",
+          pr: 0,
+          availableQty: 0,
+          cp: 0,
+          osp: 0,
+        };
+        
+      case "PRESA":
+        console.log("PRESA");
+    
+    }
+  }
+
+
+
+
 
   const [items, setItems] = useState(["1","2","3","4","5","6","7","8"]);
   const [currentItem, setCurrentItem] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    itemId: "",
-    size: "",
-    pattern: "",
-    pr: 0,
-    availableQty: 0,
-    companyPrice: 0,
-    retailPrice: 0,
-    discount: 0,
-  });
+  const [formData, setFormData] = useState(getInitialFormData(title));
 
   useEffect(() => {
     fetchItems();
@@ -53,16 +67,7 @@ const ItemTable = () => {
       setFormData(item);
     } else {
       setCurrentItem(null);
-      setFormData({
-        itemId: "",
-        size: "",
-        pattern: "",
-        pr: 0,
-        availableQty: 0,
-        companyPrice: 0,
-        retailPrice: 0,
-        discount: 0,
-      });
+      setFormData(getInitialFormData(title));
     }
     setIsModalOpen(true);
   };
@@ -119,6 +124,9 @@ const ItemTable = () => {
             <th>Size</th>
             <th>Pattern</th>
             <th>PR</th>
+            <th>Available Qty</th>
+            <th>CP</th>
+            <th>OSP</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -129,6 +137,10 @@ const ItemTable = () => {
               <td>{item.size}</td>
               <td>{item.pattern}</td>
               <td>{item.pr}</td>
+              <td>{item.availableQty}</td>
+              <td>{item.cp}</td>
+              <td>{item.osp}</td>
+
               <td>
                 <button
                   onClick={() => openModal(item)}
