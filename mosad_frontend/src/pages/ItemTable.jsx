@@ -3,6 +3,7 @@ import axios from "axios";
 import Modal from "react-modal";
 import { useLocation } from "react-router-dom";
 import "./Itemtable.css";
+import HeaderBar from "../component/Header";
 
 // React Modal setup
 Modal.setAppElement("#root");
@@ -12,10 +13,10 @@ const ItemTable = () => {
   const location = useLocation();
   const { title } = location.state || {}; // Extract the title from the state
 
-  const getInitialFormData=(title)=>{
-    switch(title){
+  const getInitialFormData = (title) => {
+    switch (title) {
       case "CEAT":
-        console.log("CEAT");
+       
         return {
           itemId: "",
           size: "",
@@ -25,10 +26,25 @@ const ItemTable = () => {
           cp: 0,
           osp: 0,
         };
-        
+
       case "PRESA":
-        console.log("PRESA");
-    
+        
+        return {
+          itemId: "",
+          size: "",
+          pattern: "",
+          ply: 0,
+          availableQty: 0,
+          cp: 0,
+          osp: 0,
+        };
+      default:
+        return {
+          itemId: "",
+          field1: "",
+          field2: "",
+        };
+
     }
   }
 
@@ -36,7 +52,7 @@ const ItemTable = () => {
 
 
 
-  const [items, setItems] = useState(["1","2","3","4","5","6","7","8"]);
+  const [items, setItems] = useState(["1", "2", "3", "4", "5", "6", "7", "8"]);
   const [currentItem, setCurrentItem] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState(getInitialFormData(title));
@@ -46,7 +62,7 @@ const ItemTable = () => {
   }, []);
 
   const fetchItems = () => {
-    console.log("fetchMethod = "+title);
+    
     axios
       .get(`http://localhost:8080/api/v1/tyre/${title}`)
       .then((response) => setItems(response.data))
@@ -54,7 +70,7 @@ const ItemTable = () => {
   };
 
   const deleteItem = (id) => {
-    console.log("deleteMEthod = "+title);
+    
     axios
       .delete(`http://localhost:8080/api/v1/tyre/${title}/${id}`)
       .then(() => fetchItems())
@@ -78,18 +94,33 @@ const ItemTable = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
+    // Convert numerical fields to numbers
+    const transformedData = {
+      ...formData,
+      pr: Number(formData.pr),
+      availableQty: Number(formData.availableQty),
+      cp: Number(formData.cp),
+      osp: Number(formData.osp),
+    };
+  
+    console.log("Transformed Data:", transformedData); // Verify the data format
+  
     const request = currentItem
-      ? axios.put(`http://localhost:8080/api/v1/tyre/${title}/${formData.itemId}`, formData)
-      : axios.post(`http://localhost:8080/api/v1/tyre/${title}`, formData);
-
+      ? axios.put(`http://localhost:8080/api/v1/tyre/${title}/${formData.itemId}`, transformedData)
+      : axios.post(`http://localhost:8080/api/v1/tyre/${title}`, transformedData);
+  
     request
       .then(() => {
         fetchItems();
         closeModal();
       })
-      .catch((error) => console.error("Error saving item:", error));
+      .catch((error) => {
+        console.error("Error saving item:", error.response?.data || error.message);
+        alert("Failed to save item. Please check input values.");
+      });
   };
+  
 
 
 
@@ -102,6 +133,9 @@ const ItemTable = () => {
 
 
   return (
+
+    <>
+    <HeaderBar />
     <div >
       <h1 >{title} Items</h1>
       <button
@@ -120,26 +154,19 @@ const ItemTable = () => {
       <table >
         <thead>
           <tr >
-            <th>Item ID</th>
-            <th>Size</th>
-            <th>Pattern</th>
-            <th>PR</th>
-            <th>Available Qty</th>
-            <th>CP</th>
-            <th>OSP</th>
+            {Object.keys(formData).map((key) => (
+              <th key={key}>{key.replace(/([A-Z])/g, " $1").trim()}</th>
+              // Converts camelCase like "availableQty" to "Available Qty"
+            ))}
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {items.map((item) => (
             <tr key={item.itemId} >
-              <td>{item.itemId}</td>
-              <td>{item.size}</td>
-              <td>{item.pattern}</td>
-              <td>{item.pr}</td>
-              <td>{item.availableQty}</td>
-              <td>{item.cp}</td>
-              <td>{item.osp}</td>
+              {Object.keys(formData).map((key) => (
+                <td key={key}>{item[key]}</td>
+              ))}
 
               <td>
                 <button
@@ -193,86 +220,60 @@ const ItemTable = () => {
       >
         <h2>{currentItem ? "Edit Item" : "Add New Item"}</h2>
         <form onSubmit={handleSubmit}>
-            
-          <div>
-            <label>Item ID:</label>
-            <input
-              type="text"
-              value={formData.itemId}
-              onChange={(e) => setFormData({ ...formData, itemId: e.target.value })}
-              required
-              disabled={!!currentItem}
-              style={{
-                backgroundColor: "#2E2E2E",
-                color: "#FFFFFF",
-                border: "1px solid #444",
-                width: "100%",
-                marginBottom: "10px",
-              }}
-            />
-          </div>
+  {Object.keys(formData).map((key) => (
+    <div key={key}>
+      <label>
+        {key.replace(/([A-Z])/g, " $1").trim()}:
+      </label>
+      <input
+        type="text"
+        // type={typeof formData[key] === "number" ? "number" : "text"}
+        value={formData[key]}
+        onChange={(e) =>
+          setFormData({ ...formData, [key]: e.target.value })
+        }
+        required
+        disabled={key === "itemId"} // Disable itemId for editing
+        style={{
+          backgroundColor: "#2E2E2E",
+          color: "#FFFFFF",
+          border: "1px solid #444",
+          width: "100%",
+          marginBottom: "10px",
+        }}
+      />
+    </div>
+  ))}
+  <button
+    type="submit"
+    style={{
+      backgroundColor: "#03DAC6",
+      color: "#121212",
+      padding: "10px 20px",
+      border: "none",
+      marginRight: "10px",
+    }}
+  >
+    Submit
+  </button>
+  <button
+    type="button"
+    onClick={closeModal}
+    style={{
+      backgroundColor: "#CF6679",
+      color: "#FFFFFF",
+      padding: "10px 20px",
+      border: "none",
+    }}
+  >
+    Cancel
+  </button>
+</form>
 
-          <div>
-            <label>Size:</label>
-            <input
-              type="text"
-              value={formData.size}
-              onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-              required
-              style={{
-                backgroundColor: "#2E2E2E",
-                color: "#FFFFFF",
-                border: "1px solid #444",
-                width: "100%",
-                marginBottom: "10px",
-              }}
-            />
-          </div>
-
-          <div>
-            <label>Pattern:</label>
-            <input
-              type="text"
-              value={formData.size}
-              onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-              required
-              style={{
-                backgroundColor: "#2E2E2E",
-                color: "#FFFFFF",
-                border: "1px solid #444",
-                width: "100%",
-                marginBottom: "10px",
-              }}
-            />
-          </div>
-
-          <div>
-            <label>Count:</label>
-            <input
-              type="text"
-              value={formData.size}
-              onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-              required
-              style={{
-                backgroundColor: "#2E2E2E",
-                color: "#FFFFFF",
-                border: "1px solid #444",
-                width: "100%",
-                marginBottom: "10px",
-              }}
-            />
-          </div>
-
-
-          <button type="submit" style={{ backgroundColor: "#03DAC6", color: "#121212", padding: "10px 20px", border: "none", marginRight: "10px" }}>
-            Submit
-          </button>
-          <button onClick={closeModal} style={{ backgroundColor: "#CF6679", color: "#FFFFFF", padding: "10px 20px", border: "none" }}>
-            Cancel
-          </button>
-        </form>
       </Modal>
     </div>
+
+    </>
   );
 };
 
