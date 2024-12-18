@@ -28,7 +28,7 @@ function ItemTable() {
     <>
       <HeaderBar />
       <br />
-      <Slideshow />
+      
 
       <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* First Row: Three Tiles */}
