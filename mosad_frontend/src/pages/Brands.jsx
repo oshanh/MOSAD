@@ -11,10 +11,15 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import PeopleIcon from '@mui/icons-material/People';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 
 function ItemTable() {
   
+  const location = useLocation();
+  const { title } = location.state || {};
+  console.log(title);
+
+
      const navigate = useNavigate();
     
       const handleTileClick = (title) => {
@@ -41,31 +46,31 @@ function ItemTable() {
           <Tile
             title="PRESA"
             icon={<InventoryIcon fontSize="large" />}
-            onClick={() => handleTileClick('PRESA')}
+            onClick={() => handleTileClick('tyre_presa')}
           />
           <Tile
             title="LINGLONG"
             icon={<StorefrontIcon fontSize="large" />}
-            onClick={() => handleTileClick('LINGLONG')}
+            onClick={() => handleTileClick('tyre_linglong')}
           />
         </Stack>
 
         {/* Second Row: Three Tiles */}
         <Stack direction="row" sx={{ gap: '184px', marginBottom: 4 }}>
           <Tile
-            title="Brand 4"
+            title="RAPID"
             icon={<CreditCardIcon fontSize="large" />}
-            onClick={() => handleTileClick('Credit')}
+            onClick={() => handleTileClick('tyre_rapid')}
           />
           <Tile
-            title="Brand 5"
+            title="Atlander"
             icon={<AccountTreeIcon fontSize="large" />}
-            onClick={() => handleTileClick('Branches')}
+            onClick={() => handleTileClick('tyre_atlander')}
           />
           <Tile
             title="Brand 6"
             icon={<PeopleIcon fontSize="large" />}
-            onClick={() => handleTileClick('Employee')}
+            onClick={() => handleTileClick('')}
           />
         </Stack>
 
@@ -74,7 +79,7 @@ function ItemTable() {
           <Tile
             title="Brand 7"
             icon={<AssessmentIcon fontSize="large" />}
-            onClick={() => handleTileClick('Reports')}
+            onClick={() => handleTileClick('')}
           />
         </Stack>
       </Box>
