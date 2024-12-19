@@ -1,7 +1,7 @@
-package org.rtss.mosad_backend.dto_mapper;
+package org.rtss.mosad_backend.dto_mapper.user_dto_mapper;
 
 import org.modelmapper.ModelMapper;
-import org.rtss.mosad_backend.dto.UserRoleDTO;
+import org.rtss.mosad_backend.dto.user_dtos.UserRoleDTO;
 import org.rtss.mosad_backend.entity.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
