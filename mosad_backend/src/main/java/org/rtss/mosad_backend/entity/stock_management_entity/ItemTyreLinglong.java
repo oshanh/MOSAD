@@ -11,14 +11,14 @@ public class ItemTyreLinglong {
     private Integer itemID;
     private String tyreSize;
     private String pattern;
-    private String tyreCount;
+    private Integer tyreCount;
     private double officialSellingPrice;
     private String vehicleType;
 
     public ItemTyreLinglong() {
     }
 
-    public ItemTyreLinglong(Integer itemID, String tyreSize, String pattern, String tyreCount, double officialSellingPrice, String vehicleType) {
+    public ItemTyreLinglong(Integer itemID, String tyreSize, String pattern, Integer tyreCount, double officialSellingPrice, String vehicleType) {
         this.itemID = itemID;
         this.tyreSize = tyreSize;
         this.pattern = pattern;
@@ -51,11 +51,11 @@ public class ItemTyreLinglong {
         this.pattern = pattern;
     }
 
-    public String getTyreCount() {
+    public Integer getTyreCount() {
         return tyreCount;
     }
 
-    public void setTyreCount(String tyreCount) {
+    public void setTyreCount(Integer tyreCount) {
         this.tyreCount = tyreCount;
     }
 
