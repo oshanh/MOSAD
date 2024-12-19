@@ -1,4 +1,4 @@
-package org.rtss.mosad_backend.dto;
+package org.rtss.mosad_backend.dto.user_dtos;
 
 import org.springframework.stereotype.Component;
 
