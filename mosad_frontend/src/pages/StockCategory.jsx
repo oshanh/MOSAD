@@ -17,12 +17,8 @@ function Stock() {
   const navigate = useNavigate();
 
   const handleTileClick = (title) => {
-    if (title === 'Tyre') {
-      navigate('/stock/brands'); // Redirect to /stock/brands
-    } else if (title === '') {
-      navigate('/'); // Example for other tiles
-    }
-    // Add more conditions for other tiles as needed
+    navigate('/stock/brands',{state:{title}});
+    
   };
 
   return (
