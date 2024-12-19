@@ -11,14 +11,14 @@ public class ItemTube {
     @Id
     private Integer itemID;
     private String tubeSize;
-    private String tubeCount;
+    private Integer tubeCount;
     private double officialSellingPrice;
     private String vehicleType;
 
     public ItemTube() {
     }
 
-    public ItemTube(Integer itemID, String tubeSize, String tubeCount, double officialSellingPrice, String vehicleType) {
+    public ItemTube(Integer itemID, String tubeSize, Integer tubeCount, double officialSellingPrice, String vehicleType) {
         this.itemID = itemID;
         this.tubeSize = tubeSize;
         this.tubeCount = tubeCount;
@@ -42,11 +42,11 @@ public class ItemTube {
         this.tubeSize = tubeSize;
     }
 
-    public String getTubeCount() {
+    public Integer getTubeCount() {
         return tubeCount;
     }
 
-    public void setTubeCount(String tubeCount) {
+    public void setTubeCount(Integer tubeCount) {
         this.tubeCount = tubeCount;
     }
 
