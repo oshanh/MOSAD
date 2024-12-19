@@ -1,7 +1,7 @@
-package org.rtss.mosad_backend.dto_mapper;
+package org.rtss.mosad_backend.dto_mapper.user_dto_mapper;
 
 import org.modelmapper.ModelMapper;
-import org.rtss.mosad_backend.dto.UserContactDTO;
+import org.rtss.mosad_backend.dto.user_dtos.UserContactDTO;
 import org.rtss.mosad_backend.entity.UserContacts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
