@@ -11,71 +11,75 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import PeopleIcon from '@mui/icons-material/People';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 
-function HomePage() {
-  const navigate = useNavigate();
+function ItemTable() {
+  
+  const location = useLocation();
+  const { title } = location.state || {};
+  console.log(title);
 
-  const handleTileClick = (title) => {
-    if (title === 'Stock') {
-      navigate('/stock'); // Redirect to /stock
-    } else if (title === 'Bill Generate') {
-      navigate('/bill-generate'); // Example for other tiles
-    }
-    // Add more conditions for other tiles as needed
-  };
+
+     const navigate = useNavigate();
+    
+      const handleTileClick = (title) => {
+        
+          navigate('/stock/brands/itemtable',{state:{title}}); // Redirect to /stock/brands/itemtable with state
+        
+      };
+  
 
   return (
     <>
       <HeaderBar />
       <br />
-      <Slideshow />
+      
 
       <Box sx={{ marginTop: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* First Row: Three Tiles */}
         <Stack direction="row" sx={{ gap: '184px', marginBottom: 4 }}>
           <Tile
-            title="Bill Generate"
+            title="CEAT"
             icon={<DescriptionIcon fontSize="large" />}
-            onClick={() => handleTileClick('Bill Generate')}
+            onClick={() => handleTileClick('CEAT')}
           />
           <Tile
-            title="Stock"
+            title="PRESA"
             icon={<InventoryIcon fontSize="large" />}
-            onClick={() => handleTileClick('Stock')}
+            onClick={() => handleTileClick('tyre_presa')}
           />
           <Tile
-            title="Retail"
+            title="LINGLONG"
             icon={<StorefrontIcon fontSize="large" />}
-            onClick={() => handleTileClick('Retail')}
+            onClick={() => handleTileClick('tyre_linglong')}
           />
         </Stack>
 
         {/* Second Row: Three Tiles */}
         <Stack direction="row" sx={{ gap: '184px', marginBottom: 4 }}>
           <Tile
-            title="Credit"
+            title="RAPID"
             icon={<CreditCardIcon fontSize="large" />}
-            onClick={() => handleTileClick('Credit')}
+            onClick={() => handleTileClick('tyre_rapid')}
           />
           <Tile
-            title="Branches"
+            title="Atlander"
             icon={<AccountTreeIcon fontSize="large" />}
-            onClick={() => handleTileClick('Branches')}
+            onClick={() => handleTileClick('tyre_atlander')}
           />
           <Tile
-            title="Employee"
+            title="Brand 6"
             icon={<PeopleIcon fontSize="large" />}
-            onClick={() => handleTileClick('Employee')}
+            onClick={() => handleTileClick('')}
           />
         </Stack>
 
         {/* Last Row: Centered Tile */}
         <Stack direction="row" justifyContent="center">
           <Tile
-            title="Reports"
+            title="Brand 7"
             icon={<AssessmentIcon fontSize="large" />}
-            onClick={() => handleTileClick('Reports')}
+            onClick={() => handleTileClick('')}
           />
         </Stack>
       </Box>
@@ -85,4 +89,5 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default ItemTable;
+
