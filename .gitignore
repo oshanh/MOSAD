@@ -11,3 +11,6 @@
 
 mosad_backend/src/test/java/org/rtss/mosad_backend/PasswordEncryptor.java
 *.xml~
+mosad_frontend/src/services/api_config/apiClient.js
+mosad_backend/src/main/resources/application.properties
+mosad_frontend/src/services/api_config/apiClient.js
