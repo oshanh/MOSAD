@@ -1,6 +1,7 @@
 package org.rtss.mosad_backend.dto.stock_management_dto;
 
 public class ItemDTO {
+    private Long itemId;
     private String itemName;
     private String itemDescription;
     private double companyPrice;
