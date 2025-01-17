@@ -9,7 +9,26 @@ public class ItemDTO {
     private Long categoryId;
     private Long brandId;
 
+    public ItemDTO() {}
+
+    public ItemDTO(Long itemId, String itemName, String itemDescription, double companyPrice, double retailPrice, double discount, Long categoryId, Long brandId) {
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.itemDescription = itemDescription;
+        this.companyPrice = companyPrice;
+        this.retailPrice = retailPrice;
+        this.discount = discount;
+        this.categoryId = categoryId;
+        this.brandId = brandId;
+    }
+
     // Getters and Setters
+    public Long getItemId() {
+        return itemId;
+    }
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
     public String getItemName() {
         return itemName;
     }
