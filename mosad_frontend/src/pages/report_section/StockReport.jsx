@@ -3,7 +3,7 @@ import UnderConstruction from '../../component/UnderConsruction'
 
 const StockReport = () => {
   return (
-     <UnderConstruction displayTxt={<p> Employee page is under constuction</p>}/>  
+     <UnderConstruction displayTxt={<p> Stock Report page is under constuction</p>}/>  
   )
 }
 

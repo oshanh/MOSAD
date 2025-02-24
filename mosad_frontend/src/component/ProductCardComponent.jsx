@@ -40,7 +40,7 @@ function ProductCardComponent({ category, brand, size, vehicleType }) {
         </Typography>
       </Box>
       <CardContent>
-        {brand && (
+        {false && (
           <Typography variant="body1" sx={{ marginBottom: '8px' }}>
             <strong>Brand:</strong> {brand}
           </Typography>
