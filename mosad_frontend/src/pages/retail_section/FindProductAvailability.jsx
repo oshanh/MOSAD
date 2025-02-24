@@ -20,7 +20,7 @@ const FindProductAvailability = () => {
       const mockData = [
         { id: 1, category: "Tyre", brand: "DSI", size: "16", vehicleType: "SUV" },
         { id: 2, category: "Tyre", brand: "Presa", size: "18", vehicleType: "Truck" },
-        { id: 3, category: "Tube", brand: "DSI", size: "", vehicleType: "" }
+        { id: 3, category: "Tyre", brand: "DSI", size: "18", vehicleType: "Pasenger car" }
       ];
 
       // Filter data based on selected inputs
