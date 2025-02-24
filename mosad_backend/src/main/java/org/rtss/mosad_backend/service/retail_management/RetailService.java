@@ -78,7 +78,7 @@ public class RetailService {
             // Admin: Fetch all retail customers' payment history
             // Fetch only bills with userId (retail customer bills where userId is not null)
             bills = billRepository.findAll().stream()
-                    .filter(bill -> bill.getUser() != null && bill.getCustomer() == null)
+                    .filter(bill -> bill.getUser() != null )
                     .collect(Collectors.toList());
         } else {
             // Regular user: Fetch only their payment history

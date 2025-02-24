@@ -11,3 +11,6 @@
 
 mosad_backend/src/test/java/org/rtss/mosad_backend/PasswordEncryptor.java
 *.xml~
+
+#Environemnt variables
+.env.*
