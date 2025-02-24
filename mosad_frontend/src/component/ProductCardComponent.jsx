@@ -125,7 +125,7 @@ function ProductCardComponent({ category, brand, size, vehicleType }) {
 
 export default ProductCardComponent;
 
-ProductCardComponent.proppropTypes={
+ProductCardComponent.propTypes={
   category:PropTypes.string.isRequired,
   brand:PropTypes.string.isRequired,
   size:PropTypes.string,
