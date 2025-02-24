@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, Typography, Box, Button, TextField } from '@mui/material';
+import PropTypes from 'prop-types';
 
 function ProductCardComponent({ category, brand, size, vehicleType }) {
   if (!category) {
@@ -78,11 +79,7 @@ function ProductCardComponent({ category, brand, size, vehicleType }) {
           <TextField
             value={quantity}
             onChange={(e) => setQuantity(Math.max(0, Number(e.target.value)))}
-            inputProps={{
-              style: { textAlign: 'center' },
-              type: 'number',
-              min: 0,
-            }}
+            type='number'
             sx={{
               width: '60px',
               textAlign: 'center',
@@ -127,3 +124,10 @@ function ProductCardComponent({ category, brand, size, vehicleType }) {
 }
 
 export default ProductCardComponent;
+
+ProductCardComponent.propTypes={
+  category:PropTypes.string.isRequired,
+  brand:PropTypes.string.isRequired,
+  size:PropTypes.string,
+  vehicleType:PropTypes.string
+}
