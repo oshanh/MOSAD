@@ -79,7 +79,7 @@ public class RetailService {
             // Fetch only bills with userId (retail customer bills where userId is not null)
             bills = billRepository.findAll().stream()
                     .filter(bill -> bill.getUser() != null )
-                    .collect(Collectors.toList());
+                    .toList();
         } else {
             // Regular user: Fetch only their payment history
             bills = billRepository.findBillByUser(user); // Assuming this method exists in billRepository
@@ -232,14 +232,14 @@ public class RetailService {
             // Admin: Fetch all retail customers' transactions, excluding completed bills (balance > 0)
             bills = billRepository.findAll().stream()
                     .filter(bill -> bill.getUser() != null && bill.getCustomer() == null && bill.getBalance() > 0)
-                    .collect(Collectors.toList());
+                    .toList();
         } else {
             // Regular user: Fetch only their transactions, excluding completed bills (balance > 0)
             bills = billRepository.findBillByUser(user); // Assuming this method exists in billRepository
             // Filter for only unpaid bills (balance > 0)
             bills = bills.stream()
                     .filter(bill -> bill.getBalance() > 0)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         return bills.stream()
