@@ -12,7 +12,7 @@ public class BranchDTO {
     @Size(max = 10)
     private String addressNumber;
     @NotBlank(message = "Street name is mandatory")
-    //@Size(max = 10)
+//    @Size(max = 10)
     private String streetName;
     @NotBlank(message = "City name is mandatory")
     private String city;
