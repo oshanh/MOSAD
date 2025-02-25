@@ -355,7 +355,7 @@ const CreditPage = () => {
               gap: 1, // Add spacing for stacked layout
             }}
           >
-            {/* <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ display: 'flex', gap: 1 }}>
               <Button
                 variant={customerType === 'RETAIL' ? 'contained' : 'outlined'}
                 onClick={() => setCustomerType('RETAIL')}
@@ -370,7 +370,7 @@ const CreditPage = () => {
               >
                 Normal
               </Button>
-            </Box> */}
+            </Box>
 
             {/* Search Field */}
             <TextField
