@@ -315,7 +315,7 @@ const handleCreateCredit = async (creditData) => {
             </TableHead>
             <TableBody>
               {rows.map((row, index) => (
-                <TableRow key={index}>
+                <TableRow key={row.itemId}>
                   <TableCell align="center">
                     <TextField
                       variant="outlined"
