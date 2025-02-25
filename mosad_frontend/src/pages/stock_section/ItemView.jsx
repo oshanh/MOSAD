@@ -361,7 +361,7 @@ const ItemView = () => {
             {
               console.log("Rows:", rows.length)
             }
-            {filteredRows && filteredRows.map((row) => (
+            {filteredRows?.map((row) => (
               <tr
                 key={row.itemDTO.itemId}
                 className={selectedRowId === row.itemDTO.itemId ? "selected-row" : ""}

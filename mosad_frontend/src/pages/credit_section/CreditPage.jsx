@@ -324,8 +324,8 @@ const CreditPage = () => {
     return false;
   }).filter(
     (row) =>
-      (row.customerName && row.customerName.toLowerCase().includes(searchText.toLowerCase())) ||
-      (row.contactNumber && row.contactNumber.toLowerCase().includes(searchText.toLowerCase())) ||
+      (row.customerName?.toLowerCase().includes(searchText.toLowerCase())) ||
+      (row.contactNumber?.toLowerCase().includes(searchText.toLowerCase())) ||
       row.billId.toString().includes(searchText)
   );
   
