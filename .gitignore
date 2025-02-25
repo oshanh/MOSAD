@@ -1,5 +1,6 @@
 #remove docker-compose file from git commits
 ./docker-compose.yml
+/mosad_chatbot/venv/
 
 ### IntelliJ IDEA ###
 .idea
