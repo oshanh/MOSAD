@@ -101,7 +101,7 @@ public class Credit {
         this.bill = bill;
     }
 
-    public boolean isCompleted() {
+    public boolean getCompleted() {
         return isCompleted;
     }
 
