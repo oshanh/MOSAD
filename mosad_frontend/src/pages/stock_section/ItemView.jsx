@@ -17,6 +17,8 @@ import SearchComponent from "../../component/SearchComponent";
 import Box from '@mui/material/Box';
 import { useLocation } from "react-router-dom";
 import useAuth from '../../hooks/useAuth';
+import { DataGrid } from '@mui/x-data-grid';
+import Paper from '@mui/material/Paper';
 
 const ItemView = () => {
   const addItem = useAddItem(); 
@@ -25,7 +27,7 @@ const ItemView = () => {
   const updateItem= useUpdateItem();
 
   const {auth}=useAuth();
-  console.log("Auth:",auth);
+  //console.log("Auth:",auth);
 
   const passedStates=useLocation();
   const states=passedStates.state;
@@ -135,10 +137,18 @@ const ItemView = () => {
 
 
   const handleRowClick = (id) => {
-    setSelectedRowId((prevId) => (prevId === id ? null : id)); // Toggle selection
     console.log("Row Clicked ID:", id);
-
+    setSelectedRowId((prevId) => {
+      const newId = prevId === id ? null : id;
+      console.log("New Selected Row ID:", newId);
+      return newId;
+    });
   };
+  
+  useEffect(() => {
+    console.log("useEffect Selected Row ID:", selectedRowId);
+  }, [selectedRowId]);
+
 
   const openConfirmationDialog = () => {
     if (selectedRowId !== null) {
@@ -198,27 +208,27 @@ const ItemView = () => {
 
   }, [selectedBranch, selectedBrand]);
 
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (
-        dialogOpenRef.current || // ✅ Prevent deselection when dialog is open
-        event.target.closest(".item-table") ||
-        event.target.closest(".confirmation-dialog") ||
-        event.target.closest(".confirmation-dialog-overlay")
-      ) {
-        return;
-      }
+  // useEffect(() => {
+  //   const handleOutsideClick = (event) => {
+  //     if (
+  //       dialogOpenRef.current || // ✅ Prevent deselection when dialog is open
+  //       //event.target.closest(".item-table") ||
+  //       event.target.closest(".confirmation-dialog") ||
+  //       event.target.closest(".confirmation-dialog-overlay")
+  //     ) {
+  //       return;
+  //     }
 
 
-      setSelectedRowId(null);
-    };
+  //     setSelectedRowId(null);
+  //   };
 
-    document.addEventListener("click", handleOutsideClick);
+  //   document.addEventListener("click", handleOutsideClick);
 
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [selectedRowId]);
+  //   return () => {
+  //     document.removeEventListener("click", handleOutsideClick);
+  //   };
+  // }, [selectedRowId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -296,6 +306,44 @@ const ItemView = () => {
     }, [selectedCategory]
   )
 
+
+  //Table component
+
+  const tableColumns = [
+    { field: 'id', headerName: 'Item ID', width: 130 },
+    { field: 'itemName', headerName: 'Name', width: 200 },
+    { field: 'itemDescription', headerName: 'Description', width: 250 },
+    { field: 'companyPrice', headerName: 'Company Price', width: 150 },
+    { field: 'retailPrice', headerName: 'Retail Price', width: 150 },
+    { field: 'discount', headerName: 'Discount', width: 120 },
+    { field: 'availableQuantity', headerName: 'Available Quantity', width: 180 },
+    ...(selectedCategory === 'Tyre' ? [
+      { field: 'pattern', headerName: 'Pattern', width: 150 },
+      { field: 'tyreSize', headerName: 'Tyre Size', width: 150 },
+      { field: 'vehicleType', headerName: 'Vehicle Type', width: 180 },
+    ] : []), // Add tyre-specific columns only if selectedCategory is 'Tyre'
+  ];
+  
+  const tableRows = filteredRows.map((row) => ({
+    id: row.itemDTO.itemId,
+    itemName: row.itemDTO.itemName,
+    itemDescription: row.itemDTO.itemDescription,
+    companyPrice: row.itemDTO.companyPrice,
+    retailPrice: row.itemDTO.retailPrice,
+    discount: row.itemDTO.discount,
+    availableQuantity: row.itemBranchDTO.availableQuantity,
+    pattern: row.itemTyreDTO?.pattern || '',
+    tyreSize: row.itemTyreDTO?.tyreSize || '',
+    vehicleType: row.itemTyreDTO?.vehicleType || '',
+  }));
+
+
+
+ 
+
+
+
+
   return (
     <>
       {message && <GeneralMessage message={message} />}
@@ -335,60 +383,36 @@ const ItemView = () => {
 
         </section>
 
-        <table className="item-table">
-          <caption>{selectedCategory} {selectedBrand}</caption>
-          <thead>
-           
+        
 
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Company Price</th>
-              <th>Retail Price</th>
-              <th>Discount</th>
-              <th>Available Quantity</th>
-              {selectedCategory === "Tyre" && filteredRows[0]?.itemTyreDTO !== null &&
-                <>
-                  <th>Pattern</th>
-                  <th>Tyre Size</th>
-                  <th>Vehicle Type</th>
-                </>
-              }
+<Paper sx={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={tableRows}
+        columns={tableColumns}
+        pageSize={5}
+        rowsPerPageOptions={[5, 10]}
+        //checkboxSelection
+        //selectionModel={selectionModel} // Only one row can be selected at a time
+        //onSelectionModelChange={handleRowSelection} // Handle row selection
+        onRowClick={(e) => {handleRowClick(e.row.id);}}
+       
+        //getRowClassName={getRowClassName} // Apply custom class for selected row
+            sx={{
+              '& .MuiDataGrid-row.Mui-selected': {
+                backgroundColor: '#a0d8a0', // Selected row color
+                '&:hover': {
+                  backgroundColor: '#a0d8af', // A different hover color for better visibility
+                },
+              },
+              border: 0,
+             
+            }}
+        
+      />
+    </Paper>
 
-            </tr>
-          </thead>
-          <tbody>
-            {
-              console.log("Rows:", rows.length)
-            }
-            {filteredRows?.map((row) => (
-              <tr
-                key={row.itemDTO.itemId}
-                className={selectedRowId === row.itemDTO.itemId ? "selected-row" : ""}
-                onClick={() => {
-                  console.log("Row clicked:", row.itemDTO.itemId);
 
-                  handleRowClick(row.itemDTO.itemId);
 
-                }}
-              >
-                <td>{row.itemDTO.itemName}</td>
-                <td>{row.itemDTO.itemDescription}</td>
-                <td>{row.itemDTO.companyPrice}</td>
-                <td>{row.itemDTO.retailPrice}</td>
-                <td>{row.itemDTO.discount}</td>
-                <td>{row.itemBranchDTO.availableQuantity}</td>
-                {selectedCategory === "Tyre" && row.itemTyreDTO &&
-                  <>
-                    <td>{row.itemTyreDTO.pattern}</td>
-                    <td>{row.itemTyreDTO.tyreSize}</td>
-                    <td>{row.itemTyreDTO.vehicleType}</td>
-                  </>
-                }
-              </tr>
-            ))}
-          </tbody>
-        </table>
         <div className="button-group">
           <button className="btn delete" onClick={() => openConfirmationDialog()}>Delete</button>
           <button className="btn update" onClick={() => {
@@ -418,7 +442,14 @@ const ItemView = () => {
           }}>More Info</button>
         </div>
       </div>
-      <PopUp popUpTitle={currentItem ? "Edit Item" : "Add New Item"} openPopup={isDialogOpen} setOpenPopup={setIsDialogOpen} onSubmit={handleSubmit} setCancelButtonAction={closeDialog} isDefaultButtonsDisplay={false}>
+      <PopUp popUpTitle={currentItem ? "Edit Item" : "Add New Item"}
+        openPopup={isDialogOpen}
+        setOpenPopup={setIsDialogOpen}
+        onSubmit={handleSubmit}
+        setCancelButtonAction={closeDialog}
+        isDefaultButtonsDisplay={false}
+      >
+
         <ItemDetailsForm
           formData={formData}
           setFormData={setFormData}

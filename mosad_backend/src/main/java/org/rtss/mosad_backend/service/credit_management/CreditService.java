@@ -100,7 +100,7 @@ public class CreditService {
             List<Object[]> results;
             if (customerType.equalsIgnoreCase("Retail")) {
                 results = creditRepository.findAllRetailCustomerCreditDetails();
-                System.out.println(results);
+
             } else {
                 results = creditRepository.findAllNormalCustomerCreditDetails();
             }
@@ -108,7 +108,7 @@ public class CreditService {
             Map<Long, CreditDetailsDTO> creditDetailsMap = new HashMap<>();
 
             for (Object[] row : results) {
-                System.out.println("\nrow[5]"+row[5]+"\n");
+
                 Long creditId = (Long) row[0];
                 double balance = (double) row[1];
                 Date dueDate = (Date) row[2];
