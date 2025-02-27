@@ -391,12 +391,9 @@ const ItemView = () => {
         columns={tableColumns}
         pageSize={5}
         rowsPerPageOptions={[5, 10]}
-        //checkboxSelection
-        //selectionModel={selectionModel} // Only one row can be selected at a time
-        //onSelectionModelChange={handleRowSelection} // Handle row selection
         onRowClick={(e) => {handleRowClick(e.row.id);}}
+        disableColumnResize
        
-        //getRowClassName={getRowClassName} // Apply custom class for selected row
             sx={{
               '& .MuiDataGrid-row.Mui-selected': {
                 backgroundColor: '#a0d8a0', // Selected row color
@@ -405,7 +402,13 @@ const ItemView = () => {
                 },
               },
               border: 0,
-             
+             '& .MuiDataGrid-root': {
+            marginTop: '50px', // Adjust the table position to make space for the filter panel
+            backgroundImage: `url(${bannerImage})`, // URL of the background image
+            backgroundSize: 'cover', // Ensures the image covers the entire background
+            backgroundPosition: 'center', // Center the background image
+            backgroundRepeat: 'no-repeat', // Prevents the background image from repeating
+          },
             }}
         
       />
