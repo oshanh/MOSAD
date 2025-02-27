@@ -4,8 +4,8 @@ import {
   TableContainer, TableHead, TableRow, Typography, Paper, TextField,
   FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, RadioGroup, Radio, FormControl
 } from '@mui/material';
-import { Delete, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from '@mui/icons-material';
-import {useAddRepayment,useDeleteRepayment,useFetchAllCreditDetails}from '../../hooks/servicesHook/useCreditService'
+import { Delete, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon ,AppRegistration as AppRegistrationIcon} from '@mui/icons-material';
+import {useAddRepayment,useDeleteRepayment,useFetchAllCreditDetails,useUpdateCredit}from '../../hooks/servicesHook/useCreditService'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
@@ -16,33 +16,47 @@ import ConfirmationDialog from '../../component/ConfirmationDialog';
 import PropTypes from 'prop-types';
 
 //Table row handling
-function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,columns }) {
+function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,columns,state,updateCredit }) {
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openAddRepaymentConfirmation, setOpenAddRepaymentConfirmation] = useState(false);
   const [newRepayment, setNewRepayment] = useState({ date: dayjs().format('YYYY-MM-DD'), amount: '' });
   const [deleteConformationDialog, setDeleteConformationDialog] = useState(false);
   const [repaymentIdForDeletion, setRepaymentIdForDeletion] = useState(null);
+  const deleteOption=false;
 
 
-  const handleDialogOpen = () => {
+  const handleRepaymentDialogOpen = () => {
     setOpenDialog(true);
     setNewRepayment({ ...newRepayment, date: dayjs().format('YYYY-MM-DD') });
   };
 
-  const handleDialogClose = () => {
+  const handleRepaymentDialogClose = () => {
     setOpenDialog(false);
     setNewRepayment({ date: '', amount: '' });
   };
 
+
+
   const handleAddRepayment = () => {
     if (newRepayment.date && newRepayment.amount) {
       onAddRepayment(row.creditId, newRepayment); // Call the parent callback with new repayment details
-      handleDialogClose();
+      if(newRepayment.amount == row.balance){
+        const credit={
+          creditId:row.creditId,
+          dueDate:row.dueDate,
+          completed:true
+        };
+        updateCredit(credit);
+        row.completed=true;
+      }
+      handleRepaymentDialogClose();
     } else {
       setMessage({ type: 'error', text: 'Please fill in all fields!' });
       setTimeout(() => setMessage(null), 2000);
     }
   };
+
 
   const handleDeleteRepayment = (id) => {
     console.log("Repayment Id = "+id);
@@ -76,9 +90,14 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
         <TableCell>{row.contactNumber}</TableCell>
         <TableCell align="right">{row.balance}</TableCell>
         <TableCell>{dayjs(row.dueDate).format('YYYY-MM-DD')}</TableCell>
+        { (state.incompleted || state.all) && 
+         <> 
         <TableCell align="right" sx={{ color: remainingBalance == 0 ? 'green' : 'black', fontWeight: 'bold', fontSize: 20 }}>
-          {remainingBalance == 0 ? 'Completed' : remainingBalance}
+          { remainingBalance}
         </TableCell>
+        {state.all && <TableCell>{row.completed ? "Completed":"Pending"}</TableCell>}
+        <TableCell><AppRegistrationIcon/></TableCell>
+        </>}
       </TableRow>
 
       <TableRow>
@@ -94,6 +113,7 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
                     <TableCell>Repayment ID</TableCell>
                     <TableCell>Date</TableCell>
                     <TableCell align="right">Amount (Rs.)</TableCell>
+                    
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -103,8 +123,9 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
                         <TableCell>{repayment.repaymentId}</TableCell>
                         <TableCell>{dayjs(repayment.date).format('YYYY-MM-DD')}</TableCell>
                         <TableCell align="right">{repayment.amount}</TableCell>
+                        {deleteOption &&
                         <TableCell align="right"><Delete onClick={() =>{setRepaymentIdForDeletion(repayment.repaymentId); setDeleteConformationDialog(true);}} sx={{ scale: 0.75, cursor: 'pointer' }} /></TableCell>
-
+                        }
                       </TableRow>
                       {deleteConformationDialog &&
                         <ConfirmationDialog
@@ -132,7 +153,7 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={handleDialogOpen}
+                  onClick={handleRepaymentDialogOpen}
                   sx={{ marginTop: 2, backgroundColor: '#4CAF50', color: 'white' }}
                 >
                   Add New Repayment
@@ -147,7 +168,7 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
 
       <Dialog
         open={openDialog}
-        onClose={handleDialogClose}
+        onClose={handleRepaymentDialogClose}
         aria-modal="true"
         aria-labelledby="add-repayment-title"
         aria-describedby="add-repayment-description"
@@ -181,20 +202,30 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          {
+          <Button onClick={handleRepaymentDialogClose}>Cancel</Button>
+          
             <Button
-              onClick={handleAddRepayment}
+              onClick={()=>{setOpenAddRepaymentConfirmation(true);}}
               variant="contained"
               disabled={!newRepayment.amount || newRepayment.amount > remainingBalance}
               sx={{ backgroundColor: '#4CAF50', color: 'white' }}
             >
               Add
             </Button>
-          }
+          {openAddRepaymentConfirmation && <ConfirmationDialog
+            message= {newRepayment.amount==remainingBalance ? 'This credit will mark as Completed !\nAre you sure you want to add this repayment?':'Are you sure you want to add this repayment?' }
+            isOpen={openAddRepaymentConfirmation}
+            onCancel={() => setOpenAddRepaymentConfirmation(false)}
+            onConfirm={() => { handleAddRepayment(); setOpenAddRepaymentConfirmation(false); }}
+          />}
+          
         </DialogActions>
 
       </Dialog>
+
+              
+      
+
       {message && <GeneralMessage message={message} />}
 
     </>
@@ -208,11 +239,13 @@ const CreditPage = () => {
   const addRepayment=useAddRepayment();
   const deleteRepayment=useDeleteRepayment(); 
   const fetchAllCreditDetails=useFetchAllCreditDetails();
+  const updateCredit=useUpdateCredit();
+
   const [rows, setRows] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState(null);
-  const [state, setState] = useState({ all: false, completed: false, incompleted: true, });
+  const [state, setState] = useState({ all: true, completed: false, incompleted: false, });
   const [customerType, setCustomerType] = useState('NORMAL');
   const columns = {'creditId':false,'billId':true,'customerName':true,'contactNumber':true,'balance':true,'dueDate':true,'remainingBalance':true};
 
@@ -226,6 +259,7 @@ const CreditPage = () => {
       incompleted: value === 'incompleted',
     });
   };
+
   let selectedValue;
   if (state.all) {
     selectedValue = 'all';
@@ -310,6 +344,22 @@ const CreditPage = () => {
         setTimeout(() => setMessage(null), 2000);
       }
     
+  };
+
+  const handleUpdateCredit = async (credit) => {
+    const data={
+      creditId:credit.creditId,
+      dueDate:credit.dueDate,
+      completed:credit.completed
+    };
+    try {
+      const response = await updateCredit(data);
+      console.log('Credit updated successfully:', response.data);
+    } catch (error) {
+      console.error('Error updating credit:', error.response?.data || error.message);
+      setMessage({ type: 'error', text: 'Failed to update credit!' });
+      setTimeout(() => setMessage(null), 2000);
+    }
   };
 
 
@@ -453,12 +503,29 @@ const CreditPage = () => {
                 <TableCell>Contact Number</TableCell>
                 <TableCell align="right">Credit Amount (Rs.)</TableCell>
                 <TableCell>Due Date</TableCell>
-                <TableCell align="right">Remaining Balance (Rs.)</TableCell>
+                {(state.incompleted || state.all) &&
+                  <><TableCell align="right">Remaining Balance (Rs.)</TableCell>
+                    {state.all && <TableCell>Status</TableCell>}
+                    <TableCell>Actions</TableCell>
+
+                  </>}
+
+                    
+                  
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredRows.map((row) => (
-                <Row key={row.creditId} row={row} onAddRepayment={handleAddRepayment} onDeleteRepayment={handleDeleteRepayment} setMessage={setMessage} message={message} columns={columns} />
+                <Row key={row.creditId} 
+                     row={row} 
+                     onAddRepayment={handleAddRepayment} 
+                     onDeleteRepayment={handleDeleteRepayment} 
+                     setMessage={setMessage} 
+                     message={message} 
+                     columns={columns} 
+                     state={state}
+                     updateCredit={handleUpdateCredit}
+                />
               ))}
             </TableBody>
           </Table>

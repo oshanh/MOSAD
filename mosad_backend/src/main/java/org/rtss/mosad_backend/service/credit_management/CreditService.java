@@ -224,14 +224,21 @@ public class CreditService {
         return creditRepository.findCreditByDueDate(dueDate);
     }
 
-    public ResponseEntity<ResponseDTO> updateCredit(Long creditId) {
-        Optional<Credit> creditOptional = creditRepository.findById(creditId);
+    public ResponseEntity<ResponseDTO> updateCredit(CreditDTO creditDTO) {
+        Optional<Credit> creditOptional = creditRepository.findById(creditDTO.getCreditId());
+        System.out.println("\n\nUpdating isCompleted to: "+creditDTO.getCreditId() +"\n"+ creditDTO.getCompleted()+"\n\n");
 
         if (creditOptional.isPresent()) {
             Credit credit = creditOptional.get();
-            credit.setCompleted(true);  // Update the attribute
+            credit.setCompleted(creditDTO.getCompleted());  // Update the attribute
+            credit.setDueDate(creditDTO.getDueDate());
 
-            creditRepository.save(credit);  // Save the updated entity
+
+
+            Credit savedCredit = creditRepository.save(credit);  // Save the updated entity
+            creditRepository.flush();
+            System.out.println("\n\n"+savedCredit.getCompleted()+"\n\n");
+
 
             ResponseDTO responseDTO = new ResponseDTO(true, "Credit updated successfully");
             return ResponseEntity.ok().body(responseDTO);
