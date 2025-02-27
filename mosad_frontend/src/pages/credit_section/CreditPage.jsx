@@ -96,7 +96,9 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
           { remainingBalance}
         </TableCell>
         {state.all && <TableCell>{row.completed ? "Completed":"Pending"}</TableCell>}
-        <TableCell><AppRegistrationIcon/></TableCell>
+        <TableCell>
+          <AppRegistrationIcon />
+        </TableCell>
         </>}
       </TableRow>
 
@@ -346,11 +348,11 @@ const CreditPage = () => {
     
   };
 
-  const handleUpdateCredit = async (credit) => {
+  const handleUpdateCredit = async (row) => {
     const data={
-      creditId:credit.creditId,
-      dueDate:credit.dueDate,
-      completed:credit.completed
+      creditId:row.creditId,
+      dueDate:row.dueDate,
+      completed:row.completed
     };
     try {
       const response = await updateCredit(data);
