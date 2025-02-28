@@ -53,7 +53,7 @@ public class WhatsAppNotificationService {
 
         HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
-
+        System.out.println(response.getBody());
 
     }
 

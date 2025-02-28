@@ -6,11 +6,10 @@ import org.rtss.mosad_backend.entity.credit.Repayment;
 import org.rtss.mosad_backend.entity.user_management.UserContacts;
 import org.rtss.mosad_backend.repository.credit_repository.RepaymentRepository;
 import org.rtss.mosad_backend.service.credit_management.CreditService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -29,7 +28,7 @@ public class ScheduledWANotifications {
         this.repaymentRepository = repaymentRepository;
     }
 
-    //@Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 10000)
     @Transactional
     public void creditReminder() {
 
@@ -64,15 +63,12 @@ public class ScheduledWANotifications {
 
             }
 
-            String remainingBalance="Rs."+String.valueOf(rb);
+            String remainingBalance="Rs."+ rb;
 
 
-            System.out.println("\n\n"+customerName+"\n"+contactNumber+"\n"+remainingBalance+"\n"+formattedDueDate+"\n\n");
             whatsAppNotificationService.sendCreditReminder(contactNumber,customerName,remainingBalance,formattedDueDate);
         }
 
-
-        //whatsAppNotificationService.sendCreditReminder("94717529331", "Oshan", "$12.34", "Jan 1, 2024");
     }
 
 }
