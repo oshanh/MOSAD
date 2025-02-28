@@ -53,6 +53,7 @@ const ItemView = () => {
   const [inputFieldErrors, setInputFieldErrors] = useState({});
   const [isPriceDetailsPopupOpen, setIsPriceDetailsPopupOpen] = useState(false);
   const [selectedItemPriceDetails, setSelectedItemPriceDetails] = useState(null);
+  const [stockIn, setStockIn] = useState({ stockIn: "", date: new Date().toISOString().split("T")[0] });
 
 
   const [confirmationDialog, setConfirmationDialog] = useState(false);
@@ -114,6 +115,8 @@ const ItemView = () => {
       return updatedErrors;
     });
   };
+
+  
 
 
 
@@ -208,28 +211,6 @@ const ItemView = () => {
 
   }, [selectedBranch, selectedBrand]);
 
-  // useEffect(() => {
-  //   const handleOutsideClick = (event) => {
-  //     if (
-  //       dialogOpenRef.current || // ✅ Prevent deselection when dialog is open
-  //       //event.target.closest(".item-table") ||
-  //       event.target.closest(".confirmation-dialog") ||
-  //       event.target.closest(".confirmation-dialog-overlay")
-  //     ) {
-  //       return;
-  //     }
-
-
-  //     setSelectedRowId(null);
-  //   };
-
-  //   document.addEventListener("click", handleOutsideClick);
-
-  //   return () => {
-  //     document.removeEventListener("click", handleOutsideClick);
-  //   };
-  // }, [selectedRowId]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (Object.keys(inputFieldErrors).length > 0) {
@@ -257,8 +238,13 @@ const ItemView = () => {
       "itemBranchDTO": {
         "branchId": selectedBranch, // Adjust based on your branch ID
         "availableQuantity": parseInt(formData.availableQuantity)
+      },
+      "stockInDTO": {
+        "quantity": parseInt(stockIn.stockIn),
+        "date": stockIn.date
       }
     };
+    console.log(formatedData);
 
     const request = currentItem
       ? updateItem(formatedData)
@@ -269,6 +255,7 @@ const ItemView = () => {
         console.log(currentItem ? "Item updated successfully!" : "Backend - " + response.data.message);
         closeDialog();
         fetchandSetItems();
+        setStockIn({ stockIn: "", date: new Date().toISOString().split("T")[0] });  // Reset stock in fields
         setMessage(
           currentItem
             ? { type: "success", text: "Item updated successfully!" }
@@ -417,7 +404,7 @@ const ItemView = () => {
 
 
         <div className="button-group">
-          <button className="btn delete" onClick={() => openConfirmationDialog()}>Delete</button>
+          
           <button className="btn update" onClick={() => {
             if (selectedRowId) {
               console.log("On Update Selected Row ID:", selectedRowId);
@@ -433,18 +420,15 @@ const ItemView = () => {
           <button className="btn info" onClick={() => {
             if (selectedRowId) {
               const selectedItem = rows.find((row) => row.itemDTO.itemId === selectedRowId);
-              setSelectedItemPriceDetails({
-                officialSellingPrice: selectedItem.itemDTO.companyPrice || 0,
-                discount: selectedItem.itemDTO.discount || 0,
-              });
-              setIsPriceDetailsPopupOpen(true);
+              
+              
             } else {
-              setMessage({ type: "error", text: "Please select an item to view price details!" });
+              setMessage({ type: "error", text: "Please select an item to stock in!" });
               setTimeout(() => setMessage(null), 2000);
             }
-          }}>More Info</button>
+          }}>StockIn History</button>
         </div>
-      </div>
+      </div> 
       <PopUp popUpTitle={currentItem ? "Edit Item" : "Add New Item"}
         openPopup={isDialogOpen}
         setOpenPopup={setIsDialogOpen}
@@ -456,6 +440,8 @@ const ItemView = () => {
         <ItemDetailsForm
           formData={formData}
           setFormData={setFormData}
+          setStockIn={setStockIn}
+          stockIn={stockIn}
           errors={inputFieldErrors}
           handleChange={validateAddForm}
           onSubmit={handleSubmit}
@@ -476,6 +462,12 @@ const ItemView = () => {
           discount={selectedItemPriceDetails?.discount || ""}
         />
       </PopUp>
+
+
+
+
+
+
     </>
   );
 };
