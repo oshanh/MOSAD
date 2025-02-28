@@ -51,8 +51,6 @@ const ItemView = () => {
   const [formData, setFormData] = useState(setItemAddFromFields(selectedCategory, selectedBrand));
   const [message, setMessage] = useState(null);
   const [inputFieldErrors, setInputFieldErrors] = useState({});
-  const [isPriceDetailsPopupOpen, setIsPriceDetailsPopupOpen] = useState(false);
-  const [selectedItemPriceDetails, setSelectedItemPriceDetails] = useState(null);
   const [stockIn, setStockIn] = useState({ stockIn: "", date: new Date().toISOString().split("T")[0] });
 
 
@@ -153,15 +151,7 @@ const ItemView = () => {
   }, [selectedRowId]);
 
 
-  const openConfirmationDialog = () => {
-    if (selectedRowId !== null) {
-      dialogOpenRef.current = true; // ✅ Mark dialog as open
-      setConfirmationDialog(true);
-    } else {
-      setMessage({ type: "error", text: "Please select an item to delete." });
-      setTimeout(() => setMessage(null), 2000);
-    }
-  };
+ 
 
   const closeConfirmationDialog = () => {
     dialogOpenRef.current = false; // ✅ Mark dialog as closed
@@ -449,19 +439,7 @@ const ItemView = () => {
         />
 
       </PopUp>
-      <PopUp
-        popUpTitle="Price Details"
-        openPopup={isPriceDetailsPopupOpen}
-        setOpenPopup={setIsPriceDetailsPopupOpen}
-        onSubmit={() => setIsPriceDetailsPopupOpen(false)}
-        setCancelButtonAction={() => setIsPriceDetailsPopupOpen(false)}
-        isDefaultButtonsDisplay={false}
-      >
-        <PriceDetailsSection
-          officialSellingPrice={selectedItemPriceDetails?.officialSellingPrice || ""}
-          discount={selectedItemPriceDetails?.discount || ""}
-        />
-      </PopUp>
+      
 
 
 
