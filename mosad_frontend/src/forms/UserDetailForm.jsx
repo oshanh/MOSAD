@@ -18,12 +18,24 @@ import { blue } from '@mui/material/colors';
 import PropTypes from "prop-types";
 import useAuth from "../hooks/useAuth";
 
+const initialErrors = {
+    firstNameError: '',
+    lastNameError: '',
+    usernameError: '',
+    emailError: '',
+    contactNumError: '',
+    roleNameError: '',
+    pwd_1Error: '',
+    pwd_2Error: '',
+};
+
 
 export default function UserDetailsForm(
-    {onSubmit,userUpdateData,editMode,setUserUpdateData,handlePwds,pwds,errors,setErrors}
+    {onSubmit,userUpdateData,editMode,setUserUpdateData,handlePwds,pwds}
 ){
+    const [errors,setErrors]=useState(initialErrors);
+    const [contactNum,setContactNum]=useState({contactNum:""});
     const {auth} = useAuth();
-
     let location = useLocation();
 
     const handleUserDtoChange = (event) => {
@@ -48,8 +60,6 @@ export default function UserDetailsForm(
         });
     };
 
-    const [contactNum,setContactNum]=useState({contactNum:""});
-    
     const handleUserContactNumChange=(event)=>{
         setContactNum({...contactNum,[event.target.name]:event.target.value})
     }
@@ -75,6 +85,8 @@ export default function UserDetailsForm(
                         name="firstName" 
                         value={userUpdateData.userDto.firstName || ''} 
                         onChange={handleUserDtoChange} 
+                        error={errors.firstNameError}
+                        helperText={errors.firstNameError}
                         fullWidth
                         sx={{
                             "& .MuiInputBase-input.Mui-disabled": {
@@ -83,13 +95,16 @@ export default function UserDetailsForm(
                         }} 
                         />
                     </Grid>
+                    
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                         disabled={!editMode} 
                         label="Last name" 
                         variant="standard" 
                         name="lastName" 
-                        value={userUpdateData.userDto.lastName || ''} 
+                        value={userUpdateData.userDto.lastName || ''}
+                        error={errors.lastNameError}
+                        helperText={errors.lastNameError} 
                         onChange={handleUserDtoChange} 
                         fullWidth
                         sx={{
@@ -108,6 +123,8 @@ export default function UserDetailsForm(
                             variant="standard" 
                             name="username" 
                             value={userUpdateData.userDto.username || ''} 
+                            error={errors.usernameError}
+                            helperText={errors.usernameError}
                             onChange={handleUserDtoChange} 
                             fullWidth 
                             sx={{
@@ -124,7 +141,9 @@ export default function UserDetailsForm(
                         label="Email" 
                         variant="standard" 
                         name="email" 
-                        value={userUpdateData.userDto.email || ''} 
+                        value={userUpdateData.userDto.email || ''}
+                        error={errors.emailError}
+                        helperText={errors.firstNameError} 
                         onChange={handleUserDtoChange} 
                         fullWidth
                         sx={{
@@ -134,6 +153,8 @@ export default function UserDetailsForm(
                         }} 
                     />
                     </Grid>
+
+            {/* User contact section */}
                     <Grid size={{ xs: 10,sm:6}}>
                         <TextField
                         disabled={!editMode} 
@@ -195,8 +216,8 @@ export default function UserDetailsForm(
                           },
                         }} 
                     >
-                    <MenuItem value="ADMIN">Admin</MenuItem>
-                    <MenuItem value="OWNER">User</MenuItem>
+                    {auth.roles.includes("ADMIN")&& <MenuItem value="ADMIN">Admin</MenuItem>}
+                    {auth.roles.includes("ADMIN")&& <MenuItem value="OWNER">Owner</MenuItem>}
                     <MenuItem value="STOCK_MANAGER">Stock Manager</MenuItem>
                     <MenuItem value="RETAIL_CUSTOMER">Retail Customer</MenuItem>
                     <MenuItem value="MECHANIC">Mechanic</MenuItem>
@@ -266,7 +287,4 @@ UserDetailsForm.propTypes={
         pwd_1:PropTypes.string,
         pwd_2:PropTypes.string
     }),
-    errors:PropTypes.object,
-    setErrors:PropTypes.func
-
 }
