@@ -9,6 +9,7 @@
     Paper,
     IconButton,
     Button,
+    FormHelperText,
    
  } from '@mui/material';
 import { useState } from "react";
@@ -18,23 +19,21 @@ import { blue } from '@mui/material/colors';
 import PropTypes from "prop-types";
 import useAuth from "../hooks/useAuth";
 
-const initialErrors = {
-    firstNameError: '',
-    lastNameError: '',
-    usernameError: '',
-    emailError: '',
-    contactNumError: '',
-    roleNameError: '',
-    pwd_1Error: '',
-    pwd_2Error: '',
+const initialContactNumError = {
+    contactNumError: ''
 };
 
+// Contact number validation
+const isValidContactNum = (contact) => {
+    const contactRegex = /^[0-9]{10}$/; // Example: 10-digit number
+    return contactRegex.test(contact);
+};
 
 export default function UserDetailsForm(
-    {onSubmit,userUpdateData,editMode,setUserUpdateData,handlePwds,pwds}
+    {onSubmit,userUpdateData,editMode,setUserUpdateData,handlePwds,pwds,error,setError}
 ){
-    const [errors,setErrors]=useState(initialErrors);
     const [contactNum,setContactNum]=useState({contactNum:""});
+    const [contactNumErrors,setContactNumErrors]=useState(initialContactNumError);
     const {auth} = useAuth();
     let location = useLocation();
 
@@ -64,10 +63,16 @@ export default function UserDetailsForm(
         setContactNum({...contactNum,[event.target.name]:event.target.value})
     }
     const addNewContact=(event)=>{
+        if(contactNum.contactNum===""){
+            setContactNumErrors({contactNumError:"Contact number is empty"})
+            return
+        }
         setUserUpdateData({
             ...userUpdateData,
             userContactDto: [
                 ...userUpdateData.userContactDto,contactNum]})
+        setContactNum({contactNum:""})
+        setContactNumErrors({contactNumError:""})
     }
 
     
@@ -85,8 +90,8 @@ export default function UserDetailsForm(
                         name="firstName" 
                         value={userUpdateData.userDto.firstName || ''} 
                         onChange={handleUserDtoChange} 
-                        error={errors.firstNameError}
-                        helperText={errors.firstNameError}
+                        error={error.firstNameError}
+                        helperText={error.firstNameError}
                         fullWidth
                         sx={{
                             "& .MuiInputBase-input.Mui-disabled": {
@@ -103,8 +108,8 @@ export default function UserDetailsForm(
                         variant="standard" 
                         name="lastName" 
                         value={userUpdateData.userDto.lastName || ''}
-                        error={errors.lastNameError}
-                        helperText={errors.lastNameError} 
+                        error={error.lastNameError}
+                        helperText={error.lastNameError} 
                         onChange={handleUserDtoChange} 
                         fullWidth
                         sx={{
@@ -123,8 +128,8 @@ export default function UserDetailsForm(
                             variant="standard" 
                             name="username" 
                             value={userUpdateData.userDto.username || ''} 
-                            error={errors.usernameError}
-                            helperText={errors.usernameError}
+                            error={error.usernameError}
+                            helperText={error.usernameError}
                             onChange={handleUserDtoChange} 
                             fullWidth 
                             sx={{
@@ -142,8 +147,8 @@ export default function UserDetailsForm(
                         variant="standard" 
                         name="email" 
                         value={userUpdateData.userDto.email || ''}
-                        error={errors.emailError}
-                        helperText={errors.firstNameError} 
+                        error={error.emailError}
+                        helperText={error.emailError} 
                         onChange={handleUserDtoChange} 
                         fullWidth
                         sx={{
@@ -157,12 +162,15 @@ export default function UserDetailsForm(
             {/* User contact section */}
                     <Grid size={{ xs: 10,sm:6}}>
                         <TextField
+                        type="tel"
                         disabled={!editMode} 
                         label="User contact" 
                         variant="standard" 
                         name="contactNum" 
                         value={contactNum.contactNum|| ''} 
                         onChange={handleUserContactNumChange} 
+                        error={contactNumErrors.contactNumError}
+                        helperText={contactNumErrors.contactNumError}
                         fullWidth
                         sx={{
                             "& .MuiInputBase-input.Mui-disabled": {
@@ -209,6 +217,7 @@ export default function UserDetailsForm(
                         id="role" 
                         value={userUpdateData.userRoleDto.roleName} 
                         onChange={handleUserRoleDtoChange} 
+                        error={error.roleNameError} 
                         label="Role"
                         sx={{
                             "& .MuiInputBase-input.Mui-disabled": {
@@ -222,6 +231,7 @@ export default function UserDetailsForm(
                     <MenuItem value="RETAIL_CUSTOMER">Retail Customer</MenuItem>
                     <MenuItem value="MECHANIC">Mechanic</MenuItem>
                     </Select>
+                    <FormHelperText>{error.roleNameError}</FormHelperText>
                 </FormControl>
                 </Grid>
                 </Grid>
@@ -240,6 +250,8 @@ export default function UserDetailsForm(
                     name="pwd_1" 
                     value={pwds.pwd_1} 
                     onChange={handlePwds} 
+                    error={error.pwd_1Error}
+                    helperText={error.pwd_1Error}
                     fullWidth 
                 />
                 </Grid>
@@ -251,6 +263,8 @@ export default function UserDetailsForm(
                     variant="standard" 
                     name="pwd_2" 
                     value={pwds.pwd_2} 
+                    error={error.pwd_2Error}
+                    helperText={error.pwd_2Error}
                     onChange={handlePwds} 
                     fullWidth 
                 />
@@ -287,4 +301,9 @@ UserDetailsForm.propTypes={
         pwd_1:PropTypes.string,
         pwd_2:PropTypes.string
     }),
+    error:PropTypes.shape({
+        pwd_1Error:PropTypes.string,
+        pwd_2Error:PropTypes.string
+    }),
+    setError:PropTypes.func
 }
