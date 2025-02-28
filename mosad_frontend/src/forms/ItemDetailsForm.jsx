@@ -2,7 +2,10 @@ import React from "react";
 import { TextField, Box, Typography,Button,DialogActions } from "@mui/material";
 import PropTypes from "prop-types";
 
-const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog }) => {
+const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,stockIn,setStockIn }) => {
+
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split("T")[0];
 
   return (
     <form onSubmit={onSubmit}>
@@ -35,7 +38,7 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog }) 
                 handleChange(key, e.target.value)
               }
               required={key !== "itemId"} // Mark all fields except 'itemId' as required
-              disabled={key==="itemId"} // Disable the 'itemId' field
+              disabled={key==="itemId" || key==="availableQuantity"} // Disable the 'itemId' field
               error={!!errors[key]} // Highlight the field in red if it has an error
               helperText={errors[key] || ""} // Show error message if available
               fullWidth
@@ -47,6 +50,29 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog }) 
               }}
             />
           ))}
+          {/* New Stock Input Field */}
+          <TextField
+            type="number"
+            label="Stock In"
+            value={stockIn.stockIn}
+            onChange={(e) => setStockIn((prev) => ({ ...prev, stockIn: e.target.value }))}
+            fullWidth
+            variant="outlined"
+            size="small"
+            sx={{ gridColumn: "span" }}
+          />
+
+
+          <TextField
+            type="date"
+            label="Date"
+            value={stockIn.date}
+            onChange={(e) => setStockIn((prev) => ({ ...prev, date: e.target.value }))}
+            fullWidth
+            variant="outlined"
+            size="small"
+            sx={{ gridColumn: "span" }}
+          />
         </Box>
       </Box>
       <DialogActions>
