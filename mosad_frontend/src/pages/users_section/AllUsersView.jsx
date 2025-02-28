@@ -5,17 +5,6 @@ import UserDetailsForm from "../../forms/UserDetailForm";
 import { DataGrid } from '@mui/x-data-grid';
 import {useGetAllUsername,useRegister} from '../../hooks/servicesHook/useApiUserService'
 
-const initialErrors = {
-    firstNameError: '',
-    lastNameError: '',
-    usernameError: '',
-    emailError: '',
-    contactNumError: '',
-    roleNameError: '',
-    pwd_1Error: '',
-    pwd_2Error: '',
-  };
-
 const initialUserRegData={
     userDto:{
         username:"",
@@ -48,15 +37,12 @@ const columns = [
 
 
 const AllUsersView=()=>{
-    const [errors,setErrors]=useState(initialErrors);
     const [users,setUsers]=useState([]);
     const getAllUsername=useGetAllUsername();
     const registerUser = useRegister();
     
     //control data loading asynchronus nature 
     const [isLoading, setIsLoading] = useState(false);
-
-
 
     //fetch all users data
     const loadAllUsers=()=>{
@@ -180,9 +166,7 @@ const AllUsersView=()=>{
         editMode={true} 
         setUserUpdateData={setUserRegData}
         handlePwds={handlePwds}
-        pwds={pwds}
-        errors={errors}
-        setErrors={setErrors}/>
+        pwds={pwds}/>
         </PopUp>
         </Container>
        
