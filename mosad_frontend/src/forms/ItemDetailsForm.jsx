@@ -4,8 +4,7 @@ import PropTypes from "prop-types";
 
 const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,stockIn,setStockIn }) => {
 
-    // Get today's date in YYYY-MM-DD format
-    const today = new Date().toISOString().split("T")[0];
+
 
   return (
     <form onSubmit={onSubmit}>
@@ -89,7 +88,12 @@ ItemDetailsForm.propTypes = {
   handleChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  closeDialog: PropTypes.func.isRequired
+  closeDialog: PropTypes.func.isRequired,
+  stockIn: PropTypes.shape({
+    stockIn: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    date: PropTypes.string.isRequired,
+  }).isRequired,
+  setStockIn: PropTypes.func.isRequired,
 };
 
 export default ItemDetailsForm;

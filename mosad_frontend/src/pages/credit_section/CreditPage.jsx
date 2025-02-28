@@ -545,6 +545,7 @@ Row.propTypes = {
     customerName: PropTypes.string.isRequired,
     contactNumber: PropTypes.string.isRequired,
     balance: PropTypes.number.isRequired,
+    completed: PropTypes.bool.isRequired,
     dueDate: PropTypes.string.isRequired,
     repayments: PropTypes.arrayOf(
       PropTypes.shape({
@@ -565,8 +566,20 @@ Row.propTypes = {
     PropTypes.oneOf([null]), // Allow null
   ]),
   columns: PropTypes.shape({
-    creditId: PropTypes.number.isRequired
-  }).isRequired
+    creditId: PropTypes.bool.isRequired,
+    billId: PropTypes.bool.isRequired,
+    customerName: PropTypes.bool.isRequired,
+    contactNumber: PropTypes.bool.isRequired,
+    balance: PropTypes.bool.isRequired,
+    dueDate: PropTypes.bool.isRequired,
+    remainingBalance: PropTypes.bool.isRequired,
+  }).isRequired,
+  state: PropTypes.shape({
+    all: PropTypes.bool.isRequired,
+    completed: PropTypes.bool.isRequired,
+    incompleted: PropTypes.bool.isRequired,
+  }).isRequired,
+  updateCredit: PropTypes.func.isRequired,
 };
 
 export default CreditPage;
