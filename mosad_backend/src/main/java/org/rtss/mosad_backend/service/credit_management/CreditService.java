@@ -226,7 +226,6 @@ public class CreditService {
 
     public ResponseEntity<ResponseDTO> updateCredit(CreditDTO creditDTO) {
         Optional<Credit> creditOptional = creditRepository.findById(creditDTO.getCreditId());
-        System.out.println("\n\nUpdating isCompleted to: "+creditDTO.getCreditId() +"\n"+ creditDTO.getCompleted()+"\n\n");
 
         if (creditOptional.isPresent()) {
             Credit credit = creditOptional.get();
@@ -237,7 +236,7 @@ public class CreditService {
 
             Credit savedCredit = creditRepository.save(credit);  // Save the updated entity
             creditRepository.flush();
-            System.out.println("\n\n"+savedCredit.getCompleted()+"\n\n");
+
 
 
             ResponseDTO responseDTO = new ResponseDTO(true, "Credit updated successfully");
