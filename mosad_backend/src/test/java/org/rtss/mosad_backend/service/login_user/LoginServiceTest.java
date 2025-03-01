@@ -160,6 +160,13 @@ class LoginServiceTest {
         user.setEmail("testEmail@gmail.com");
         user.setUserRoles(userRoles);
 
+        Branch branch=new Branch();
+        branch.setBranchId(123L);
+        branch.setBranchName("Mirigama");
+        branch.setAddressNumber("123");
+        branch.setStreetName("Hakurukubura");
+        user.setBranch(branch);
+
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         Cookie[] cookies = {refreshTokenCookie};
 
