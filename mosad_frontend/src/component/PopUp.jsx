@@ -20,12 +20,12 @@ export default function PopUp({ popUpTitle, children, openPopup, setOpenPopup, s
         {children}
         {isDefaultButtonsDisplay &&
           <Grid container spacing={2} justifyContent="flex-end" sx={{ mt: 2 }}>
-            <Grid item>
+            <Grid>
               <Button variant="contained" color="primary" onClick={setOkButtonAction}>
                 Ok
               </Button>
             </Grid>
-            <Grid item>
+            <Grid>
               <Button variant="outlined" onClick={setCancelButtonAction}>
                 Cancel
               </Button>

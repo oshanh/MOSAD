@@ -90,7 +90,7 @@ export default function UserDetailsForm(
                         name="firstName" 
                         value={userUpdateData.userDto.firstName || ''} 
                         onChange={handleUserDtoChange} 
-                        error={error.firstNameError}
+                        error={!!error.firstNameError}
                         helperText={error.firstNameError}
                         fullWidth
                         sx={{
@@ -108,7 +108,7 @@ export default function UserDetailsForm(
                         variant="standard" 
                         name="lastName" 
                         value={userUpdateData.userDto.lastName || ''}
-                        error={error.lastNameError}
+                        error={!!error.lastNameError}
                         helperText={error.lastNameError} 
                         onChange={handleUserDtoChange} 
                         fullWidth
@@ -128,7 +128,7 @@ export default function UserDetailsForm(
                             variant="standard" 
                             name="username" 
                             value={userUpdateData.userDto.username || ''} 
-                            error={error.usernameError}
+                            error={!!error.usernameError}
                             helperText={error.usernameError}
                             onChange={handleUserDtoChange} 
                             fullWidth 
@@ -147,7 +147,7 @@ export default function UserDetailsForm(
                         variant="standard" 
                         name="email" 
                         value={userUpdateData.userDto.email || ''}
-                        error={error.emailError}
+                        error={!!error.emailError}
                         helperText={error.emailError} 
                         onChange={handleUserDtoChange} 
                         fullWidth
@@ -169,7 +169,7 @@ export default function UserDetailsForm(
                         name="contactNum" 
                         value={contactNum.contactNum|| ''} 
                         onChange={handleUserContactNumChange} 
-                        error={contactNumErrors.contactNumError}
+                        error={!!contactNumErrors.contactNumError}
                         helperText={contactNumErrors.contactNumError}
                         fullWidth
                         sx={{
@@ -217,7 +217,7 @@ export default function UserDetailsForm(
                         id="role" 
                         value={userUpdateData.userRoleDto.roleName} 
                         onChange={handleUserRoleDtoChange} 
-                        error={error.roleNameError} 
+                        error={!!error.roleNameError} 
                         label="Role"
                         sx={{
                             "& .MuiInputBase-input.Mui-disabled": {
@@ -250,7 +250,7 @@ export default function UserDetailsForm(
                     name="pwd_1" 
                     value={pwds.pwd_1} 
                     onChange={handlePwds} 
-                    error={error.pwd_1Error}
+                    error={!!error.pwd_1Error}
                     helperText={error.pwd_1Error}
                     fullWidth 
                 />
@@ -263,7 +263,7 @@ export default function UserDetailsForm(
                     variant="standard" 
                     name="pwd_2" 
                     value={pwds.pwd_2} 
-                    error={error.pwd_2Error}
+                    error={!!error.pwd_2Error}
                     helperText={error.pwd_2Error}
                     onChange={handlePwds} 
                     fullWidth 
@@ -302,8 +302,13 @@ UserDetailsForm.propTypes={
         pwd_2:PropTypes.string
     }),
     error:PropTypes.shape({
-        pwd_1Error:PropTypes.string,
-        pwd_2Error:PropTypes.string
+        firstNameError: PropTypes.string,
+        lastNameError: PropTypes.string,
+        usernameError: PropTypes.string,
+        emailError: PropTypes.string,
+        roleNameError: PropTypes.string,
+        pwd_1Error: PropTypes.string,
+        pwd_2Error: PropTypes.string,
     }),
     setError:PropTypes.func
 }
