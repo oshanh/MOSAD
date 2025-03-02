@@ -207,12 +207,12 @@ BranchDetailForm.propTypes = {
         contactNumber:PropTypes.string
     }).isRequired,
     setContactNum:PropTypes.func.isRequired,
-    error:PropTypes.shape({
+    errors:PropTypes.shape({
         branchNameError:PropTypes.string,
         addressNumberError:PropTypes.string,
         streetNameError:PropTypes.string,
         cityError:PropTypes.string,
         contactNumberError:PropTypes.string
     }),
-    setError:PropTypes.func
+    setErrors:PropTypes.func
 };
