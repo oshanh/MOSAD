@@ -86,13 +86,11 @@ class LoginServiceTest {
 
         when(authentication.getPrincipal()).thenReturn(user);
 
-        when(jwtService.generateToken(userLoginDto.getUsername(),"Admin")).thenReturn(accessToken);
+        when(jwtService.generateToken(userLoginDto.getUsername(),"Admin", branch.getBranchId())).thenReturn(accessToken);
         when(jwtService.generateRefreshToken(userLoginDto.getUsername())).thenReturn("refreshToken");
 
         authDTO.setAuthenticated(true);
         authDTO.setAccessToken(accessToken);
-        authDTO.setRole(userRoles.getRoleName());
-        authDTO.setBranchId(user.getBranch().getBranchId());
         // Capture the output stream
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         //When
@@ -111,7 +109,7 @@ class LoginServiceTest {
         //Then
         verify(dtoValidator).validate(userLoginDto);
         verify(authenticationManager).authenticate(any());
-        verify(jwtService).generateToken(userLoginDto.getUsername(),"Admin");
+        verify(jwtService).generateToken(userLoginDto.getUsername(),"Admin", branch.getBranchId());
         verify(jwtService).generateRefreshToken(userLoginDto.getUsername());
     }
 
@@ -140,7 +138,7 @@ class LoginServiceTest {
         //Then
         verify(dtoValidator).validate(userLoginDto);
         verify(authenticationManager).authenticate(any());
-        verify(jwtService, never()).generateToken(any(),any());
+        verify(jwtService, never()).generateToken(any(),any(),any());
         verify(jwtService, never()).generateRefreshToken(any());
     }
 
@@ -162,6 +160,13 @@ class LoginServiceTest {
         user.setEmail("testEmail@gmail.com");
         user.setUserRoles(userRoles);
 
+        Branch branch=new Branch();
+        branch.setBranchId(123L);
+        branch.setBranchName("Mirigama");
+        branch.setAddressNumber("123");
+        branch.setStreetName("Hakurukubura");
+        user.setBranch(branch);
+
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         Cookie[] cookies = {refreshTokenCookie};
 
@@ -170,7 +175,7 @@ class LoginServiceTest {
         when(jwtService.extractUsernameFromToken(refreshToken)).thenReturn(username);
         when(usersRepo.findByUsername(username)).thenReturn(Optional.of(user));
         when(jwtService.validateToken(refreshToken, user)).thenReturn(true);
-        when(jwtService.generateToken(username,"Admin")).thenReturn("newAccessToken");
+        when(jwtService.generateToken(username,"Admin",user.getBranch().getBranchId())).thenReturn("newAccessToken");
 
         authDTO.setAccessToken("newAccessToken");
         authDTO.setAuthenticated(true);
@@ -193,7 +198,7 @@ class LoginServiceTest {
         verify(jwtService).extractUsernameFromToken(refreshToken);
         verify(usersRepo).findByUsername(username);
         verify(jwtService).validateToken(refreshToken,user);
-        verify(jwtService).generateToken(username,"Admin");
+        verify(jwtService).generateToken(username,"Admin",user.getBranch().getBranchId());
 
 
     }
