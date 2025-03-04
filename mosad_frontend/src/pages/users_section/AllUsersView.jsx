@@ -137,7 +137,7 @@ const AllUsersView = () => {
             </Grid2>
 
             <PopUp
-                popUpTitle={"Add new user"}
+                popUpTitle={"Add New User"}
                 openPopup={openPopup}
                 isDefaultButtonsDisplay={true}
                 setOpenPopup={setOpenPopup}
