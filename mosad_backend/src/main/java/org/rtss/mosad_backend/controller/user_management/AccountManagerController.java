@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -68,7 +69,8 @@ public class AccountManagerController {
     }
 
     @PostMapping("/forgot-pwd/change")
-    public ResponseEntity<ResponseDTO> newPasswordSet(@RequestParam String email,@RequestBody String newPassword) {
+    public ResponseEntity<ResponseDTO> newPasswordSet(@RequestParam String email,@RequestBody Map<String, String> passwordDto) {
+        String newPassword = passwordDto.get("password");
         String escapedEmail=validateHtmlPathVariable.escapeHTMLSpecialCharacters(email);
         return ResponseEntity.ok().body(accountManagementService.changeToNewPassword(newPassword,escapedEmail));
     }

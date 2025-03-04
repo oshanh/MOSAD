@@ -3,10 +3,20 @@ import React from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import PropTypes from "prop-types";
 
-export default function PopUp({ popUpTitle, children, openPopup, setOpenPopup, setOkButtonAction, setCancelButtonAction, isDefaultButtonsDisplay }) {
+export default function PopUp(
+  { 
+    popUpTitle, 
+    children, 
+    openPopup, 
+    setOpenPopup, 
+    setOkButtonAction, 
+    setCancelButtonAction, 
+    isDefaultButtonsDisplay,
+    width="lg"
+  }) {
   return (
-    <Dialog open={openPopup} maxWidth="lg" fullWidth>
-      <DialogTitle sx={{ p: 2 }}>
+    <Dialog open={openPopup} maxWidth={width}>
+      <DialogTitle sx={{ p: 2 ,textAlign:'center'}}>
         <Box display="flex">
           <Typography variant="h5" component="div" flexGrow={1} sx={{ pt: 1, pl: 3 }}>
             {popUpTitle}
