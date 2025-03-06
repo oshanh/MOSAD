@@ -38,9 +38,10 @@ public class JwtService {
     /*-----------------------------
      * Services for generate token
      * -----------------------------*/
-    public String generateToken(String username,String role) {
+    public String generateToken(String username,String role,Long branchId) {
         Map<String, Object> claims=new HashMap<>();
         claims.put("role",role);
+        claims.put("branchID",branchId);
         return buildToken(claims,username, ACCESS_TOKEN_EXPIRATION_TIME);
     }
 
