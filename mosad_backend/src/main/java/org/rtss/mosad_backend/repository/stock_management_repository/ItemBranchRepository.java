@@ -26,4 +26,6 @@ public interface ItemBranchRepository extends JpaRepository<ItemBranch, Long> {
     @Transactional
     @Query("UPDATE ItemBranch ib SET ib.availableQuantity = :quantity WHERE ib.item.id = :itemId AND ib.branch.id = :branchId")
     int updateItemQuantity(Long itemId, Long branchId, Integer quantity);
+
+    List<ItemBranch> findByAvailableQuantityLessThan(int i);
 }
