@@ -70,9 +70,7 @@ public class LoginService {
             response.addCookie(refreshTokenCookie);
 
             authDTO.setAuthenticated(true);
-            authDTO.setAccessToken(jwtService.generateToken(userLoginDto.getUsername(),role));//generate access token
-            authDTO.setRole(role);
-            authDTO.setBranchId(branchID);
+            authDTO.setAccessToken(jwtService.generateToken(userLoginDto.getUsername(),role,branchID));//generate access token
         }
         else{
             authDTO.setAuthenticated(false);
@@ -99,8 +97,10 @@ public class LoginService {
             throw new HttpServerErrorException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
         }
 
-        String role = ((Users) userDetails).getUserRoles().getRoleName();
-        String accessToken = jwtService.generateToken(username, role);
+        Users user=((Users)userDetails);
+        String role = user.getUserRoles().getRoleName();
+        Long branchId = user.getBranch().getBranchId();
+        String accessToken = jwtService.generateToken(username, role,branchId);
 
         authDTO.setAccessToken(accessToken);
         authDTO.setAuthenticated(true);
