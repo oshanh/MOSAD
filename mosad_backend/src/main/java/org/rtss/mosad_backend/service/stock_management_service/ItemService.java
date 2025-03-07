@@ -18,6 +18,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -103,6 +104,7 @@ public class ItemService {
         stockIn.setQuantity(stockInDTO.getQuantity());
         stockIn.setItem(savedItem);
         stockIn.setBranch(branch);
+        stockIn.setOfficialSellingPrice(savedItem.getCompanyPrice());
 
         stockInRepo.save(stockIn);
 
@@ -179,6 +181,7 @@ public class ItemService {
         stockIn.setQuantity(stockInDTO.getQuantity());
         stockIn.setItem(savedItem);
         stockIn.setBranch(existingItemBranch.getBranch());
+        stockIn.setOfficialSellingPrice(savedItem.getCompanyPrice());
 
         stockInRepo.save(stockIn);
 
@@ -346,5 +349,21 @@ public class ItemService {
         return addItemDTOS;
     }
 
+    public List<StockInDTO> getStockInHistory(Long itemId){
+        Optional<Item> item=itemRepository.findById(itemId);
+        List<StockInDTO> stockInDTOS=new ArrayList<>();
+
+        List<StockIn> stockIns=stockInRepo.findAllByItem(item);
+        for(StockIn stockIn: stockIns){
+            StockInDTO stockInDTO=new StockInDTO();
+            stockInDTO.setOfficialSellingPrice(stockIn.getOfficialSellingPrice());
+            stockInDTO.setDate(stockIn.getDate());
+            stockInDTO.setQuantity(stockIn.getQuantity());
+
+            stockInDTOS.add(stockInDTO);
+        }
+
+        return stockInDTOS;
+    }
 
 }

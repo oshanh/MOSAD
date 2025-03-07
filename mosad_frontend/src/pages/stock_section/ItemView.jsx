@@ -11,7 +11,6 @@ import rapid_baner from "../../assets/rapid.jpg"
 import linglong_baner from "../../assets/linglong.png"
 import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem } from "../../hooks/servicesHook/useStockService";
 import PopUp from "../../component/PopUp";
-import PriceDetailsSection from "../../component/PriceDetailsSection";
 import ConfirmationDialog from "../../component/ConfirmationDialog";
 import SearchComponent from "../../component/SearchComponent";
 import Box from '@mui/material/Box';
@@ -19,12 +18,15 @@ import { useLocation } from "react-router-dom";
 import useAuth from '../../hooks/useAuth';
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
+import StockInHistory from "./StockInHistory";
+import { useFetchStockInHistory } from '../../hooks/servicesHook/useStockService';
 
 const ItemView = () => {
   const addItem = useAddItem(); 
   const fetchItems = useFetchItems(); 
   const deleteItem =useDeleteItem(); 
   const updateItem= useUpdateItem();
+  const fetchStockInHistory = useFetchStockInHistory();
 
   const {auth}=useAuth();
   //console.log("Auth:",auth);
@@ -40,6 +42,7 @@ const ItemView = () => {
 
 
   const [rows, setRows] = useState([]);
+  const [stockInHistory, setStockInHistory] = useState([]);
 
 
 
@@ -56,6 +59,17 @@ const ItemView = () => {
 
   const [confirmationDialog, setConfirmationDialog] = useState(false);
   const dialogOpenRef = useRef(false); // ✅ Track whether dialog is open
+  const [openStockInHistory, setOpenStockInHistory] = useState(false);
+
+  const handleOpenStockInHistory = () => {
+    setOpenStockInHistory(true);
+    fetchStockInHistory(selectedRowId)
+      .then((response) => {
+        console.log("Stock In History:", response.data);
+        setStockInHistory(response.data);
+      })
+      .catch((error) => console.error("Error fetching stock in history:", error));
+  };
 
   const openDialog = (item) => {
     if (item) {
@@ -410,6 +424,7 @@ const ItemView = () => {
           <button className="btn info" onClick={() => {
             if (selectedRowId) {
               const selectedItem = rows.find((row) => row.itemDTO.itemId === selectedRowId);
+              handleOpenStockInHistory();
               
               
             } else {
@@ -439,6 +454,8 @@ const ItemView = () => {
         />
 
       </PopUp>
+
+      <StockInHistory open={openStockInHistory} onClose={() => {setOpenStockInHistory(false); }} rows={stockInHistory}/>
       
 
 

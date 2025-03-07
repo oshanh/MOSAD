@@ -21,21 +21,18 @@ public class StockIn {
 
     private LocalDate date;
     private int quantity;
+    private double officialSellingPrice;
 
-
-
-
-    public StockIn(){
-
+    public StockIn() {
     }
 
-
-    public StockIn(Long id, Item item, Branch branch, LocalDate date,int quantity) {
+    public StockIn(Long id, Item item, Branch branch, LocalDate date, int quantity, double officialSellingPrice) {
         this.id = id;
         this.item = item;
         this.branch = branch;
         this.date = date;
         this.quantity = quantity;
+        this.officialSellingPrice = officialSellingPrice;
     }
 
     public Item getItem() {
@@ -76,5 +73,13 @@ public class StockIn {
 
     public Long getId() {
         return id;
+    }
+
+    public double getOfficialSellingPrice() {
+        return officialSellingPrice;
+    }
+
+    public void setOfficialSellingPrice(double officialSellingPrice) {
+        this.officialSellingPrice = officialSellingPrice;
     }
 }
