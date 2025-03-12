@@ -8,6 +8,7 @@ import PopUp from "../component/PopUp";
 import ForgotPasswordForm from "../forms/ForgotPasswordForm";
 import { useLogin } from "../hooks/servicesHook/useApiUserService";
 import Cookies from "universal-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = () => {
     const{auth,setAuth}= useAuth();
@@ -74,13 +75,14 @@ const LoginPage = () => {
         e.preventDefault();
         if(formValidation()){
             const response = await loginRequest(loginData);
-            const { Authenticated, access_token, role,branchId } = response.data;
+            const { Authenticated, access_token,} = response.data;
+            const decodedToken = jwtDecode(access_token)
             setAuth({
                 accessToken:access_token,
                 Authenticated,
                 username:loginData.username,
-                roles:[role],
-                branch:branchId,
+                roles:[decodedToken.role],
+                branch:decodedToken.branchID || '',
                 remember_me:rememberMe
             })
             if(rememberMe){
