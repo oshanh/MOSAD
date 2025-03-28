@@ -1,5 +1,8 @@
 fastapi
 uvicorn
+crewai 
+psycopg2
+websockets
 openai
 websockets
 pandas  
