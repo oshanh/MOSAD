@@ -7,3 +7,4 @@ openai
 websockets
 pandas  
 python-dotenv  
+langchain
