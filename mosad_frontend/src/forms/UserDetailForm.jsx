@@ -77,9 +77,9 @@ export default function UserDetailsForm(
 
     
     return(
-        <form onSubmit={onSubmit} >
+        <form onSubmit={onSubmit}>
             {/* User details view */}
-            <Paper elevation={1} sx={{p:2,m:2}}>
+            <Paper elevation={1} sx={{p:2,m:2}} >
                 <Grid container spacing={2} >
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
