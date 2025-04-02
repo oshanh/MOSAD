@@ -294,8 +294,7 @@ const ItemView = () => {
             <img src={bannerImage} alt="Brand Banner" className="brand-banner" />
           </section>
 
-          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-            <SearchComponent
+          <SearchComponent
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
               selectedBrand={selectedBrand}
@@ -306,7 +305,6 @@ const ItemView = () => {
               handleSearchChange={handleSearchChange}
             />
 
-          </Box>
 
           <Paper sx={{ height: 400, width: '100%' }}>
             <DataGrid
