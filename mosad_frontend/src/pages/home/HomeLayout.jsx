@@ -3,6 +3,7 @@ import { Box, Container } from '@mui/material'
 import Footer from '../../component/Footer';
 import HeaderBar from '../../component/Header';
 import { Outlet } from 'react-router-dom';
+import PathNavigation from '../../component/PathNavigation';
 
 function HomeLayout() {
 
@@ -10,6 +11,9 @@ function HomeLayout() {
     <Container maxWidth="xl" disableGutters sx={{width:'100vw',height:'100vh'}}>
     <Box maxWidth="xl">
         <HeaderBar/>
+    </Box>
+    <Box maxWidth="xl">
+        <PathNavigation/>
     </Box>
     <Box sx={{p:2, minHeight: '100vh'}}>
         <Outlet />
