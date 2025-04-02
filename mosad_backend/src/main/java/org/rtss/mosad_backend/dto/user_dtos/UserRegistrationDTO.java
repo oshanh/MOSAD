@@ -3,6 +3,8 @@ package org.rtss.mosad_backend.dto.user_dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.rtss.mosad_backend.dto.branch_dtos.BranchDTO;
+import org.rtss.mosad_backend.entity.branch_management.Branch;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,11 +28,15 @@ public class UserRegistrationDTO{
     @NotNull(message = "User contact object can not be null")
     private ArrayList<UserContactDTO> userContactDto;
 
-    public UserRegistrationDTO(UserDTO userDto, String password, UserRoleDTO userRoleDto, ArrayList<UserContactDTO> userContactDto) {
+    @NotBlank(message = "User need to have a branch")
+    private String branchName;
+
+    public UserRegistrationDTO(UserDTO userDto, String password, UserRoleDTO userRoleDto, ArrayList<UserContactDTO> userContactDto, String branchName) {
         this.userDto = userDto;
         this.password = password;
         this.userRoleDto = userRoleDto;
         this.userContactDto = userContactDto;
+        this.branchName = branchName;
     }
 
     public UserRegistrationDTO() {
@@ -68,14 +74,12 @@ public class UserRegistrationDTO{
         this.userContactDto = userContactDto;
     }
 
-    @Override
-    public String toString() {
-        return "UserRegistrationDTO{" +
-                "userDto=" + userDto +
-                ", password='" + password + '\'' +
-                ", userRoleDto=" + userRoleDto +
-                ", userContactDto=" + userContactDto +
-                '}';
+    public @NotNull(message = "User need to have a branch") String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(@NotNull(message = "User need to have a branch") String branchName) {
+        this.branchName = branchName;
     }
 }
 
