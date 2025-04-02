@@ -16,7 +16,8 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Grid2
+  Grid2,
+  Divider
 } from "@mui/material";
 import GeneralMessage from "./GeneralMessage";
 import { useFetchBrandAndSizeData,useFetchCategories,useFetchBrands,useFetchBranches } from "../hooks/servicesHook/useStockService";
@@ -169,7 +170,6 @@ const SearchComponent = ({ onAddToBill , quantity , setQuantity,setSelectedBranc
   };
 
   const handleAddToBill = (row) => {
-    //console.log("Adding to bill:", row);
     if (quantity > 0) {
         const unitPrice = parseFloat(row.itemDTO.companyPrice) || 0;
         onAddToBill({
@@ -191,97 +191,100 @@ const SearchComponent = ({ onAddToBill , quantity , setQuantity,setSelectedBranc
     <Grid2 size={{xs:12}}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3, borderBottom: 1, borderColor: 'grey.500', borderRadius: 1, p: 2, boxShadow: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "center" }}>
-          Search
+            Real-Time Product Search
         </Typography>
-    
-            {(!fetchandSetItems || onRetail ) &&
-              <Grid2 container gap={1} direction="row" rowSpacing={{ xs: 1, sm: 2, md: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }} justifyContent="space-between">
+        <Divider sx={{ mb: 2 }} />
+        {(!fetchandSetItems || onRetail ) &&
+        <Grid2 container gap={1} direction="row" rowSpacing={{ xs: 1, sm: 2, md: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }} justifyContent="space-between">
 
-              {/* Branch Select with "+" Icon */}
-              <Grid2 size={{xs:12 ,sm:6 ,md: 3}} sx={{ display: "flex", alignItems: "center" }}>
-                <FormControl fullWidth sx={{ minWidth: 120 }}>
-                  <InputLabel id="branch-select-label">Branch</InputLabel>
-                  <Select
-                    labelId="branch-select-label"
-                    value={branch.branchId}
-                    onChange={(e) => {
-                      const selectedBranch = branches.find(b => b.branchId === e.target.value);
-                      setBranch(selectedBranch);
-                      if (setSelectedBranch) {
-                        setSelectedBranch(selectedBranch.branchId);
-                      }
-                    }}
-                    variant="outlined"
-                    fullWidth
-                  >
-                    {branches.map((b) => (
-                      <MenuItem key={b.branchId} value={b.branchId}>
-                        {b.branchName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+          {/* Branch Select */}
+          <Grid2 size={{xs:12 ,sm:6 ,md: 4}} sx={{ display: "flex", alignItems: "center" }}>
+            <FormControl fullWidth sx={{ minWidth: 120 }}>
+              <InputLabel id="branch-select-label">Branch</InputLabel>
+              <Select
+                labelId="branch-select-label"
+                value={branch.branchId}
+                onChange={(e) => {
+                  const selectedBranch = branches.find(b => b.branchId === e.target.value);
+                  setBranch(selectedBranch);
+                  if (setSelectedBranch) {
+                    setSelectedBranch(selectedBranch.branchId);
+                  }
+                }}
+                label="Branch"
+                variant="outlined"
+                fullWidth
+              >
+                {branches.map((b) => (
+                  <MenuItem key={b.branchId} value={b.branchId}>
+                    {b.branchName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-              </Grid2>
+          </Grid2>
 
-              {/* Category Select with "+" Icon */}
-              <Grid2 size={{xs:12 ,sm:6 ,md: 3}} sx={{ display: "flex", alignItems: "center" }}>
-                <FormControl fullWidth sx={{ minWidth: 120 }}>
-                  <InputLabel id="category-select-label">Category</InputLabel>
-                  <Select
-                    labelId="category-select-label"
-                    value={category}
-                    onChange={(e) => {
-                      setCategory(e.target.value);
-                      if (setSelectedCategory) {
-                        setSelectedCategory(e.target.value);
-                      }
-                    }}
-                    variant="outlined"
-                    fullWidth
-                  >
-                    {categories.map((c) => (
-                      <MenuItem key={c} value={c}>
-                        {c}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid2>
+          {/* Category Select*/}
+          <Grid2 size={{xs:12 ,sm:6 ,md: 4}} sx={{ display: "flex", alignItems: "center" }}>
+            <FormControl fullWidth sx={{ minWidth: 120 }}>
+              <InputLabel id="category-select-label">Category</InputLabel>
+              <Select
+                labelId="category-select-label"
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  if (setSelectedCategory) {
+                    setSelectedCategory(e.target.value);
+                  }
+                }}
+                label="Category"
+                variant="outlined"
+                fullWidth
+              >
+                {categories.map((c) => (
+                  <MenuItem key={c} value={c}>
+                    {c}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid2>
 
-              {/* Brand Select with "+" Icon */}
-              <Grid2 size={{xs:12 ,sm:6 ,md: 3}} sx={{ display: "flex", alignItems: "center" }}>
-                <FormControl fullWidth sx={{ minWidth: 120 }}>
-                  <InputLabel id="brand-select-label">Brand</InputLabel>
-                  <Select
-                    labelId="brand-select-label"
-                    value={brand}
-                    onChange={(e) => {
-                      setBrand(e.target.value);
-                      if (fetchandSetItems && setSelectedBrand) {
-                        setSelectedBrand(e.target.value);
-                        fetchandSetItems();
-                      }
-                    }}
-                    variant="outlined"
-                    fullWidth
-                  >
-                    {brands.map((b) => (
-                      <MenuItem key={b} value={b}>
-                        {b}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid2>
+          {/* Brand Select  */}
+          <Grid2 size={{xs:12 ,sm:6 ,md: 4}} sx={{ display: "flex", alignItems: "center" }}>
+            <FormControl fullWidth sx={{ minWidth: 120 }}>
+              <InputLabel id="brand-select-label">Brand</InputLabel>
+              <Select
+                labelId="brand-select-label"
+                value={brand}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  if (fetchandSetItems && setSelectedBrand) {
+                    setSelectedBrand(e.target.value);
+                    fetchandSetItems();
+                  }
+                }}
+                label="Brand"
+                variant="outlined"
+                fullWidth
+              >
+                {brands.map((b) => (
+                  <MenuItem key={b} value={b}>
+                    {b}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid2>
 
-            </Grid2>}
+        </Grid2>}
     
         <Grid2 container gap={2} direction="row" rowSpacing={{ xs: 1, sm: 2, md: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }} justifyContent="space-between">
           <Grid2 size={{xs:12,sm:6,md:4}} >
             <TextField
               label="Name"
-              variant="outlined"
+              variant="filled"
               name="itemName"
               value={name}
               onChange={(e) => { setName(e.target.value); handleSearchChange(e); }}
@@ -294,7 +297,7 @@ const SearchComponent = ({ onAddToBill , quantity , setQuantity,setSelectedBranc
               <Grid2 size={{xs:12,sm:6,md:4}} >
                 <TextField
                   label="Tyre Size"
-                  variant="outlined"
+                  variant="filled"
                   name="tyreSize"
                   value={size}
                   onChange={(e) => { setSize(e.target.value); handleSearchChange(e); }}
@@ -305,7 +308,7 @@ const SearchComponent = ({ onAddToBill , quantity , setQuantity,setSelectedBranc
               <Grid2 size={{xs:12,sm:6,md:4}} >
                 <TextField
                   label="Vehicle Type"
-                  variant="outlined"
+                  variant="filled"
                   name="vehicleType"
                   value={type}
                   onChange={(e) => { setType(e.target.value); handleSearchChange(e); }}
