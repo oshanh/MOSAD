@@ -22,12 +22,10 @@ const LoginPage = () => {
     const forgotPasswordFormRef = useRef();
 
     const handleCancelButtonAction = () => {
-        
         if (forgotPasswordFormRef.current?.resetForm) {
         forgotPasswordFormRef.current.resetForm();
         }
         setOpenForgotPasswordPopup(false); 
-        window.location.reload(); 
     };
 
     //Initial Error states
@@ -123,7 +121,7 @@ const LoginPage = () => {
                                     <TextField
                                         name="username"
                                         placeholder="Username"
-                                        error={errors.usernameError}
+                                        error={!!errors.usernameError}
                                         helperText={errors.usernameError}
                                         fullWidth
                                         required
@@ -142,7 +140,7 @@ const LoginPage = () => {
                                     <TextField
                                         type="password"
                                         name="password"
-                                        error={errors.passwordError}
+                                        error={!!errors.passwordError}
                                         helperText={errors.passwordError}
                                         placeholder="Password"
                                         fullWidth
@@ -187,7 +185,13 @@ const LoginPage = () => {
                     </Grid2>
                 </Grid2>
             </Paper>
-            <PopUp popUpTitle="Reset Your Password"  openPopup={openForgotPasswordPopup} setOpenPopup={setOpenForgotPasswordPopup} setCancelButtonAction={handleCancelButtonAction} isDefaultButtonsDisplay={false}>
+            <PopUp 
+            popUpTitle="Forgot Password"  
+            openPopup={openForgotPasswordPopup} 
+            setOpenPopup={setOpenForgotPasswordPopup} 
+            setCancelButtonAction={handleCancelButtonAction} 
+            isDefaultButtonsDisplay={false}
+            width="md">
                 <ForgotPasswordForm/>
             </PopUp>
         </Container>
