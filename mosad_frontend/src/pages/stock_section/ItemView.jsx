@@ -347,7 +347,8 @@ const ItemView = () => {
             <button className="btn add" onClick={() => openDialog(null)}>Add Item</button>
             <button className="btn info" onClick={() => {
               if (selectedRowId) {
-                rows.find((row) => row.itemDTO.itemId === selectedRowId);
+                const selectedItem = rows.find((row) => row.itemDTO.itemId === selectedRowId);
+                openDialog(selectedItem);
               } else {
                 setMessage({ type: "error", text: "Please select an item to stock in!" });
                 setTimeout(() => setMessage(null), 2000);
