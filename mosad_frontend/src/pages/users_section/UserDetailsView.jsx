@@ -23,7 +23,8 @@ const initialUserData={
     },
     userContactDto:[{
         contactNum:""
-    }]
+    }],
+    branchName:""
 }
 
 
@@ -121,6 +122,7 @@ const UserDetailsView=()=>{
             setUserUpdateData={setUserData}
             error={errors}
             setError={setErrors}
+            
             />
             }         
 
