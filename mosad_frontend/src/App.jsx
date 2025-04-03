@@ -5,7 +5,7 @@ import { Container } from '@mui/material'
 import RoutesProtector from './RoutesProtector'
 import useAuth  from "./hooks/useAuth";
 import LoginPage from './pages/LoginPage'
-import backgroundImage from './assets/bg-image.jpg'
+import backgroundImage from './assets/bgImages/bg-image.jpg'
 import HomePage from './pages/home/HomePage'
 import HomeLayout from './pages/home/HomeLayout';
 import CheckPrivileges from './CheckPrivileges';

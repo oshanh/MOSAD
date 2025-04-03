@@ -28,28 +28,14 @@ const useApiClient = () => {
                         originalRequest._retry = false;
                         // Handle refresh token error (redirect to login)
                         console.error("Failed to refresh access token. Logging out."); 
-                        alert("Your session has expired please log in again \n"+error.response.data)
+                        alert("Your session has expired please log in again \n")
                         localStorage.removeItem('auth'); 
                         navigate('/login', { replace: true });
                         return Promise.reject(error); 
                     }
                 }
-
-                else if (error.response.status === 404) {
-                    alert("api client: Not found. Please check the requested URL. \n"+error.response.data)
-                    return Promise.reject(error); 
-                }
-                else if (error.response.status === 400) {
-                    alert("api client: Bad Request. Please review the request data. \n"+error.response.data); 
-                    return Promise.reject(error); 
-                }
-                else if (error.request) {
-                    alert("api client: Check network connectivity. \n");
-                    console.log(error.request);
-                } else {
-                    console.error("An unexpected error occurred during the API call.",error); 
-                    return Promise.reject(error);
-                } 
+                return Promise.reject(error); // Pass other errors to the component
+                 
             }
         );
 
