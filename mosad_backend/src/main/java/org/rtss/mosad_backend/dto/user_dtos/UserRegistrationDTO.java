@@ -3,8 +3,6 @@ package org.rtss.mosad_backend.dto.user_dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.rtss.mosad_backend.dto.branch_dtos.BranchDTO;
-import org.rtss.mosad_backend.entity.branch_management.Branch;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

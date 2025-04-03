@@ -56,10 +56,6 @@
   transition: background-color 0.3s ease;
 }
 
-.item-table tbody tr:hover {
-  background-color: lightgray; /* Highlight row on hover */
-}
-
 .item-table tbody tr.selected-row {
   background-color: yellow; /* Color for the selected row */
   font-weight: bold; /* Make it visually distinct */
@@ -72,7 +68,6 @@
   
 }
 
-/* Non-selected row */
 .item-table tbody tr:hover {
   background-color: lightgray;
 }

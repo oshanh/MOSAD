@@ -56,5 +56,6 @@ PopUp.propTypes = {
   setOpenPopup: PropTypes.func,
   setOkButtonAction: PropTypes.func,
   setCancelButtonAction: PropTypes.func.isRequired,
-  isDefaultButtonsDisplay: PropTypes.bool
+  isDefaultButtonsDisplay: PropTypes.bool,
+  width:PropTypes.string
 };

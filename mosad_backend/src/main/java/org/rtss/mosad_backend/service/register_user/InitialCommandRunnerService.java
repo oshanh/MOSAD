@@ -2,7 +2,6 @@ package org.rtss.mosad_backend.service.register_user;
 
 import org.rtss.mosad_backend.config.security.PasswordEncoder;
 import org.rtss.mosad_backend.entity.branch_management.Branch;
-import org.rtss.mosad_backend.entity.branch_management.BranchContact;
 import org.rtss.mosad_backend.entity.user_management.UserRoles;
 import org.rtss.mosad_backend.entity.user_management.Users;
 import org.rtss.mosad_backend.exceptions.DbTableInitException;
@@ -12,10 +11,8 @@ import org.rtss.mosad_backend.repository.user_management.UsersRepo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,6 +20,7 @@ import java.util.Set;
 @Component
 public class InitialCommandRunnerService implements CommandLineRunner {
 
+    public static final String MIRIGAMA_BRANCH = "Mirigama Branch";
     private final PasswordEncoder passwordEncoder;
     private final UsersRepo usersRepo;
     private final UserRolesRepo userRolesRepo;
@@ -58,7 +56,7 @@ public class InitialCommandRunnerService implements CommandLineRunner {
                         userRoles.setRoleName("ADMIN");
                         return userRoles;
                     }));
-            Optional<Branch> initialBranches=branchRepo.findBranchByBranchName("Mirigama Branch");
+            Optional<Branch> initialBranches=branchRepo.findBranchByBranchName(MIRIGAMA_BRANCH);
             if(initialBranches.isEmpty()){
                throw new DbTableInitException("Mirigama Branch not found");
             }
@@ -104,9 +102,9 @@ public class InitialCommandRunnerService implements CommandLineRunner {
 
     //Initialize the default branch
     private void initializeDatabaseBranch() {
-        if(branchRepo.findBranchByBranchName("Mirigama Branch").isEmpty()){
+        if(branchRepo.findBranchByBranchName(MIRIGAMA_BRANCH).isEmpty()){
             Branch branch=new Branch();
-            branch.setBranchName("Mirigama Branch");
+            branch.setBranchName(MIRIGAMA_BRANCH);
             branch.setAddressNumber("205/106");
             branch.setStreetName("Pattiyakuburawatta");
             branch.setCity("Hakurukubura, Mirigama");

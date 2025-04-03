@@ -1,12 +1,12 @@
 import React from 'react'
 import { Snackbar,Slide,Alert } from '@mui/material'
+import PropTypes from "prop-types";
 
+function SlideTransition(props) {
+  return <Slide {...props} direction="left" />;
+};
 
-const GeneralSnackbarAlerts = ({open,type,msg,setOpen}) => {
-    function SlideTransition(props) {
-        return <Slide {...props} direction="left" />;
-    };
-    
+const GeneralSnackbarAlerts = ({open,type,msg,setOpen}) => {    
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
           return;
@@ -24,6 +24,13 @@ const GeneralSnackbarAlerts = ({open,type,msg,setOpen}) => {
         </Alert>
     </Snackbar>
   )
+}
+
+GeneralSnackbarAlerts.propTypes={
+  open:PropTypes.bool.isRequired,
+  type:PropTypes.string.isRequired,
+  msg:PropTypes.string.isRequired,
+  setOpen:PropTypes.func.isRequired,
 }
 
 export default GeneralSnackbarAlerts
