@@ -22,7 +22,16 @@ import {
 import GeneralMessage from "./GeneralMessage";
 import { useFetchBrandAndSizeData,useFetchCategories,useFetchBrands,useFetchBranches } from "../hooks/servicesHook/useStockService";
 
-const SearchComponent = ({ onAddToBill , quantity , setQuantity,setSelectedBranch,setSelectedCategory,setSelectedBrand,fetchandSetItems,handleSearchChange,onRetail}) => {
+const SearchComponent = ({ 
+  onAddToBill ,
+  quantity , 
+  setQuantity,
+  setSelectedBranch,
+  setSelectedCategory,
+  setSelectedBrand,
+  fetchandSetItems,
+  handleSearchChange,
+  onRetail}) => {
   
   const fetchCategories = useFetchCategories();
   const fetchBrands = useFetchBrands();
@@ -403,7 +412,7 @@ SearchComponent.propTypes = {
   fetchandSetItems: PropTypes.func.isRequired, // A required function for fetching and setting items
   onAddToBill: PropTypes.func,    // A required function for adding to the bill
   handleSearchChange: PropTypes.func.isRequired,    // A required function for handling search changes
-
+  onRetail:PropTypes.bool,
   quantity: (props, propName, componentName) => {
     const value = props[propName];
 

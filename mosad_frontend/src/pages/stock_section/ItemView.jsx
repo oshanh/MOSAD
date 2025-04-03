@@ -13,9 +13,8 @@ import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem } from "../../h
 import PopUp from "../../component/PopUp";
 import ConfirmationDialog from "../../component/ConfirmationDialog";
 import SearchComponent from "../../component/SearchComponent";
-import {Box,Paper,Container} from '@mui/material';
+import {Paper,Container} from '@mui/material';
 import { useLocation } from "react-router-dom";
-import useAuth from '../../hooks/useAuth';
 import { DataGrid } from '@mui/x-data-grid';
 
 
@@ -24,8 +23,6 @@ const ItemView = () => {
   const fetchItems = useFetchItems();
   const deleteItem = useDeleteItem();
   const updateItem = useUpdateItem();
-
-  const { auth } = useAuth();
 
   const passedStates = useLocation();
   const states = passedStates.state;
@@ -350,9 +347,7 @@ const ItemView = () => {
             <button className="btn add" onClick={() => openDialog(null)}>Add Item</button>
             <button className="btn info" onClick={() => {
               if (selectedRowId) {
-                const selectedItem = rows.find((row) => row.itemDTO.itemId === selectedRowId);
-
-
+                rows.find((row) => row.itemDTO.itemId === selectedRowId);
               } else {
                 setMessage({ type: "error", text: "Please select an item to stock in!" });
                 setTimeout(() => setMessage(null), 2000);

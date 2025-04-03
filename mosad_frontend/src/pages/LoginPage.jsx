@@ -109,7 +109,8 @@ const LoginPage = () => {
                 const { Authenticated, access_token, } = response.data;
                 if (!Authenticated) {
                     setShowSnack(true);
-                    setAlertMsg(response.data)
+                    setAlertMsg(response.data);
+                    setAlertType("warning");
                 }
                 const decodedToken = jwtDecode(access_token)
                 setAuth({

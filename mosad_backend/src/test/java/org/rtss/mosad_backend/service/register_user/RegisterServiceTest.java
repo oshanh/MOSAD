@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.rtss.mosad_backend.config.security.PasswordEncoder;
 import org.rtss.mosad_backend.dto.ResponseDTO;
-import org.rtss.mosad_backend.dto.branch_dtos.BranchDTO;
 import org.rtss.mosad_backend.dto.user_dtos.UserContactDTO;
 import org.rtss.mosad_backend.dto.user_dtos.UserDTO;
 import org.rtss.mosad_backend.dto.user_dtos.UserRegistrationDTO;

@@ -15,9 +15,6 @@ import org.rtss.mosad_backend.repository.user_management.UsersRepo;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 class InitialCommandRunnerServiceTest {

@@ -26,7 +26,7 @@ const initialContactNumError = {
 
 // Contact number validation
 const isValidContactNum = (contact) => {
-    const contactRegex = /^[0-9]{10}$/; // Example: 10-digit number
+    const contactRegex = /^\d{10}$/; // Example: 10-digit number
     return contactRegex.test(contact);
 };
 
@@ -34,7 +34,7 @@ export default function UserDetailsForm(
     {onSubmit,userUpdateData,editMode,setUserUpdateData,handlePwds,pwds,error,setError}
 ){
     const fetchAllBranchNames=useFetchAllBranchNames();
-    const [allbranchNames,setAllBranchNames]=useState([]);
+    const [allBranchNames,setAllBranchNames]=useState([]);
     const [isLoadingBranchNames, setIsLoadingBranchNames] = useState(false);
     const [contactNum,setContactNum]=useState({contactNum:""});
     const [contactNumErrors,setContactNumErrors]=useState(initialContactNumError);
@@ -281,7 +281,7 @@ export default function UserDetailsForm(
                             }} 
                         >
                             {!isLoadingBranchNames &&
-                                allbranchNames.map((branch,index)=>(
+                                allBranchNames.map((branch,index)=>(
                                     <MenuItem key={"branch"+index} value={branch}>{branch}</MenuItem>
                             ))
                             }
@@ -348,7 +348,8 @@ UserDetailsForm.propTypes={
         }),
         userContactDto:PropTypes.arrayOf(PropTypes.shape({
             contactNum:PropTypes.string
-        }))
+        })),
+        branchName:PropTypes.string
     }),
     editMode:PropTypes.bool.isRequired,
     setUserUpdateData:PropTypes.func,
