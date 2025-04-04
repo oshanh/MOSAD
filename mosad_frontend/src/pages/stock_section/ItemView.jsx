@@ -9,7 +9,7 @@ import default_baner from "../../assets/default.png"
 import dsi_baner from "../../assets/dsi.png"
 import rapid_baner from "../../assets/rapid.jpg"
 import linglong_baner from "../../assets/linglong.png"
-import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem } from "../../hooks/servicesHook/useStockService";
+import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem,useFetchStockInHistory } from "../../hooks/servicesHook/useStockService";
 import PopUp from "../../component/PopUp";
 import ConfirmationDialog from "../../component/ConfirmationDialog";
 import SearchComponent from "../../component/SearchComponent";
@@ -19,7 +19,6 @@ import useAuth from '../../hooks/useAuth';
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import StockInHistory from "./StockInHistory";
-import { useFetchStockInHistory } from '../../hooks/servicesHook/useStockService';
 
 const ItemView = () => {
   const addItem = useAddItem(); 
@@ -29,15 +28,15 @@ const ItemView = () => {
   const fetchStockInHistory = useFetchStockInHistory();
 
   const {auth}=useAuth();
-  //console.log("Auth:",auth);
+  
 
   const passedStates=useLocation();
   const states=passedStates.state;
-  console.log("Location State:",passedStates.state);
+
   //Store passed Category and Brand using Link state & useLocation
   const [selectedCategory, setSelectedCategory] = useState(states?.category);
   const [selectedBrand, setSelectedBrand] = useState(states?.brand );
-  const [selectedBranch, setSelectedBranch] = useState(3); //Adjust based on your branch ID
+  const [selectedBranch, setSelectedBranch] = useState(auth.branch); //Adjust based on your branch ID
   const [searchFilters, setSearchFilters] = useState({ itemName: "", tyreSize: "", vehicleType: "" });
 
 
@@ -65,7 +64,7 @@ const ItemView = () => {
     setOpenStockInHistory(true);
     fetchStockInHistory(selectedRowId)
       .then((response) => {
-        console.log("Stock In History:", response.data);
+        
         setStockInHistory(response.data);
       })
       .catch((error) => console.error("Error fetching stock in history:", error));
@@ -133,15 +132,15 @@ const ItemView = () => {
 
 
   const fetchandSetItems = async () => {
-    console.log("Inside fetchItems !");
+    
 
     if (selectedCategory && selectedBrand && selectedBranch ) {
-      console.log("Before setRows !" + rows.length);
+      
       fetchItems({ params: { category: selectedCategory, brand: selectedBrand, branchId: selectedBranch, } })
         .then((response) => setRows(response.data))
         .catch((error) => console.error("Error fetching data:", error));
 
-      console.log("Rows set " + rows.length);
+      
 
     }
     else {
@@ -152,16 +151,16 @@ const ItemView = () => {
 
 
   const handleRowClick = (id) => {
-    console.log("Row Clicked ID:", id);
+    
     setSelectedRowId((prevId) => {
       const newId = prevId === id ? null : id;
-      console.log("New Selected Row ID:", newId);
+      
       return newId;
     });
   };
   
   useEffect(() => {
-    console.log("useEffect Selected Row ID:", selectedRowId);
+    
   }, [selectedRowId]);
 
 
@@ -195,7 +194,7 @@ const ItemView = () => {
   };
 
   useEffect(() => {
-    console.log("Fetch item called by useEffect!")
+    
 
     const brandImages = {
       atlander: atlander_baner,
@@ -210,7 +209,6 @@ const ItemView = () => {
     fetchandSetItems();
     fetchandSetItems();
 
-    console.log("Fetched items for Category:", selectedCategory, "Brand:", selectedBrand, "Branch:", selectedBranch);
 
 
   }, [selectedBranch, selectedBrand]);
@@ -248,7 +246,7 @@ const ItemView = () => {
         "date": stockIn.date
       }
     };
-    console.log(formatedData);
+    
 
     const request = currentItem
       ? updateItem(formatedData)
@@ -256,7 +254,7 @@ const ItemView = () => {
 
     request
       .then((response) => {
-        console.log(currentItem ? "Item updated successfully!" : "Backend - " + response.data.message);
+        
         closeDialog();
         fetchandSetItems();
         setStockIn({ stockIn: "", date: new Date().toISOString().split("T")[0] });  // Reset stock in fields
@@ -281,7 +279,7 @@ const ItemView = () => {
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
     setSearchFilters({ ...searchFilters, [name]: value });
-    console.log("Search Filters:", searchFilters);
+    
   };
 
   const filteredRows = rows.filter((row) =>
@@ -411,7 +409,7 @@ const ItemView = () => {
           
           <button className="btn update" onClick={() => {
             if (selectedRowId) {
-              console.log("On Update Selected Row ID:", selectedRowId);
+             
               const selectedItem = rows.find(row => row.itemDTO.itemId === selectedRowId);
               openDialog(selectedItem);
 
