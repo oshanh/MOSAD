@@ -12,12 +12,13 @@
     FormHelperText,
    
  } from '@mui/material';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddIcon from '@mui/icons-material/Add';
 import { blue } from '@mui/material/colors';
 import PropTypes from "prop-types";
 import useAuth from "../hooks/useAuth";
+import { useFetchAllBranchNames } from "../hooks/servicesHook/useBranchService";
 
 const initialContactNumError = {
     contactNumError: ''
@@ -25,17 +26,34 @@ const initialContactNumError = {
 
 // Contact number validation
 const isValidContactNum = (contact) => {
-    const contactRegex = /^[0-9]{10}$/; // Example: 10-digit number
+    const contactRegex = /^\d{10}$/; // Example: 10-digit number
     return contactRegex.test(contact);
 };
 
 export default function UserDetailsForm(
     {onSubmit,userUpdateData,editMode,setUserUpdateData,handlePwds,pwds,error,setError}
 ){
+    const fetchAllBranchNames=useFetchAllBranchNames();
+    const [allBranchNames,setAllBranchNames]=useState([]);
+    const [isLoadingBranchNames, setIsLoadingBranchNames] = useState(false);
     const [contactNum,setContactNum]=useState({contactNum:""});
     const [contactNumErrors,setContactNumErrors]=useState(initialContactNumError);
     const {auth} = useAuth();
     let location = useLocation();
+
+    const loadAllBranches=()=>{
+        setIsLoadingBranchNames(true)
+        fetchAllBranchNames().then((response)=>{
+            setAllBranchNames(response.data)
+        }).finally(()=>{
+            setIsLoadingBranchNames(false);
+        }
+        )
+    }
+
+    useEffect(()=>{
+        loadAllBranches();
+    },[])
 
     const handleUserDtoChange = (event) => {
         const { name, value } = event.target;
@@ -45,6 +63,12 @@ export default function UserDetailsForm(
                 ...userUpdateData.userDto,
                 [name]: value 
             }
+        });
+    };
+    const handleBranchNameChange = (event) => {
+        const { name, value } = event.target;
+        setUserUpdateData({
+            ...userUpdateData, [name]: value 
         });
     };
 
@@ -158,7 +182,7 @@ export default function UserDetailsForm(
                         }} 
                     />
                     </Grid>
-
+                      
             {/* User contact section */}
                     <Grid size={{ xs: 10,sm:6}}>
                         <TextField
@@ -200,10 +224,10 @@ export default function UserDetailsForm(
                 </Grid>
             </Paper>
 
-            {/* User role section */}
+            {/* User role and branch section */}
             <Paper elevation={1} sx={{p:2,m:2}}>
-                <Grid container spacing={2} >
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid container direction="row" sx={{justifyContent: "space-between",alignItems: "center",}} >
+                <Grid size={{ xs: 12, sm: 5 }}>
                 <Typography>
                 {!(editMode && auth.roles.includes("ADMIN"))? "Choose your user role:":"Your role:"}
                 </Typography>
@@ -233,6 +257,38 @@ export default function UserDetailsForm(
                     </Select>
                     <FormHelperText>{error.roleNameError}</FormHelperText>
                 </FormControl>
+                </Grid>
+                <Grid size={{ xs: 12,sm:5 }}>
+                    <Typography>
+                    {!(editMode && auth.roles.includes("ADMIN"))? "Choose the branch:":"Your branch:"}
+                    </Typography>
+                    <FormControl fullWidth>
+                        <InputLabel id="branch-label">Branch</InputLabel>
+                        <Select
+                            disabled={!(editMode && auth.roles.includes("ADMIN"))} 
+                            required
+                            name="branchName"
+                            labelId="branch-label" 
+                            id="branch" 
+                            value={userUpdateData.branchName || ''} 
+                            onChange={handleBranchNameChange}
+                            error={!!error.roleNameError} 
+                            label="Branch"
+                            sx={{
+                                "& .MuiInputBase-input.Mui-disabled": {
+                                WebkitTextFillColor: "#616161",
+                            },
+                            }} 
+                        >
+                            {!isLoadingBranchNames &&
+                                allBranchNames.map((branch,index)=>(
+                                    <MenuItem key={"branch"+index} value={branch}>{branch}</MenuItem>
+                            ))
+                            }
+                        
+                        </Select>
+                        <FormHelperText>{error.roleNameError}</FormHelperText>
+                    </FormControl>
                 </Grid>
                 </Grid>
             </Paper>
@@ -292,7 +348,8 @@ UserDetailsForm.propTypes={
         }),
         userContactDto:PropTypes.arrayOf(PropTypes.shape({
             contactNum:PropTypes.string
-        }))
+        })),
+        branchName:PropTypes.string
     }),
     editMode:PropTypes.bool.isRequired,
     setUserUpdateData:PropTypes.func,
