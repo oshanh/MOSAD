@@ -2,7 +2,7 @@ import React from "react";
 import { TextField, Box, Typography,Button,DialogActions } from "@mui/material";
 import PropTypes from "prop-types";
 
-const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,stockIn,setStockIn }) => {
+const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,stockIn,setStockIn,operationType }) => {
 
 
 
@@ -27,7 +27,8 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
             gap: "15px",
           }}
         >
-          {Object.keys(formData).map((key) => (
+          {Object.keys(formData).map((key) => 
+          key=="itemId"?null:(
             <TextField
               key={key}
               type={key === "companyPrice" || key === "availableQuantity" || key=="retailPrice" || key=="discount"  ? "number" : "text"} // Set input type based on the key
@@ -37,7 +38,8 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
                 handleChange(key, e.target.value)
               }
               required={key !== "itemId"} // Mark all fields except 'itemId' as required
-              disabled={key==="itemId" || key==="availableQuantity"} // Disable the 'itemId' field
+              disabled={key==="availableQuantity" || operationType=="Edit"} // Disable the 'itemId' field
+              
               error={!!errors[key]} // Highlight the field in red if it has an error
               helperText={errors[key] || ""} // Show error message if available
               fullWidth

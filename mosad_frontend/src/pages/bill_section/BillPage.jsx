@@ -173,7 +173,19 @@ const handleCreateCredit = async (creditData) => {
     setCustomerName("");
     setTelephone("");
   };
-  const handlePrint = () => {
+  const handlePrint = (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+
+    if (rows.length === 0 ) {
+      alert("Please add at least one item to the bill.");
+      return;
+    }
+    if (telephone.length !== 10) {
+      alert("Please enter a valid 10-digit telephone number.");
+      return;
+    }
+
+
     
 
     console.log(rows);
@@ -213,164 +225,202 @@ const handleCreateCredit = async (creditData) => {
       <Box sx={{ mb: 4 }}>
         <SearchComponent onAddToBill={handleAddToBill} quantity={quantity} setQuantity={setQuantity}/>
       </Box>
-
-      {/* Bill Content */}
-      <Box
-        sx={{
-          background: "#f9f9f9",
-          borderRadius: "8px",
-          boxShadow: "0 4px 10px rgba(0, 128, 0, 0.15)",
-          padding: "16px",
-        }}
-        id="bill-section"
-      >
-        {/* Business Info */}
+      <form onSubmit={handlePrint}>
+        {/* Bill Content */}
         <Box
           sx={{
-            textAlign: "center",
-            mb: 2,
-            background: "#B5FCB5",
-            padding: "16px",
+            background: "#f9f9f9",
             borderRadius: "8px",
             boxShadow: "0 4px 10px rgba(0, 128, 0, 0.15)",
+            padding: "16px",
           }}
+          id="bill-section"
         >
-          <Typography variant="h3" sx={{ fontWeight: "bold", color: "#003366" }}>
-            Rashmi Tyre Center
-          </Typography>
-        </Box>
-
-        {/* Address and Contact */}
-        <Box
-          sx={{
-            mb: 2,
-            textAlign: "center",
-            background: "#f1f1f1",
-            p: 4,
-            borderRadius: "8px",
-            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <Typography sx={{ fontSize: "1.35rem", fontWeight: "500", color: "#333", lineHeight: 1.6 }}>
-            We provide high-quality tires and tubes for motorcycles, three-wheelers, cars, vans,
-            lorries, and buses. Additionally, we offer vehicle battery charging and nitrogen
-            services.
-          </Typography>
-          <Typography sx={{ fontSize: "1.2rem", color: "#555", mt: 2 }}>
-            Visit us at: <strong>205/106, Pattiyakuburawatta, Hakurukubura, Mirigama</strong>
-          </Typography>
-          <Typography sx={{ fontSize: "1.2rem", color: "#555", mt: 1 }}>
-            Contact Us: <strong>078 3918504, 0764690290, 0332274577</strong>
-          </Typography>
-        </Box>
-
-        {/* Customer Info */}
-        <Grid2 container spacing={2} sx={{ mb: 2 }}>
-          <Grid2 item xs={12} sm={4}>
-            <Typography sx={{ fontSize: "1.2rem", fontWeight: "500", color: "#333", textAlign: "left" }}>
-              Customer Name:
+          {/* Business Info */}
+          <Box
+            sx={{
+              textAlign: "center",
+              mb: 2,
+              background: "#B5FCB5",
+              padding: "16px",
+              borderRadius: "8px",
+              boxShadow: "0 4px 10px rgba(0, 128, 0, 0.15)",
+            }}
+          >
+            <Typography variant="h3" sx={{ fontWeight: "bold", color: "#003366" }}>
+              Rashmi Tyre Center
             </Typography>
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              sx={{ fontSize: "1.2rem" }}
-              value={customerName} 
-              onChange={(e) => setCustomerName(e.target.value)} 
-            />
-          </Grid2>
-          <Grid2 item xs={12} sm={4}>
-            <Typography sx={{ fontSize: "1.2rem", fontWeight: "500", color: "#333", textAlign: "left" }}>
-              Telephone Number:
-            </Typography>
-            <TextField
-              variant="outlined"
-              size="small"
-              fullWidth
-              sx={{ fontSize: "1.2rem" }}
-              value={telephone} 
-              onChange={(e) => setTelephone(e.target.value)} 
-            />
-          </Grid2>
-          <Grid2 item xs={12} sm={4}>
-            <Typography sx={{ fontSize: "1.2rem", fontWeight: "500", color: "#333", textAlign: "center" }}>
-              Date: {new Date().toLocaleDateString()}
-            </Typography>
-          </Grid2>
-        </Grid2>
+          </Box>
 
-        {/* Table and Bill */}
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center" sx={{ width: "10%", fontWeight: "bold", fontSize: "1.2rem" }}>
-                  Quantity
-                </TableCell>
-                <TableCell align="center" sx={{ width: "50%", fontWeight: "bold", fontSize: "1.2rem" }}>
-                  Description
-                </TableCell>
-                <TableCell align="center" sx={{ width: "20%", fontWeight: "bold", fontSize: "1.2rem" }}>
-                  Unit Price
-                </TableCell>
-                <TableCell align="center" sx={{ width: "20%", fontWeight: "bold", fontSize: "1.2rem" }}>
-                  Subtotal
-                </TableCell>
-                <TableCell align="center" sx={{ width: "10%" }}></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={row.itemId}>
+          {/* Address and Contact */}
+          <Box
+            sx={{
+              mb: 2,
+              textAlign: "center",
+              background: "#f1f1f1",
+              p: 4,
+              borderRadius: "8px",
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <Typography sx={{ fontSize: "1.35rem", fontWeight: "500", color: "#333", lineHeight: 1.6 }}>
+              We provide high-quality tires and tubes for motorcycles, three-wheelers, cars, vans,
+              lorries, and buses. Additionally, we offer vehicle battery charging and nitrogen
+              services.
+            </Typography>
+            <Typography sx={{ fontSize: "1.2rem", color: "#555", mt: 2 }}>
+              Visit us at: <strong>205/106, Pattiyakuburawatta, Hakurukubura, Mirigama</strong>
+            </Typography>
+            <Typography sx={{ fontSize: "1.2rem", color: "#555", mt: 1 }}>
+              Contact Us: <strong>078 3918504, 0764690290, 0332274577</strong>
+            </Typography>
+          </Box>
+
+          {/* Customer Info */}
+          <Grid2 container spacing={2} sx={{ mb: 2 }}>
+            <Grid2 item xs={12} sm={4}>
+              <Typography sx={{ fontSize: "1.2rem", fontWeight: "500", color: "#333", textAlign: "left" }}>
+                Customer Name:
+              </Typography>
+              <TextField
+                variant="outlined"
+                size="small"
+                fullWidth
+                required={true}
+                sx={{ fontSize: "1.2rem" }}
+                value={customerName} 
+                onChange={(e) => setCustomerName(e.target.value)} 
+              />
+            </Grid2>
+            <Grid2 item xs={12} sm={4}>
+              <Typography sx={{ fontSize: "1.2rem", fontWeight: "500", color: "#333", textAlign: "left" }}>
+                Telephone Number:
+              </Typography>
+              <TextField
+                variant="outlined"
+                type="number"
+                pattern="[0-9]{10}"
+                placeholder="Enter 10 digit number"
+
+                //helperText={telephone.length !== 10 && telephone.length > 0 ? "Please enter a valid number" : ""}
+                error={telephone.length !== 10 && telephone.length > 0}
+
+                size="small"
+                fullWidth
+                required={true}
+                sx={{ fontSize: "1.2rem" }}
+                value={telephone} 
+                onChange={(e) => setTelephone(e.target.value)} 
+              />
+            </Grid2>
+            <Grid2 item xs={12} sm={4}>
+              <Typography sx={{ fontSize: "1.2rem", fontWeight: "500", color: "#333", textAlign: "center" }}>
+                Date: {new Date().toLocaleDateString()}
+              </Typography>
+            </Grid2>
+          </Grid2>
+
+          {/* Table and Bill */}
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center" sx={{ width: "10%", fontWeight: "bold", fontSize: "1.2rem" }}>
+                    Quantity
+                  </TableCell>
+                  <TableCell align="center" sx={{ width: "50%", fontWeight: "bold", fontSize: "1.2rem" }}>
+                    Description
+                  </TableCell>
+                  <TableCell align="center" sx={{ width: "20%", fontWeight: "bold", fontSize: "1.2rem" }}>
+                    Unit Price
+                  </TableCell>
+                  <TableCell align="center" sx={{ width: "20%", fontWeight: "bold", fontSize: "1.2rem" }}>
+                    Subtotal
+                  </TableCell>
+                  <TableCell align="center" sx={{ width: "10%" }}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => (
+                  <TableRow key={row.itemId}>
+                    <TableCell align="center">
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        type="number"
+                        value={row.quantity}
+                        onChange={(e) => handleInputChange(index, "quantity", e.target.value)}
+                        slotProps={{
+                          input: {
+                            style: { fontSize: "1.2rem" },
+                          },
+                        }}
+                        sx={{ width: "80%" }}
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        value={row.description}
+                        onChange={(e) => handleInputChange(index, "description", e.target.value)}
+                        slotProps={{
+                          input: {
+                            style: { fontSize: "1.2rem" },
+                          },
+                        }}
+                        sx={{ width: "90%" }}
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        type="number"
+                        value={row.unitPrice}
+                        onChange={(e) => handleInputChange(index, "unitPrice", e.target.value)}
+                        slotProps={{
+                          input: {
+                            style: { fontSize: "1.2rem" },
+                          },
+                        }}
+                        sx={{ width: "80%" }}
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        value={ccyFormat(row.subtotal || 0)}
+                        slotProps={{
+                          input: {
+                            readOnly: true,
+                            style: { fontSize: "1.2rem" },
+                          },
+                        }}
+                        sx={{ width: "90%" }}
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton color="error" onClick={() => handleDeleteRow(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                <TableRow>
+                  <TableCell colSpan={2} align="left" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+                    Note:
+                  </TableCell>
+                  <TableCell colSpan={1} align="center" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+                    Total
+                  </TableCell>
                   <TableCell align="center">
                     <TextField
                       variant="outlined"
                       size="small"
                       type="number"
-                      value={row.quantity}
-                      onChange={(e) => handleInputChange(index, "quantity", e.target.value)}
-                      slotProps={{
-                        input: {
-                          style: { fontSize: "1.2rem" },
-                        },
-                      }}
-                      sx={{ width: "80%" }}
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      value={row.description}
-                      onChange={(e) => handleInputChange(index, "description", e.target.value)}
-                      slotProps={{
-                        input: {
-                          style: { fontSize: "1.2rem" },
-                        },
-                      }}
-                      sx={{ width: "90%" }}
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      type="number"
-                      value={row.unitPrice}
-                      onChange={(e) => handleInputChange(index, "unitPrice", e.target.value)}
-                      slotProps={{
-                        input: {
-                          style: { fontSize: "1.2rem" },
-                        },
-                      }}
-                      sx={{ width: "80%" }}
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      value={ccyFormat(row.subtotal || 0)}
+                      value={ccyFormat(total)}
                       slotProps={{
                         input: {
                           readOnly: true,
@@ -380,108 +430,86 @@ const handleCreateCredit = async (creditData) => {
                       sx={{ width: "90%" }}
                     />
                   </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={2} align="left" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}></TableCell>
+                  <TableCell colSpan={1} align="center" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+                    Advance
+                  </TableCell>
                   <TableCell align="center">
-                    <IconButton color="error" onClick={() => handleDeleteRow(index)}>
-                      <DeleteIcon />
-                    </IconButton>
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      type="number"
+                      value={advance}
+                      onChange={handleAdvanceChange}
+                      slotProps={{
+                        input: {
+                          style: { fontSize: "1.2rem" },
+                        },
+                      }}
+                      sx={{ width: "90%" }}
+                    />
                   </TableCell>
                 </TableRow>
-              ))}
-              <TableRow>
-                <TableCell colSpan={2} align="left" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
-                  Note:
-                </TableCell>
-                <TableCell colSpan={1} align="center" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
-                  Total
-                </TableCell>
-                <TableCell align="center">
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    type="number"
-                    value={ccyFormat(total)}
-                    slotProps={{
-                      input: {
-                        readOnly: true,
-                        style: { fontSize: "1.2rem" },
-                      },
-                    }}
-                    sx={{ width: "90%" }}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={2} align="left" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}></TableCell>
-                <TableCell colSpan={1} align="center" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
-                  Advance
-                </TableCell>
-                <TableCell align="center">
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    type="number"
-                    value={advance}
-                    onChange={handleAdvanceChange}
-                    slotProps={{
-                      input: {
-                        style: { fontSize: "1.2rem" },
-                      },
-                    }}
-                    sx={{ width: "90%" }}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={2} align="left" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}></TableCell>
-                <TableCell colSpan={1} align="center" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
-                  Balance
-                </TableCell>
-                <TableCell align="center">
-                  <TextField
-                    variant="outlined"
-                    size="medium"
-                    type="number"
-                    value={ccyFormat(balance)}
-                    slotProps={{
-                      input: {
-                        readOnly: true,
-                        style: { fontSize: "1.2rem" },
-                      },
-                    }}
-                    sx={{ width: "90%" }}
-                  />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+                <TableRow>
+                  <TableCell colSpan={2} align="left" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}></TableCell>
+                  <TableCell colSpan={1} align="center" sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+                    Balance
+                  </TableCell>
+                  <TableCell align="center">
+                    <TextField
+                      variant="outlined"
+                      size="medium"
+                      type="number"
+                      value={ccyFormat(balance)}
+                      slotProps={{
+                        input: {
+                          readOnly: true,
+                          style: { fontSize: "1.2rem" },
+                        },
+                      }}
+                      sx={{ width: "90%" }}
+                    />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-        {/* Footer Note */}
-        <Box
-          sx={{
-            mb: 2,
-            textAlign: "center",
-            background: "#f1f1f1",
-            p: 4,
-            borderRadius: "8px",
-            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <Typography sx={{ fontSize: "1.2rem", color: "#555", mt: 2 }}>
-            <strong>We will not be responsible for any tires you give us for DAG and re-build after one month.</strong>
-          </Typography>
-          <Typography sx={{ fontSize: "1.4rem", color: "#003366", mt: 1 }}>
-            Thank you, Come Again!
-          </Typography>
+          {/* Footer Note */}
+          <Box
+            sx={{
+              mb: 2,
+              textAlign: "center",
+              background: "#f1f1f1",
+              p: 4,
+              borderRadius: "8px",
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <Typography sx={{ fontSize: "1.2rem", color: "#555", mt: 2 }}>
+              <strong>We will not be responsible for any tires you give us for DAG and re-build after one month.</strong>
+            </Typography>
+            <Typography sx={{ fontSize: "1.4rem", color: "#003366", mt: 1 }}>
+              Thank you, Come Again!
+            </Typography>
+          </Box>
         </Box>
-      </Box>
 
-      {/* Print Button */}
-      <Box sx={{ textAlign: "center", mt: 3 }}>
-        <Button variant="contained" color="primary" onClick={handlePrint}>
-          Print Bill
-        </Button>
-      </Box>
+        {/* Print Button */}
+        <Box sx={{ textAlign: "center", mt: 3 }}>
+          <Button  
+            variant="contained" 
+            color="primary" 
+            //onClick={handlePrint}
+            type="submit"
+            //disabled={customerName === "" || telephone === "" || rows.length === 0} // Disable if customer name or telephone is empty or no items in the bill
+          >
+            Print Bill
+          </Button>
+        </Box>
+      </form>
     </Box>
   );
 };

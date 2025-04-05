@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import GeneralMessage from "./GeneralMessage";
 import { useFetchBrandAndSizeData,useFetchCategories,useFetchBrands,useFetchBranches } from "../hooks/servicesHook/useStockService";
+import useAuth from '../hooks/useAuth';
 
 const SearchComponent = ({ 
   onAddToBill ,
@@ -31,16 +32,21 @@ const SearchComponent = ({
   setSelectedBrand,
   fetchandSetItems,
   handleSearchChange,
-  onRetail}) => {
+  onRetail,
+  onItemView,
+  states
+  }) => {
   
   const fetchCategories = useFetchCategories();
   const fetchBrands = useFetchBrands();
   const fetchBranches = useFetchBranches();
   const fetchBrandAndSizeData = useFetchBrandAndSizeData();
 
+  const {auth}=useAuth();
+
   const [category,setCategory] = useState("Tyre"); // Holds the selected category
   const [brand, setBrand] = useState(""); // Holds the selected brand
-  const [branch, setBranch] = useState( { branchId: 1, branchName: "Main" }); // Holds the selected branch
+  const [branch, setBranch] = useState( { branchId: auth.branch, branchName: "Main" }); // Holds the selected branch
   const [branches, setBranches] = useState([]); // Holds the list of available branches
   
   const [size, setSize] = useState(""); // Holds the entered size
@@ -197,97 +203,101 @@ const SearchComponent = ({
   return (
    <> 
    {message && <GeneralMessage message={message} />}
-    <Grid2 size={{xs:12}}>
+    <Grid2 size={{xs:12,sm:6,md:4}} sx={{ minWidth:600,width:"100%" }}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3, borderBottom: 1, borderColor: 'grey.500', borderRadius: 1, p: 2, boxShadow: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "center" }}>
             Real-Time Product Search
         </Typography>
         <Divider sx={{ mb: 2 }} />
-        {(!fetchandSetItems || onRetail ) &&
-        <Grid2 container gap={1} direction="row" rowSpacing={{ xs: 1, sm: 2, md: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }} justifyContent="space-between">
+          
+            <Grid2 container gap={1} direction="row" rowSpacing={{ xs: 1, sm: 2, md: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }} justifyContent="space-between">
 
-          {/* Branch Select */}
-          <Grid2 size={{xs:12 ,sm:6 ,md: 4}} sx={{ display: "flex", alignItems: "center" }}>
-            <FormControl fullWidth sx={{ minWidth: 120 }}>
-              <InputLabel id="branch-select-label">Branch</InputLabel>
-              <Select
-                labelId="branch-select-label"
-                value={branch.branchId}
-                onChange={(e) => {
-                  const selectedBranch = branches.find(b => b.branchId === e.target.value);
-                  setBranch(selectedBranch);
-                  if (setSelectedBranch) {
-                    setSelectedBranch(selectedBranch.branchId);
-                  }
-                }}
-                label="Branch"
-                variant="outlined"
-                fullWidth
-              >
-                {branches.map((b) => (
-                  <MenuItem key={b.branchId} value={b.branchId}>
-                    {b.branchName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              {/* Branch Select */}
 
-          </Grid2>
+              {((onItemView && auth.roles.includes("ADMIN")) || onAddToBill || onRetail) &&
+              <Grid2 size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex", alignItems: "center" }}>
+                <FormControl fullWidth sx={{ minWidth: 120 }}>
+                  <InputLabel id="branch-select-label">Branch</InputLabel>
+                  <Select
+                    labelId="branch-select-label"
+                    value={branch.branchId}
+                    onChange={(e) => {
+                      const selectedBranch = branches.find(b => b.branchId === e.target.value);
+                      setBranch(selectedBranch);
+                      if (setSelectedBranch) {
+                        setSelectedBranch(selectedBranch.branchId);
+                      }
+                    }}
+                    label="Branch"
+                    variant="outlined"
+                    fullWidth
+                  >
+                    {branches.map((b) => (
+                      <MenuItem key={b.branchId} value={b.branchId}>
+                        {b.branchName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-          {/* Category Select*/}
-          <Grid2 size={{xs:12 ,sm:6 ,md: 4}} sx={{ display: "flex", alignItems: "center" }}>
-            <FormControl fullWidth sx={{ minWidth: 120 }}>
-              <InputLabel id="category-select-label">Category</InputLabel>
-              <Select
-                labelId="category-select-label"
-                value={category}
-                onChange={(e) => {
-                  setCategory(e.target.value);
-                  if (setSelectedCategory) {
-                    setSelectedCategory(e.target.value);
-                  }
-                }}
-                label="Category"
-                variant="outlined"
-                fullWidth
-              >
-                {categories.map((c) => (
-                  <MenuItem key={c} value={c}>
-                    {c}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid2>
+              </Grid2>}
+              {(!onItemView || onRetail) &&<>
+              {/* Category Select*/}
+              <Grid2 size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex", alignItems: "center" }}>
+                <FormControl fullWidth sx={{ minWidth: 120 }}>
+                  <InputLabel id="category-select-label">Category</InputLabel>
+                  <Select
+                    labelId="category-select-label"
+                    value={category}
+                    onChange={(e) => {
+                      setCategory(e.target.value);
+                      if (setSelectedCategory) {
+                        setSelectedCategory(e.target.value);
+                      }
+                    }}
+                    label="Category"
+                    variant="outlined"
+                    fullWidth
+                  >
+                    {categories.map((c) => (
+                      <MenuItem key={c} value={c}>
+                        {c}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid2>
 
-          {/* Brand Select  */}
-          <Grid2 size={{xs:12 ,sm:6 ,md: 4}} sx={{ display: "flex", alignItems: "center" }}>
-            <FormControl fullWidth sx={{ minWidth: 120 }}>
-              <InputLabel id="brand-select-label">Brand</InputLabel>
-              <Select
-                labelId="brand-select-label"
-                value={brand}
-                onChange={(e) => {
-                  setBrand(e.target.value);
-                  if (fetchandSetItems && setSelectedBrand) {
-                    setSelectedBrand(e.target.value);
-                    fetchandSetItems();
-                  }
-                }}
-                label="Brand"
-                variant="outlined"
-                fullWidth
-              >
-                {brands.map((b) => (
-                  <MenuItem key={b} value={b}>
-                    {b}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid2>
-
-        </Grid2>}
+              {/* Brand Select  */}
+              <Grid2 size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex", alignItems: "center" }}>
+                <FormControl fullWidth sx={{ minWidth: 120 }}>
+                  <InputLabel id="brand-select-label">Brand</InputLabel>
+                  <Select
+                    labelId="brand-select-label"
+                    value={brand}
+                    onChange={(e) => {
+                      setBrand(e.target.value);
+                      if (fetchandSetItems && setSelectedBrand) {
+                        setSelectedBrand(e.target.value);
+                        fetchandSetItems();
+                      }
+                    }}
+                    label="Brand"
+                    variant="outlined"
+                    fullWidth
+                  >
+                    {brands.map((b) => (
+                      <MenuItem key={b} value={b}>
+                        {b}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid2>
+              </>
+              }
+            </Grid2>
+          
     
         <Grid2 container gap={2} direction="row" rowSpacing={{ xs: 1, sm: 2, md: 3 }} columnSpacing={{ xs: 1, sm: 2, md: 3 }} justifyContent="space-between">
           <Grid2 size={{xs:12,sm:6,md:4}} >
@@ -301,7 +311,7 @@ const SearchComponent = ({
             />
           </Grid2>
     
-          {category === "Tyre" && (
+          {(category === "Tyre" && states.category==="Tyre") && (
             <>
               <Grid2 size={{xs:12,sm:6,md:4}} >
                 <TextField
