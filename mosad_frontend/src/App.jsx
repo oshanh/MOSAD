@@ -11,6 +11,7 @@ import HomeLayout from './pages/home/HomeLayout';
 import CheckPrivileges from './CheckPrivileges';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
 import NotFoundPage from './pages/NotFoundPage';
+import loadDashboard from './utils/loadDashboard';
 
 const BillPage=lazy(()=>import('./pages/bill_section/BillPage'));
 const AllBillsPage = lazy(() => import('./pages/bill_section/AllBillsPage'));
@@ -61,20 +62,54 @@ function App() {
       <Routes>
         <Route path="*" element={<NotFoundPage />} />
         <Route path='/unathorized' element={<UnauthorizedPage/>}/>
-        <Route path='/login' element={auth.Authenticated ? <Navigate to="/home" replace /> : <LoginPage/>} />
+        <Route path='/login' element={auth.Authenticated ? <Navigate to={loadDashboard()} replace /> : <LoginPage/>} />
         <Route element={<RoutesProtector />}>
           <Route element={<HomeLayout/>}>
-            <Route path="/home" element={ <HomePage />} />
+          
+            {/* Load admin dahboard acording to the role */}
+            <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN"]}/>}>
+              <Route path="/dashboard" element={ <HomePage />} />
 
-            <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN","STOCK_MANAGER"]}/>}>
-              <Route path="/stock" element={ <StockPageLayout />} >
+              <Route path="/stocks" element={ <StockPageLayout />} >
+                <Route index element={<StockPage isFromBranch={false}/>}/>
+                <Route path="brands" element={<BrandPage isFromBranch={false}/>}/>
+                <Route path="item-view" element={<ItemView />} />
+              </Route>
+
+              <Route path="/employees" element={ <EmployeePage />} />
+
+              <Route path="/credits" element={<CreditPage />} />
+              <Route path="/bills" element={<BillSectionLayout />} >
+                <Route index element={<BillPage />} />
+                <Route path="all-bills" element={<AllBillsPage />} />
+              </Route>
+              <Route path="/dacks" element={<DackPage />} />
+              <Route path="/reports" element={ <SalesReport />} />
+
+              <Route path="/retails" element={ <RetailPageLayout />} >
+                  <Route index element={ <PaymentHistory />} />
+                  <Route path="purchase-history" element={ <PurchaseHistory />} />
+                  <Route path="incomplete-transactions" element={ <IncompleteTransactions />} />
+                  <Route path="product-availability" element={ <FindProductAvailability />} />
+              </Route>
+
+              <Route path="/branches" element={ <BranchPageLayout />} >
+                <Route index element={<BranchPage/>}/>
+                <Route path="bill-history" element={<AllBillsPage />}/>
+              </Route>
+            </Route>
+          
+            {/* Branch Manager dashboard acording to the role */}
+            <Route element={<CheckPrivileges allowedRoles={["STOCK_MANAGER"]}/>}>
+              <Route path="/admin/stock" element={ <StockPageLayout />} >
                 <Route index element={<StockPage isFromBranch={false}/>}/>
                 <Route path="brand" element={<BrandPage isFromBranch={false}/>}/>
                 <Route path="item-view" element={<ItemView />} />
               </Route>
             </Route>
 
-            <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN","BRANCH_MANAGER"]}/>}>
+            {/* Branch Manager dashboard acording to the role */}
+            <Route element={<CheckPrivileges allowedRoles={["BRANCH_MANAGER"]}/>}>
               <Route path="/branch" element={ <BranchPageLayout />} >
                 <Route index element={<BranchPage/>}/>
                 <Route path="bill-history" element={<AllBillsPage />}/>
@@ -85,43 +120,35 @@ function App() {
                 </Route>
                 <Route path="employee-view" element={<EmployeePage />}/>
               </Route>
+              <Route path="/employee" element={ <EmployeePage />} />
             </Route>
 
-            <Route element={<CheckPrivileges allowedRoles={["OWNER", "ADMIN"]} />}>
-              <Route path="/credit" element={<CreditPage />} />
-              <Route path="/bill" element={<BillSectionLayout />} >
-                <Route index element={<BillPage />} />
-                <Route path="AllBillsPage" element={<AllBillsPage />} />
-              </Route>
-              <Route path="/dack" element={<DackPage />} />
-              <Route path="/future" element={ <SalesReport />} />
-              <Route path="/services" element={<ServicesPage />} />
+            {/* Employee dashboard acording to the role */}
+            <Route element={<CheckPrivileges allowedRoles={["MECHANIC"]}/>}>
+              <Route path="/employee" element={ <EmployeePage />} />
             </Route>
 
-            <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN","RETAIL_CUSTOMER"]}/>}>
+
+             {/* Retailers dashboard acording to the role */}
+            <Route element={<CheckPrivileges allowedRoles={["RETAIL_CUSTOMER"]}/>}>
               <Route path="/retail" element={ <RetailPageLayout />} >
                   <Route index element={ <PaymentHistory />} />
                   <Route path="purchase-history" element={ <PurchaseHistory />} />
                   <Route path="incomplete-transactions" element={ <IncompleteTransactions />} />
                   <Route path="product-availability" element={ <FindProductAvailability />} />
               </Route>
-
-            <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER","MECHANIC"]}/>}>
-              <Route path="/employee" element={ <EmployeePage />} />
             </Route>
 
-           
-              <Route path="/user" element={ <UserManagementLayout />} >
+            <Route path="/user" element={ <UserManagementLayout />} >
               <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER","MECHANIC","RETAIL_CUSTOMER"]}/>}>
                 <Route index element={<UserDetailsView/>}/>
               </Route>
               <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN"]}/>}>
                 <Route path="view-all" element={<AllUsersView />}/>
               </Route>
-           </Route>
+            </Route>
 
-        </Route>
-        </Route>
+          </Route>
         </Route>
       </Routes>
     </Container>

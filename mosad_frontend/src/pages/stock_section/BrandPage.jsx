@@ -104,7 +104,7 @@ function BrandPage({ isFromBranch }) {
                 allowedRoles={["OWNER", "ADMIN", "STOCK_MANAGER"]}
                 title={brand.brandName}
                 icon={iconMap[brand.brandName] || <DescriptionIcon fontSize="large" />}
-                link={`${isFromBranch ? '/branch/stock/brand/item-view' : '/stock/item-view'}`}
+                link={`${isFromBranch ? '/branch/stock/brand/item-view' : '/stocks/item-view'}`}
                 state={{ ...states, brand: brand.brandName }}
               />
             </Grid>

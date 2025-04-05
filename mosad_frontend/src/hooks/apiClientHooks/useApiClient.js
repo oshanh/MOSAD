@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const useApiClient = () => {
-    const {auth}=useAuth()
+    const {auth, setAuth}=useAuth()
     const refresh =useRefreshToken();
     const navigate=useNavigate();
 
@@ -30,6 +30,7 @@ const useApiClient = () => {
                         console.error("Failed to refresh access token. Logging out."); 
                         alert("Your session has expired please log in again \n")
                         localStorage.removeItem('auth'); 
+                        setAuth({});
                         navigate('/login', { replace: true });
                         return Promise.reject(error); 
                     }

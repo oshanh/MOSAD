@@ -6,6 +6,7 @@ const initialErrors = {
     roleNameError: '',
     pwd_1Error: '',
     pwd_2Error: '',
+    branchNameError: '',
 };
 
 // Email validation
@@ -40,19 +41,28 @@ const validateGeneralForm = (userRegData) => {
         isValid = false;
         newErrors.roleNameError = "Please select a role";
     }
+    if (userRegData.branchName === "") {
+        isValid = false;
+        newErrors.branchNameError = "Please select branch";
+    }
 
-    if (userRegData.userDto.email!=="") {
-        if (!isValidEmail(userRegData.userDto.email)) {
+    if (userRegData.userDto.email === "") {
+        isValid = false;
+        newErrors.emailError = "email cannot be empty";
+    }
+    else if(!isValidEmail(userRegData.userDto.email)) {
             isValid = false;
             newErrors.emailError = "Invalid email address";
-        }
     }
-    if (userRegData.userDto.lastName !== "") {
-        if (typeof userRegData.userDto.lastName !== 'string') {
-            isValid = false;
-            newErrors.lastNameError = "Last Name must be a string";
-        }
+
+    if (userRegData.userDto.lastName === "") {
+        isValid = false;
+        newErrors.lastNameError = "last name cannot be empty";
+    }else if (typeof userRegData.userDto.lastName !== 'string') {
+        isValid = false;
+        newErrors.lastNameError = "Last Name must be a string";
     }
+    
     return { isValid, newErrors };
 };
 

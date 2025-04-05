@@ -19,7 +19,8 @@ const initialUserRegData = {
     },
     userContactDto: [{
         contactNum: ""
-    }]
+    }],
+    branchName:""
 }
 
 const initialPwds = {
@@ -29,11 +30,11 @@ const initialPwds = {
 
 const columns = [
     { field: 'id', headerName: '#', width: 20 },
-    { field: 'username', headerName: 'Username', width: 100 },
-    { field: 'firstName', headerName: 'First name', width: 130 },
-    { field: 'lastName', headerName: 'Last name', width: 130 },
-    { field: 'email', headerName: 'Email', type: 'email', width: 130, },
-    { field: 'role', headerName: 'Role', width: 120, },
+    { field: 'username', headerName: 'Username', width: 150 },
+    { field: 'firstName', headerName: 'First name', width: 150 },
+    { field: 'lastName', headerName: 'Last name', width: 150 },
+    { field: 'email', headerName: 'Email', type: 'email', width: 250, },
+    { field: 'role', headerName: 'Role', width: 250, },
 ];
 
 const AllUsersView = () => {
@@ -124,7 +125,16 @@ const AllUsersView = () => {
                         initialState={{ pagination: { page: 0, pageSize: 5 } }}
                         pageSizeOptions={[5, 10, 25, 50, 100]}
                         checkboxSelection
-                        sx={{ border: 0 }}
+                                    
+                        sx={{
+                            '& .MuiDataGrid-row.Mui-selected': {
+                            backgroundColor: '#a0d8a0', // Selected row color
+                            '&:hover': {
+                                backgroundColor: '#a0d8af', // A different hover color for better visibility
+                            },
+                            },
+                            border: 0,
+                        }}
                     />
                 }
             </Paper>

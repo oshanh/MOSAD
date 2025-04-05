@@ -94,7 +94,7 @@ function StockPage({ isFromBranch }) {
                 allowedRoles={["OWNER","ADMIN","STOCK_MANAGER"]}
                 title={category.categoryName}
                 icon={iconMap[category.categoryName] || <DescriptionIcon fontSize="large" />}
-                link={`${isFromBranch ? '/branch/stock/brand' : '/stock/brand'}`}
+                link={`${isFromBranch ? '/branch/stock/brand' : '/stocks/brands'}`}
                 state={{ category: category.categoryName }}
               />
             </Grid>

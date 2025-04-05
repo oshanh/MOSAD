@@ -128,6 +128,7 @@ export default function UserDetailsForm(
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                         disabled={!editMode} 
+                        required
                         label="Last name" 
                         variant="standard" 
                         name="lastName" 
@@ -168,6 +169,7 @@ export default function UserDetailsForm(
                         <TextField
                         disabled={!editMode} 
                         label="Email" 
+                        required
                         variant="standard" 
                         name="email" 
                         value={userUpdateData.userDto.email || ''}
@@ -272,7 +274,7 @@ export default function UserDetailsForm(
                             id="branch" 
                             value={userUpdateData.branchName || ''} 
                             onChange={handleBranchNameChange}
-                            error={!!error.roleNameError} 
+                            error={!!error.branchNameError} 
                             label="Branch"
                             sx={{
                                 "& .MuiInputBase-input.Mui-disabled": {
@@ -287,7 +289,7 @@ export default function UserDetailsForm(
                             }
                         
                         </Select>
-                        <FormHelperText>{error.roleNameError}</FormHelperText>
+                        <FormHelperText>{error.branchNameError}</FormHelperText>
                     </FormControl>
                 </Grid>
                 </Grid>

@@ -23,14 +23,14 @@ function HomePage() {
   const [isOpen, setIsOpen] = useState(false); // Toggle chat window
 
   const tiles = [
-    { title: 'Bill Generate', icon: <DescriptionIcon fontSize="large" />, link: '/bill', authorizedRoles:["OWNER","ADMIN"] },
-    { title: 'Stock', icon: <InventoryIcon fontSize="large" />, link: '/stock', authorizedRoles:["OWNER","ADMIN","STOCK_MANAGER"] },
-    { title: 'Retail', icon: <StorefrontIcon fontSize="large" />, link: '/retail', authorizedRoles:["OWNER","ADMIN","RETAIL_CUSTOMER"] },
-    { title: 'Credit', icon: <CreditCardIcon fontSize="large" />, link: '/credit', authorizedRoles:["OWNER","ADMIN"] },
-    { title: 'Branches', icon: <AccountTreeIcon fontSize="large" />, link: '/branch', authorizedRoles:["OWNER","ADMIN","BRANCH_MANAGER"] },
-    { title: 'Employee', icon: <PeopleIcon fontSize="large" />, link: '/employee', authorizedRoles:["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER","MECHANIC"] },
-    { title: 'Reports', icon:<AssessmentIcon fontSize="large"/>, link:"/future", authorizedRoles:["OWNER","ADMIN"] },
-    { title: 'Dack Tires', icon:<AssessmentIcon fontSize='large'/>, link:'/dack', authorizedRoles:["OWNER","ADMIN"] }
+    { title: 'Bill Generate', icon: <DescriptionIcon fontSize="large" />, link: '/bills', authorizedRoles:["OWNER","ADMIN"] },
+    { title: 'Stock', icon: <InventoryIcon fontSize="large" />, link: '/stocks', authorizedRoles:["OWNER","ADMIN","STOCK_MANAGER"] },
+    { title: 'Retail', icon: <StorefrontIcon fontSize="large" />, link: '/retails', authorizedRoles:["OWNER","ADMIN","RETAIL_CUSTOMER"] },
+    { title: 'Credit', icon: <CreditCardIcon fontSize="large" />, link: '/credits', authorizedRoles:["OWNER","ADMIN"] },
+    { title: 'Branches', icon: <AccountTreeIcon fontSize="large" />, link: '/branches', authorizedRoles:["OWNER","ADMIN","BRANCH_MANAGER"] },
+    { title: 'Employee', icon: <PeopleIcon fontSize="large" />, link: '/employees', authorizedRoles:["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER","MECHANIC"] },
+    { title: 'Reports', icon:<AssessmentIcon fontSize="large"/>, link:"/reports", authorizedRoles:["OWNER","ADMIN"] },
+    { title: 'Dack Tires', icon:<AssessmentIcon fontSize='large'/>, link:'/dacks', authorizedRoles:["OWNER","ADMIN"] }
   ];
 
   const handleSendMessage = () => {
