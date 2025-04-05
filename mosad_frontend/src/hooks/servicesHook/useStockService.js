@@ -99,3 +99,13 @@ export const useFetchBranches = () => {
 
   return fetchBranches;
 }
+
+export const useFetchStockInHistory = () => {
+  const apiClient = useApiClient();
+
+  const fetchStockInHistory = (itemId) => {
+    return apiClient.get(`item/stockin?itemId=${itemId}`);
+  };
+
+  return fetchStockInHistory;
+}
