@@ -7,15 +7,17 @@ public class StockInDTO {
     private Long branchId;
     private LocalDate date;
     private int quantity;
+    private double officialSellingPrice;
 
     public StockInDTO() {
     }
 
-    public StockInDTO(Long itemId, Long branchId, LocalDate date, int quantity) {
+    public StockInDTO(Long itemId, Long branchId, LocalDate date, int quantity, double officialSellingPrice) {
         this.itemId = itemId;
         this.branchId = branchId;
         this.date = date;
         this.quantity = quantity;
+        this.officialSellingPrice = officialSellingPrice;
     }
 
     public Long getItemId() {
@@ -48,5 +50,13 @@ public class StockInDTO {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public double getOfficialSellingPrice() {
+        return officialSellingPrice;
+    }
+
+    public void setOfficialSellingPrice(double officialSellingPrice) {
+        this.officialSellingPrice = officialSellingPrice;
     }
 }
