@@ -16,10 +16,14 @@ import Loading from '../../component/Loading';
 import ConfirmationDialog from '../../component/ConfirmationDialog';
 import PropTypes from 'prop-types';
 import { useSendHelloWorldTemplate } from '../../hooks/servicesHook/useStockService/';
+import { useSendCreditReminder } from '../../hooks/servicesHook/useCreditService';
 
 //Table row handling
 function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,columns,state,updateCredit }) {
   const sendHello = useSendHelloWorldTemplate();
+  const sendNotification = useSendCreditReminder();
+
+
   const handleSend = async () => {
     try {
       const response = await sendHello('94717529331');
@@ -28,6 +32,26 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
       console.error('Failed to send message:', err);
     }
   };
+  const handleSendNotification =()=>{
+    const data={
+      to:row.contactNumber,
+      name:row.customerName,
+      amount:row.balance,
+      dueDate:row.dueDate
+    };
+    sendNotification(data).then((response) => {
+      console.log(response.data);
+      setMessage({ type: 'success', text: 'Notification sent successfully!' });
+      setTimeout(() => setMessage(null), 2000);
+    }).catch((error) => {
+      console.error('Failed to send notification:', error.response?.data || error.message);
+      setMessage({ type: 'error', text: 'Failed to send notification!' });
+      setTimeout(() => setMessage(null), 2000);
+    });
+   
+  }
+
+
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openAddRepaymentConfirmation, setOpenAddRepaymentConfirmation] = useState(false);
@@ -110,7 +134,7 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
         </TableCell>
         {state.all && <TableCell>{row.completed ? "Completed":"Pending"}</TableCell>}
         <TableCell>
-          <Button onClick={handleSend}>
+          <Button onClick={handleSendNotification}>
           <SendIcon  />
           </Button>
         </TableCell>

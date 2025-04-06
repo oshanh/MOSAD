@@ -79,7 +79,7 @@ public class ScheduledWANotifications {
             System.out.println("\n\n"+ndto.getType()+" "+ndto.getMsg()+"\n\n");
 
 
-            //whatsAppNotificationService.sendCreditReminder(contactNumber,customerName,remainingBalance,formattedDueDate);
+            whatsAppNotificationService.sendCreditReminder(contactNumber,customerName,remainingBalance,formattedDueDate);
         }
 
     }
