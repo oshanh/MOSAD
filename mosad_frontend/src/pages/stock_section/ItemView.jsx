@@ -304,8 +304,7 @@ const ItemView = () => {
     { field: 'itemName', headerName: 'Name', width: 200 },
     { field: 'itemDescription', headerName: 'Description', width: 250 },
     { field: 'companyPrice', headerName: 'Official Selling Price', width: 150 },
-    { field: 'retailPrice', headerName: 'Retail Price', width: 150 },
-    { field: 'discount', headerName: 'Discount', width: 120 },
+    
     { field: 'availableQuantity', headerName: 'Available Quantity', width: 180 },
     ...(selectedCategory === 'Tyre' ? [
       { field: 'pattern', headerName: 'Pattern', width: 150 },
@@ -319,8 +318,7 @@ const ItemView = () => {
     itemName: row.itemDTO.itemName,
     itemDescription: row.itemDTO.itemDescription,
     companyPrice: row.itemDTO.companyPrice,
-    retailPrice: row.itemDTO.retailPrice,
-    discount: row.itemDTO.discount,
+    
     availableQuantity: row.itemBranchDTO.availableQuantity,
     pattern: row.itemTyreDTO?.pattern || '',
     tyreSize: row.itemTyreDTO?.tyreSize || '',
