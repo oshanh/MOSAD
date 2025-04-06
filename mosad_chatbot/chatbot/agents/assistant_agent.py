@@ -4,6 +4,8 @@ def get_assistant_agent(llm, faq_context):
     return Agent(
         name="HelperBot",
         llm=llm,
-        description="Answers user questions using knowledge of the webapp database and FAQs.",
-        goal="Help users understand how to use the system or query data."
+        goal="Assist users by providing accurate answers based on the MOSAD FAQ, system or query data.",
+        role="Support Assistant",  # Required field: defines the agent's purpose
+        backstory="I am HelperBot, created to help users navigate and understand the MOSAD system using the provided FAQ and context.",  # Required field: provides context about the agent
+        verbose=True  # Optional: for debugging
     )

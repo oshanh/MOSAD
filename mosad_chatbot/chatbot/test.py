@@ -1,11 +1,14 @@
 import asyncio
 import websockets
 
-async def test_websocket():
-    uri = "ws://localhost:8001/chat"  # Your WebSocket endpoint
+async def test_chat():
+    uri = "ws://localhost:8000/chat"  # Adjust if using a different port or host
     async with websockets.connect(uri) as websocket:
-        await websocket.send("Check stock of Michelin")
+        test_question = ""  # Replace with an actual question from your CSV
+        await websocket.send(test_question)
+        print(f"Sent: {test_question}")
         response = await websocket.recv()
-        print(f"Response: {response}")
+        print(f"Bot: {response}")
 
-asyncio.run(test_websocket())
+if __name__ == "__main__":
+    asyncio.run(test_chat())

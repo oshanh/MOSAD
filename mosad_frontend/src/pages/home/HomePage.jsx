@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Slideshow from '../../component/Slideshow';
 import Tile from '../../component/Tile';
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import DescriptionIcon from '@mui/icons-material/Description';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import StorefrontIcon from '@mui/icons-material/Storefront';
@@ -10,6 +10,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import PeopleIcon from '@mui/icons-material/People';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import useAuth from '../../hooks/useAuth';
+import Chatbot from '../../component/chatbot';
 
 function HomePage() {
   const { auth } = useAuth();
@@ -21,7 +22,7 @@ function HomePage() {
     { title: 'Credit', icon: <CreditCardIcon fontSize="large" />, link: '/credit', authorizedRoles:["OWNER","ADMIN"] },
     { title: 'Branches', icon: <AccountTreeIcon fontSize="large" />, link: '/branch', authorizedRoles:["OWNER","ADMIN","BRANCH_MANAGER"] },
     { title: 'Employee', icon: <PeopleIcon fontSize="large" />, link: '/employee', authorizedRoles:["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER","MECHANIC"] },
-    { title: 'Reports', icon:<AssessmentIcon fontSize="large"/>, link:"/future", authorizedRoles:["OWNER","ADMIN"] },
+    { title: 'Reports', icon:<AssessmentIcon fontSize='large'/>, link:"/future", authorizedRoles:["OWNER","ADMIN"] },
     { title: 'Dack Tires', icon:<AssessmentIcon fontSize='large'/>, link:'/dack', authorizedRoles:["OWNER","ADMIN"] }
   ];
 
@@ -56,6 +57,9 @@ function HomePage() {
           ))}
         </Stack>
       </Box>
+
+      {/* Floating Chatbot Icon and Window */}
+      <Chatbot />
     </>
   );
 }

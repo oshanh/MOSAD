@@ -1,3 +1,6 @@
-def load_faq_context(path: str) -> str:
-    with open(path, 'r', encoding='utf-8') as f:
-        return f.read()
+import pandas as pd
+
+def load_faq_dataframe(path: str) -> pd.DataFrame:
+    faq_df = pd.read_csv(path)
+    faq_df.columns = ["Question", "Answer"] 
+    return faq_df
