@@ -18,10 +18,9 @@ const AllBillsPage = lazy(() => import('./pages/bill_section/AllBillsPage'));
 const CreditPage=lazy(()=>import('./pages/credit_section/CreditPage'));
 const DackPage =lazy(()=>import( './pages/dack_section/DackPage'));
 const EmployeePage =lazy(()=>import( './pages/employee_section/EmployeePage'));
-const SalesReport =lazy(()=>import( './pages/report_section/SalesReport'));
+const ReportPage =lazy(()=>import( './pages/report_section/ReportPage'));
 const RetailPageLayout =lazy(()=>import( './pages/retail_section/layout/RetailPageLayout'));
 const BillSectionLayout =lazy(()=>import('./pages/bill_section/BillSectionLayout'));
-const ServicesPage =lazy(()=>import( './pages/services_section/ServicesPage'));
 
 const UserManagementLayout =lazy(()=>import( './pages/users_section/UserManagementLayout'));
 const UserDetailsView =lazy(()=> import( './pages/users_section/UserDetailsView'));
@@ -84,7 +83,7 @@ function App() {
                 <Route path="all-bills" element={<AllBillsPage />} />
               </Route>
               <Route path="/dacks" element={<DackPage />} />
-              <Route path="/reports" element={ <SalesReport />} />
+              <Route path="/reports" element={ <ReportPage />} />
 
               <Route path="/retails" element={ <RetailPageLayout />} >
                   <Route index element={ <PaymentHistory />} />

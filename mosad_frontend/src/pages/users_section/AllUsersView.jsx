@@ -116,7 +116,7 @@ const AllUsersView = () => {
     };
 
     return (
-        <Container sx={{ pt: 2 }}>
+        <Container sx={{ pt: 2 }} disableGutters>
             <Paper sx={{ height: "auto", width: '100%' }}>
                 {!isLoading &&
                     <DataGrid

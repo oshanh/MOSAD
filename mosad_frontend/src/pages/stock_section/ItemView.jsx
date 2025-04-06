@@ -9,7 +9,7 @@ import default_baner from "../../assets/default.png"
 import dsi_baner from "../../assets/dsi.png"
 import rapid_baner from "../../assets/rapid.jpg"
 import linglong_baner from "../../assets/linglong.png"
-import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem,useFetchStockInHistory } from "../../hooks/servicesHook/useStockService";
+import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem, useFetchStockInHistory } from "../../hooks/servicesHook/useStockService";
 import PopUp from "../../component/PopUp";
 import ConfirmationDialog from "../../component/ConfirmationDialog";
 import SearchComponent from "../../component/SearchComponent";
@@ -21,21 +21,21 @@ import Paper from '@mui/material/Paper';
 import StockInHistory from "./StockInHistory";
 
 const ItemView = () => {
-  const addItem = useAddItem(); 
-  const fetchItems = useFetchItems(); 
-  const deleteItem =useDeleteItem(); 
-  const updateItem= useUpdateItem();
+  const addItem = useAddItem();
+  const fetchItems = useFetchItems();
+  const deleteItem = useDeleteItem();
+  const updateItem = useUpdateItem();
   const fetchStockInHistory = useFetchStockInHistory();
 
-  const {auth}=useAuth();
-  
+  const { auth } = useAuth();
 
-  const passedStates=useLocation();
-  const states=passedStates.state;
+
+  const passedStates = useLocation();
+  const states = passedStates.state;
 
   //Store passed Category and Brand using Link state & useLocation
   const [selectedCategory, setSelectedCategory] = useState(states?.category);
-  const [selectedBrand, setSelectedBrand] = useState(states?.brand );
+  const [selectedBrand, setSelectedBrand] = useState(states?.brand);
   const [selectedBranch, setSelectedBranch] = useState(auth.branch); //Adjust based on your branch ID
   const [searchFilters, setSearchFilters] = useState({ itemName: "", tyreSize: "", vehicleType: "" });
 
@@ -64,7 +64,7 @@ const ItemView = () => {
     setOpenStockInHistory(true);
     fetchStockInHistory(selectedRowId)
       .then((response) => {
-        
+
         setStockInHistory(response.data);
       })
       .catch((error) => console.error("Error fetching stock in history:", error));
@@ -127,20 +127,20 @@ const ItemView = () => {
     });
   };
 
-  
+
 
 
 
   const fetchandSetItems = async () => {
-    
 
-    if (selectedCategory && selectedBrand && selectedBranch ) {
-      
+
+    if (selectedCategory && selectedBrand && selectedBranch) {
+
       fetchItems({ params: { category: selectedCategory, brand: selectedBrand, branchId: selectedBranch, } })
         .then((response) => setRows(response.data))
         .catch((error) => console.error("Error fetching data:", error));
 
-      
+
 
     }
     else {
@@ -151,20 +151,20 @@ const ItemView = () => {
 
 
   const handleRowClick = (id) => {
-    
+
     setSelectedRowId((prevId) => {
       const newId = prevId === id ? null : id;
-      
+
       return newId;
     });
   };
-  
+
   useEffect(() => {
-    
+
   }, [selectedRowId]);
 
 
- 
+
 
   const closeConfirmationDialog = () => {
     dialogOpenRef.current = false; // ✅ Mark dialog as closed
@@ -194,7 +194,7 @@ const ItemView = () => {
   };
 
   useEffect(() => {
-    
+
 
     const brandImages = {
       atlander: atlander_baner,
@@ -246,7 +246,7 @@ const ItemView = () => {
         "date": stockIn.date
       }
     };
-    
+
 
     const request = currentItem
       ? updateItem(formatedData)
@@ -254,7 +254,7 @@ const ItemView = () => {
 
     request
       .then((response) => {
-        
+
         closeDialog();
         fetchandSetItems();
         setStockIn({ stockIn: "", date: new Date().toISOString().split("T")[0] });  // Reset stock in fields
@@ -279,7 +279,7 @@ const ItemView = () => {
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
     setSearchFilters({ ...searchFilters, [name]: value });
-    
+
   };
 
   const filteredRows = rows.filter((row) =>
@@ -290,7 +290,7 @@ const ItemView = () => {
 
   useEffect(
     () => {
-     
+
       setRows([]);
     }, [selectedCategory]
   )
@@ -312,7 +312,7 @@ const ItemView = () => {
       { field: 'vehicleType', headerName: 'Vehicle Type', width: 180 },
     ] : []), // Add tyre-specific columns only if selectedCategory is 'Tyre'
   ];
-  
+
   const tableRows = filteredRows.map((row) => ({
     id: row.itemDTO.itemId,
     itemName: row.itemDTO.itemName,
@@ -328,7 +328,7 @@ const ItemView = () => {
 
 
 
- 
+
 
 
 
@@ -348,23 +348,19 @@ const ItemView = () => {
         />
       )}
 
-<Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
-  <SearchComponent
-    selectedCategory={selectedCategory}
-    setSelectedCategory={setSelectedCategory}
-    selectedBrand={selectedBrand}
-    setSelectedBrand={setSelectedBrand}
-    selectedBranch={selectedBranch}
-    setSelectedBranch={setSelectedBranch}
-    fetchandSetItems={fetchandSetItems}
-    handleSearchChange={handleSearchChange}
-  />
-  
-</Box>
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+        <SearchComponent
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          selectedBrand={selectedBrand}
+          setSelectedBrand={setSelectedBrand}
+          selectedBranch={selectedBranch}
+          setSelectedBranch={setSelectedBranch}
+          fetchandSetItems={fetchandSetItems}
+          handleSearchChange={handleSearchChange}
+        />
 
-
-
-
+      </Box>
       <div className="item-view-container">
 
         <section className="banner">
@@ -372,17 +368,17 @@ const ItemView = () => {
 
         </section>
 
-        
 
-<Paper sx={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={tableRows}
-        columns={tableColumns}
-        pageSize={5}
-        rowsPerPageOptions={[5, 10]}
-        onRowClick={(e) => {handleRowClick(e.row.id);}}
-        disableColumnResize
-       
+
+        <Paper sx={{ height: 400, width: '100%' }}>
+          <DataGrid
+            rows={tableRows}
+            columns={tableColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5, 10]}
+            onRowClick={(e) => { handleRowClick(e.row.id); }}
+            disableColumnResize
+
             sx={{
               '& .MuiDataGrid-row.Mui-selected': {
                 backgroundColor: '#a0d8a0', // Selected row color
@@ -391,25 +387,25 @@ const ItemView = () => {
                 },
               },
               border: 0,
-             '& .MuiDataGrid-root': {
-            marginTop: '50px', // Adjust the table position to make space for the filter panel
-            backgroundImage: `url(${bannerImage})`, // URL of the background image
-            backgroundSize: 'cover', // Ensures the image covers the entire background
-            backgroundPosition: 'center', // Center the background image
-            backgroundRepeat: 'no-repeat', // Prevents the background image from repeating
-          },
+              '& .MuiDataGrid-root': {
+                marginTop: '50px', // Adjust the table position to make space for the filter panel
+                backgroundImage: `url(${bannerImage})`, // URL of the background image
+                backgroundSize: 'cover', // Ensures the image covers the entire background
+                backgroundPosition: 'center', // Center the background image
+                backgroundRepeat: 'no-repeat', // Prevents the background image from repeating
+              },
             }}
-        
-      />
-    </Paper>
+
+          />
+        </Paper>
 
 
 
         <div className="button-group">
-          
+
           <button className="btn update" onClick={() => {
             if (selectedRowId) {
-             
+
               const selectedItem = rows.find(row => row.itemDTO.itemId === selectedRowId);
               openDialog(selectedItem);
 
@@ -423,15 +419,15 @@ const ItemView = () => {
             if (selectedRowId) {
               const selectedItem = rows.find((row) => row.itemDTO.itemId === selectedRowId);
               handleOpenStockInHistory();
-              
-              
+
+
             } else {
               setMessage({ type: "error", text: "Please select an item to stock in!" });
               setTimeout(() => setMessage(null), 2000);
             }
           }}>StockIn History</button>
         </div>
-      </div> 
+      </div>
       <PopUp popUpTitle={currentItem ? "Edit Item" : "Add New Item"}
         openPopup={isDialogOpen}
         setOpenPopup={setIsDialogOpen}
@@ -453,8 +449,8 @@ const ItemView = () => {
 
       </PopUp>
 
-      <StockInHistory open={openStockInHistory} onClose={() => {setOpenStockInHistory(false); }} rows={stockInHistory}/>
-      
+      <StockInHistory open={openStockInHistory} onClose={() => { setOpenStockInHistory(false); }} rows={stockInHistory} />
+
 
 
 

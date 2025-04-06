@@ -85,7 +85,6 @@ const LoginPage = () => {
             setAlertMsg(newErrors.passwordError)
             isValid = false;
         }
-        console.log(newErrors)
         setErrors(newErrors);
         return isValid
 

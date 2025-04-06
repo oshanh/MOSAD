@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Slideshow from '../../component/Slideshow';
 import Tile from '../../component/Tile';
-import { Box, Stack, Typography, IconButton, Avatar, Paper, TextField, Button } from "@mui/material";
+import { Box, Stack, Typography, IconButton, Avatar, Paper, TextField, Button, Divider } from "@mui/material";
 import DescriptionIcon from '@mui/icons-material/Description';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import StorefrontIcon from '@mui/icons-material/Storefront';
@@ -14,6 +14,7 @@ import useChatbot from "../../hooks/servicesHook/useChatbot";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
+import AnalyticalCard from "../../component/AnalyticalCard";
 
 function HomePage() {
   const { auth } = useAuth();
@@ -57,6 +58,15 @@ function HomePage() {
 
   return (
     <>
+    <Typography sx={{
+      fontSize: '1.1rem',
+      fontWeight: 600,
+      marginBottom: 1,
+      textShadow: `1px 1px 2px rgba(0, 0, 0, 0.2)`,
+    }}>
+      Basic Summary
+    </Typography>
+      <AnalyticalCard/>
       <Slideshow />
       <Box
         sx={{
