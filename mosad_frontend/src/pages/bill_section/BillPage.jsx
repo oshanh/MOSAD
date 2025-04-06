@@ -297,21 +297,28 @@ const handleCreateCredit = async (creditData) => {
                 Telephone Number:
               </Typography>
               <TextField
-                variant="outlined"
-                type="number"
-                pattern="[0-9]{10}"
-                placeholder="Enter 10 digit number"
+  variant="outlined"
+  type="tel" // use "tel" instead of "number"
+  placeholder="Enter 10 digit number"
+  error={telephone.length !== 10 && telephone.length > 0}
+  helperText={
+    telephone.length !== 10 && telephone.length > 0
+      ? "Please enter a valid 10-digit number"
+      : ""
+  }
+  size="small"
+  fullWidth
+  required
+  sx={{ fontSize: "1.2rem" }}
+  value={telephone}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d{0,10}$/.test(value)) {
+      setTelephone(value);
+    }
+  }}
+/>
 
-                //helperText={telephone.length !== 10 && telephone.length > 0 ? "Please enter a valid number" : ""}
-                error={telephone.length !== 10 && telephone.length > 0}
-
-                size="small"
-                fullWidth
-                required={true}
-                sx={{ fontSize: "1.2rem" }}
-                value={telephone} 
-                onChange={(e) => setTelephone(e.target.value)} 
-              />
             </Grid2>
             <Grid2 item xs={12} sm={4}>
               <Typography sx={{ fontSize: "1.2rem", fontWeight: "500", color: "#333", textAlign: "center" }}>
@@ -348,11 +355,13 @@ const handleCreateCredit = async (creditData) => {
                         variant="outlined"
                         size="small"
                         type="number"
+                      
                         value={row.quantity}
                         onChange={(e) => handleInputChange(index, "quantity", e.target.value)}
                         slotProps={{
                           input: {
                             style: { fontSize: "1.2rem" },
+                            inputProps: { min: 1 }
                           },
                         }}
                         sx={{ width: "80%" }}
@@ -378,6 +387,7 @@ const handleCreateCredit = async (creditData) => {
                         size="small"
                         type="number"
                         value={row.unitPrice}
+                        htmlInput={{ min: 0 }}
                         onChange={(e) => handleInputChange(index, "unitPrice", e.target.value)}
                         slotProps={{
                           input: {
@@ -446,6 +456,7 @@ const handleCreateCredit = async (creditData) => {
                       slotProps={{
                         input: {
                           style: { fontSize: "1.2rem" },
+                          inputProps: { min: 0 },
                         },
                       }}
                       sx={{ width: "90%" }}
