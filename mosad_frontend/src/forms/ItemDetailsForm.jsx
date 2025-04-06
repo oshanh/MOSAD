@@ -28,11 +28,11 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
           }}
         >
           {Object.keys(formData).map((key) => 
-          key=="itemId"?null:(
+          (key==="itemId" || key==="retailPrice" || key==="discount")?null:(
             <TextField
               key={key}
               type={key === "companyPrice" || key === "availableQuantity" || key=="retailPrice" || key=="discount"  ? "number" : "text"} // Set input type based on the key
-              label={key.replace(/([A-Z])/g, " $1").trim()} // Generate label from the key
+              label={key==="companyPrice" ? "Official selling price": key.replace(/([A-Z])/g, " $1").trim()} // Generate label from the key
               value={formData[key] || ""} // Set input value based on the key
               onChange={(e) =>
                 handleChange(key, e.target.value)
@@ -48,6 +48,11 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
               sx={{
                 gridColumn: "span", // Ensures consistent spacing
                 backgroundColor: "#fff",
+              }}
+              slotProps={{
+                input: {
+                  inputProps: key === "companyPrice"  ? {min:0} : undefined, // Set min value for number inputs
+                },
               }}
             />
           ))}
