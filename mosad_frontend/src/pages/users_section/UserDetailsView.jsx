@@ -8,6 +8,8 @@ import {
 import React,{ useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth"
 import {useGetUserDetailsByUsername,useUpdateUserDetails} from '../../hooks/servicesHook/useApiUserService';
+import { initialErrors, validateGeneralForm } from '../../utils/validateUserDetailsForm'; // Import the utility function
+
 
 const initialUserData={
     userDto:{
@@ -21,21 +23,12 @@ const initialUserData={
     },
     userContactDto:[{
         contactNum:""
-    }]
+    }],
+    branchName:""
 }
-const initialErrors = {
-    firstNameError: '',
-    lastNameError: '',
-    usernameError: '',
-    emailError: '',
-    contactNumError: '',
-    roleNameError: '',
-  };
-
 
 
 const UserDetailsView=()=>{
-    const [errors,setErrors]=useState(initialErrors);
     //Getting access to he global auth object to get logging state
     const{auth}= useAuth();
     const getUserDetails = useGetUserDetailsByUsername();
@@ -80,10 +73,16 @@ const UserDetailsView=()=>{
     };
 
 
-    const handleUpdatedDataSubmit = (event) => {
+    const [errors, setErrors] = useState(initialErrors);
+    const handleUpdatedDataSubmit =async (event) => {
         event.preventDefault();
         replaceNullWithEmptyString(userData.userDto)
         replaceNullWithEmptyString(userData.userContactDto[0])
+        const { isValid, newErrors } = validateGeneralForm(userData);
+        if (!isValid) {
+            setErrors(newErrors);
+            return;
+        }
 
         //If user input is null transform into emty string
         if (editMode) {
@@ -103,11 +102,11 @@ const UserDetailsView=()=>{
         editMode ? setEditMode(false):setEditMode(true);
         if(editMode){
             loadData();
+            setErrors(initialErrors);
         }
     }
 
 
- 
     return(
        <Container>
             <Typography sx={{pt:2}}>
@@ -121,8 +120,10 @@ const UserDetailsView=()=>{
             userUpdateData={userData} 
             editMode={editMode}
             setUserUpdateData={setUserData}
-            errors={errors}
-            setErrors={setErrors}/>
+            error={errors}
+            setError={setErrors}
+            
+            />
             }         
 
              {/* form handling buttons */}

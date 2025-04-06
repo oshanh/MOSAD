@@ -18,6 +18,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,8 +33,9 @@ public class ItemService {
     private final ItemTyreDTOMapper itemTyreDTOMapper;
     private final ItemBranchDTOMapper itemBranchDTOMapper;
     private final BranchRepo branchRepo;
+    private final StockInRepo stockInRepo;
 
-    public ItemService(ItemRepo itemRepository, ItemBranchRepository itemBranchRepository, CategoryRepo categoryRepository, BrandRepo brandRepository, BranchRepo branchRepository, ItemTyreRepo itemTyreRepo, ItemDTOMapper itemDTOMapper, ItemTyreDTOMapper itemTyreDTOMapper, ItemBranchDTOMapper itemBranchDTOMapper, BranchRepo branchRepo) {
+    public ItemService(ItemRepo itemRepository, ItemBranchRepository itemBranchRepository, CategoryRepo categoryRepository, BrandRepo brandRepository, BranchRepo branchRepository, ItemTyreRepo itemTyreRepo, ItemDTOMapper itemDTOMapper, ItemTyreDTOMapper itemTyreDTOMapper, ItemBranchDTOMapper itemBranchDTOMapper, BranchRepo branchRepo, StockInRepo stockInRepo) {
         this.itemRepository = itemRepository;
         this.itemBranchRepository = itemBranchRepository;
         this.categoryRepository = categoryRepository;
@@ -44,6 +46,7 @@ public class ItemService {
         this.itemTyreDTOMapper = itemTyreDTOMapper;
         this.itemBranchDTOMapper = itemBranchDTOMapper;
         this.branchRepo = branchRepo;
+        this.stockInRepo = stockInRepo;
     }
 
     public List<BranchDTO>  getBranches(){
@@ -66,9 +69,9 @@ public class ItemService {
 
         // Extract individual DTOs
         ItemDTO itemDTO = addItemDTO.getItemDTO();
-
         ItemTyreDTO itemTyreDTO = addItemDTO.getItemTyreDTO();
         ItemBranchDTO itemBranchDTO = addItemDTO.getItemBranchDTO();
+        StockInDTO stockInDTO=addItemDTO.getStockInDTO();
 
         Item item= itemDTOMapper.toEntity(itemDTO);
 
@@ -79,7 +82,7 @@ public class ItemService {
         item.setBrand(brandRepository.findByBrandName(itemDTO.getBrand())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Brand ")));
 
-        itemRepository.save(item);
+        Item savedItem=itemRepository.save(item);
 
         //Map to ItemBranch
 
@@ -92,8 +95,18 @@ public class ItemService {
         itemBranch.setBranch(branch);
 
         itemBranch.setItem(item);
-        itemBranch.setAvailableQuantity(itemBranchDTO.getAvailableQuantity());
+        itemBranch.setAvailableQuantity(stockInDTO.getQuantity());
+        System.out.println("\n\n QTY :  "+itemBranch.getAvailableQuantity()+"\n\n");
         itemBranchRepository.save(itemBranch);
+
+        StockIn stockIn=new StockIn();
+        stockIn.setDate(stockInDTO.getDate());
+        stockIn.setQuantity(stockInDTO.getQuantity());
+        stockIn.setItem(savedItem);
+        stockIn.setBranch(branch);
+        stockIn.setOfficialSellingPrice(savedItem.getCompanyPrice());
+
+        stockInRepo.save(stockIn);
 
         if(!itemDTO.getCategory().equals("Tyre")) {
             return new ResponseDTO(true, "Item added successfully");
@@ -107,6 +120,9 @@ public class ItemService {
 
 
 
+
+
+
         return new ResponseDTO(true, "Item added successfully");
     }
 
@@ -115,6 +131,7 @@ public class ItemService {
         ItemDTO itemDTO = updateTyreItemDTO.getItemDTO();
         ItemTyreDTO itemTyreDTO = updateTyreItemDTO.getItemTyreDTO();
         ItemBranchDTO itemBranchDTO = updateTyreItemDTO.getItemBranchDTO();
+        StockInDTO stockInDTO=updateTyreItemDTO.getStockInDTO();
 
         // Fetch the existing Item entity using itemId from ItemDTO
         Long itemId = itemDTO.getItemId();
@@ -152,12 +169,21 @@ public class ItemService {
         }
 
         // Update fields in the ItemBranch entity
-        existingItemBranch.setAvailableQuantity(itemBranchDTO.getAvailableQuantity());
+        existingItemBranch.setAvailableQuantity(existingItemBranch.getAvailableQuantity()+stockInDTO.getQuantity());
         existingItemBranch.setBranch(branchRepository.findById(branchId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid Branch ID")));
 
         // Save updated ItemBranch entity
         itemBranchRepository.save(existingItemBranch);
+
+        StockIn stockIn=new StockIn();
+        stockIn.setDate(stockInDTO.getDate());
+        stockIn.setQuantity(stockInDTO.getQuantity());
+        stockIn.setItem(savedItem);
+        stockIn.setBranch(existingItemBranch.getBranch());
+        stockIn.setOfficialSellingPrice(savedItem.getCompanyPrice());
+
+        stockInRepo.save(stockIn);
 
         if(!itemDTO.getCategory().equals("Tyre")) {
             return new ResponseDTO(true, "Item updated successfully");
@@ -232,7 +258,7 @@ public class ItemService {
             ItemBranchDTO itemBranchDTO = itemBranchDTOMapper.toDTO(itemBranch);
 
             // Construct AddItemDTO
-            AddItemDTO addItemDTO = new AddItemDTO(itemDTO, "Tyre".equals(cat) ? itemTyreDTO : null, itemBranchDTO);
+            AddItemDTO addItemDTO = new AddItemDTO(itemDTO, "Tyre".equals(cat) ? itemTyreDTO : null, itemBranchDTO,null);
             addItemDTOS.add(addItemDTO);
         }
 
@@ -250,7 +276,7 @@ public class ItemService {
             ItemTyreDTO itemTyreDTO = itemTyreDTOMapper.toDTO(itemTyre);
             ItemBranch itemBranch = itemBranchRepository.findByItemIdAndBranchId(itemTyre.getItem().getItemId(), branchId);
             ItemBranchDTO itemBranchDTO = itemBranchDTOMapper.toDTO(itemBranch);
-            AddItemDTO addItemDTO = new AddItemDTO(itemDTO, itemTyreDTO, itemBranchDTO);
+            AddItemDTO addItemDTO = new AddItemDTO(itemDTO, itemTyreDTO, itemBranchDTO,null);
             addItemDTOS.add(addItemDTO);
         }
         return addItemDTOS;
@@ -315,7 +341,7 @@ public class ItemService {
             ItemBranchDTO itemBranchDTO = itemBranchDTOMapper.toDTO(itemBranch);
 
             // Construct AddItemDTO for both tyre and non-tyre items
-            AddItemDTO addItemDTO = new AddItemDTO(itemDTO, itemTyreDTO, itemBranchDTO);
+            AddItemDTO addItemDTO = new AddItemDTO(itemDTO, itemTyreDTO, itemBranchDTO,null);
             addItemDTOS.add(addItemDTO);
         }
 
@@ -323,5 +349,21 @@ public class ItemService {
         return addItemDTOS;
     }
 
+    public List<StockInDTO> getStockInHistory(Long itemId){
+        Optional<Item> item=itemRepository.findById(itemId);
+        List<StockInDTO> stockInDTOS=new ArrayList<>();
+
+        List<StockIn> stockIns=stockInRepo.findAllByItem(item);
+        for(StockIn stockIn: stockIns){
+            StockInDTO stockInDTO=new StockInDTO();
+            stockInDTO.setOfficialSellingPrice(stockIn.getOfficialSellingPrice());
+            stockInDTO.setDate(stockIn.getDate());
+            stockInDTO.setQuantity(stockIn.getQuantity());
+
+            stockInDTOS.add(stockInDTO);
+        }
+
+        return stockInDTOS;
+    }
 
 }

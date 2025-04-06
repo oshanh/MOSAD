@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"; // Import DeleteIcon
 import SearchComponent from "../../component/SearchComponent"; // Import SearchComponent
-import { useNavigate } from 'react-router-dom';
 import { jsPDF } from "jspdf"; // Import jsPDF library
 import { useUpdateItemQuantity ,useCreateBill} from "../../hooks/servicesHook/useBillService";
 import { useCreateCredit } from "../../hooks/servicesHook/useCreditService";
@@ -32,7 +31,6 @@ const BillPage = () => {
   const createBill = useCreateBill();
   const createCredit = useCreateCredit();
 
-  const navigate = useNavigate();
   const [rows, setRows] = React.useState([]); // Start with an empty array
   const [advance, setAdvance] = React.useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -145,12 +143,18 @@ const BillPage = () => {
     }
 };
 
+const addOneMonth = (date) => {
+  const result = new Date(date);
+  result.setMonth(result.getMonth() + 1);
+  return result.toISOString().split('T')[0];
+};
+
 const handleCreateCredit = async (creditData) => {
   const data = {
     customerId:creditData.customerId ,  // Example customer ID
     billId: creditData.billId,      // Example bill ID
     balance: balance, // Negative balance indicating credit
-    dueDate: new Date().toISOString().split('T')[0] , // Due date for the credit payment
+    dueDate: addOneMonth(new Date()), // Due date for the credit payment
   };
 
   try {
@@ -191,12 +195,14 @@ const handleCreateCredit = async (creditData) => {
       x: 10, // Set starting position for content
       y: 10,
       html2canvas: {
-        scale: 0.22, // Try a higher scale value to capture the content better
+        scale: 0.1, // Try a higher scale value to capture the content better
         width: 250, // Ensure the content uses the full width of the page (A4 size)
         height: 297, // Ensure full height is captured (A4 size)
       },
     });
-    //clearAllFields();
+    setTimeout(() => {
+      clearAllFields();
+    }, 2000);
   };
   
   
@@ -315,7 +321,7 @@ const handleCreateCredit = async (creditData) => {
             </TableHead>
             <TableBody>
               {rows.map((row, index) => (
-                <TableRow key={index}>
+                <TableRow key={row.itemId}>
                   <TableCell align="center">
                     <TextField
                       variant="outlined"

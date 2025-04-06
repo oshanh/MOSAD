@@ -1,11 +1,12 @@
 import { Typography, Button, TextField, Box } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { useFgtPwdMailCheckAndOtpSend,useVerifyOtp,useResendOtp } from "../hooks/servicesHook/useApiUserService";
+import { useFgtPwdMailCheckAndOtpSend,useVerifyOtp,useResendOtp,useChangePassword } from "../hooks/servicesHook/useApiUserService";
 
 const ForgotPasswordForm = () =>{
     const fgtPwdMailCheckAndOtpSend=useFgtPwdMailCheckAndOtpSend();
     const verifyOtp = useVerifyOtp();
     const resendOtp = useResendOtp();
+    const changePwd=useChangePassword();
     const [step, setStep] = useState(1); // Step management: 1 - Email, 2 - OTP, 3 - New Password, 4 - Success
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
@@ -39,11 +40,8 @@ const ForgotPasswordForm = () =>{
             setStep(2);
             setErrorMessage("");
             startTimer();
-          } else {
-            setErrorMessage(response.data.message);
-          }
+          } 
         } catch (error) {
-          console.error("Error sending email:", error);
           setErrorMessage("Failed to send email. Please try again later.");
         } finally {
           setIsLoading(false); // Set loading state to false after the request completes
@@ -51,7 +49,7 @@ const ForgotPasswordForm = () =>{
     };
 
     //Otp submisson to backend
-    const handleOtpSubmit = () => {
+    const handleOtpSubmit = async () => {
       if (!otp) {
         setErrorMessage("OTP cannot be empty.");
         return false;
@@ -64,15 +62,18 @@ const ForgotPasswordForm = () =>{
         setErrorMessage("OTP must have only 6 digit.");
         return false;
       }
-
-      verifyOtp(otp,email).then((response)=>{
+      try {
+        setIsLoading(true); // Set loading state to true
+        const response = await verifyOtp(otp,email);
         if (response.data.success) {
           setStep(3);
           setErrorMessage("");
-        } else {
-          setErrorMessage("Invalid OTP. Please try again."+response.data.message);
         }
-      })
+      }catch (error) {
+        setErrorMessage("Invalid OTP. Please try again.");
+      } finally {
+        setIsLoading(false); // Set loading state to false after the request completes
+      }
     };
 
     const startTimer = () => {
@@ -111,7 +112,7 @@ const ForgotPasswordForm = () =>{
     };
 
     //New password changing
-    const handlePasswordSubmit = () => {
+    const handlePasswordSubmit =async () => {
       if (newPassword.length < 6) {
         setErrorMessage("Password must be at least 8 characters long.");
         return;
@@ -124,11 +125,20 @@ const ForgotPasswordForm = () =>{
         setErrorMessage("Password must contain at least one number.");
         return;
       }
-      if (newPassword === confirmPassword) {
-        setStep(4);
-        setErrorMessage("");
-      } else {
+      if (newPassword !== confirmPassword) {
         setErrorMessage("Passwords do not match.");
+      } 
+      try {
+        setIsLoading(true); // Set loading state to true
+        const response = await changePwd(email,{password:newPassword});
+        if (response.data.success) {
+          setStep(4);
+          setErrorMessage("");
+        }
+      }catch (error) {
+        setErrorMessage("Internal Error. Please try again.");
+      } finally {
+        setIsLoading(false); // Set loading state to false after the request completes
       }
     };
     const handlePasswordChange = (password) => {
@@ -137,7 +147,6 @@ const ForgotPasswordForm = () =>{
         setPasswordStrength("");
         return;
       }
-
       const hasUpperCase = /[A-Z]/.test(password);
       const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
       if (hasUpperCase && hasSpecialChar) {
@@ -166,146 +175,154 @@ const ForgotPasswordForm = () =>{
     }, [timer]);
 
     return(      
-      <Box>
-            {/* Email Entering section */}{step === 1 && (     
-                <Box>
-                    <Typography variant="h5" gutterBottom>
-                      Forgot Password
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                      Enter your email for the verification process, we will send the OTP code to your email.
-                    </Typography>
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleEmailSubmit();
-                        }
-                      }}
-                      margin="normal"
-                    />
-                      {errorMessage && <Typography color="error">{errorMessage}</Typography>}
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleEmailSubmit}
-                      fullWidth
-                      loading={isLoading}
-                    >
-                      Continue
-                    </Button>
-                </Box>)}
-            {/* OTP Entering Section */}{step === 2 && (
-                <Box>
-                    <Typography variant="h5" gutterBottom>
-                        Verification
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Enter your OTP code that you received on your email.
-                    </Typography> 
-                    <TextField
-                        fullWidth
-                        label="Enter OTP"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleOtpSubmit();
-                          }
-                        }}
-                        margin="normal"
-                    />
-                    {errorMessage && <Typography color="error">{errorMessage} 
-                    </Typography>}
-                    <Typography color="textSecondary">
-                        00:{timer < 10 ? `0${timer}` : timer}
-                        </Typography>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleOtpSubmit}
-                        fullWidth
-                    >
-                        Continue
-                    </Button>
-                    <Typography variant="body2" mt={2}>
-                        If you didn’t receive a code, 
-                        <Button
-                            variant="text"
-                            fullWidth
-                            onClick={handleResendOtp}
-                            disabled={isResendDisabled}
-                         >
-                        Resend Code
-                         </Button>
-                    </Typography>
-                </Box>)}
-{/* New Password Create */}{step === 3 && (
-            <Box>
-                <Typography variant="h5" gutterBottom>
-                    New Password
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                    Set the new password for your account so you can log in and access all features.
-                </Typography>
-                <TextField
-                    fullWidth
-                    label="Enter new password"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handlePasswordSubmit();
-                      }
-                    }}
-                    margin="normal"
-                />
-                      {newPassword && (
-                        <Typography
-                          color={passwordStrength === "strong" ? "success.main" : "warning.main"}
-                        >
-                          Password is {passwordStrength}.
-                        </Typography>
-                      )}
-                <TextField
-                    fullWidth
-                    label="Confirm password"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        handlePasswordSubmit();
-                      }
-                    }}
-                    margin="normal"
-                />
+      <Box sx={{ p: 3, maxWidth: '400px', mx: 'auto' }}>
+        {/* Email Entering section */}{step === 1 && (     
+          <Box>
+              <Typography variant="body1" gutterBottom>
+                Enter your email for the verification process, we will send the OTP code to your email.
+              </Typography>
+              <TextField
+                fullWidth
+                label="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleEmailSubmit();
+                  }
+                }}
+                margin="normal"
+              />
                 {errorMessage && <Typography color="error">{errorMessage}</Typography>}
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handlePasswordSubmit}
-                    fullWidth
-                >
-                    Update Password
-                </Button>
-            </Box>)}
-{/* Success */}{step === 4 && (
-                <Box textAlign="center">
-                    <Typography variant="h5" gutterBottom>
-                        Successfully
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Your password has been reset successfully.
-                    </Typography>
-                    <Button variant="contained" fullWidth onClick={handleContinueToLogin}>
-                        Continue to Login
-                    </Button>
-                </Box>)}
+              <Button
+                sx={{ mt: 2 }}
+                variant="contained"
+                color="primary"
+                onClick={handleEmailSubmit}
+                fullWidth
+                loading={isLoading}
+                loadingPosition="end"
+              >
+                Continue
+              </Button>
+          </Box>)}
+        {/* OTP Entering Section */}
+        <Box textAlign="center" mb={3}>
+          <Typography variant="h4" gutterBottom>
+            {step === 2 && "Verification"}
+            {step === 3 && "New Password"}
+            {step === 4 && "Successfully"}
+          </Typography>
+        </Box>
+        {step === 2 && (
+          <Box>
+              <Typography variant="body1" gutterBottom>
+                  Enter your OTP code that you received on your email.
+              </Typography> 
+              <TextField
+                  fullWidth
+                  label="Enter OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleOtpSubmit();
+                    }
+                  }}
+                  margin="normal"
+              />
+              {errorMessage && <Typography color="error">{errorMessage} 
+              </Typography>}
+              <Typography color="textSecondary">
+                  00:{timer < 10 ? `0${timer}` : timer}
+                  </Typography>
+              <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleOtpSubmit}
+                  fullWidth
+                  loading={isLoading}
+                  loadingPosition="end"
+                  sx={{ mt: 2 }}
+              >
+                  Continue
+              </Button>
+              <Typography variant="body2" mt={2}>
+                  If you didn’t receive a code, 
+                  <Button
+                      variant="text"
+                      fullWidth
+                      onClick={handleResendOtp}
+                      disabled={isResendDisabled}
+                      sx={{ mt: 2 }}
+                    >
+                  Resend Code
+                  </Button>
+              </Typography>
+          </Box>)}
+        {/* New Password Create */}{step === 3 && (
+          <Box>
+              <Typography variant="body1" gutterBottom>
+                  Set the new password for your account so you can log in and access all features.
+              </Typography>
+              <TextField
+                  fullWidth
+                  label="Enter new password"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => handlePasswordChange(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handlePasswordSubmit();
+                    }
+                  }}
+                  margin="normal"
+              />
+                    {newPassword && (
+                      <Typography
+                        color={passwordStrength === "strong" ? "success.main" : "warning.main"}
+                      >
+                        Password is {passwordStrength}.
+                      </Typography>
+                    )}
+              <TextField
+                  fullWidth
+                  label="Confirm password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handlePasswordSubmit();
+                    }
+                  }}
+                  margin="normal"
+              />
+              {errorMessage && <Typography color="error">{errorMessage}</Typography>}
+              <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handlePasswordSubmit}
+                  fullWidth
+                  loading={isLoading}
+                  loadingPosition="end"
+                  sx={{ mt: 2 }}
+              >
+                  Update Password
+              </Button>
+          </Box>)}
+        {/* Success */}{step === 4 && (
+          <Box textAlign="center">
+              <Typography variant="h5" gutterBottom>
+                  Successfully
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                  Your password has been reset successfully.
+              </Typography>
+              <Button variant="contained" fullWidth onClick={handleContinueToLogin} sx={{ mt: 2 }}>
+                  Continue to Login
+              </Button>
+          </Box>)}
       </Box>
    );
 

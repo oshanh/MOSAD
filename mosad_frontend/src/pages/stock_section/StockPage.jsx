@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Tile from '../../component/Tile';
-import { Box, Grid2, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Alert } from '@mui/material';
+import { Box,TextField, Alert,Typography,Button,Grid2 as Grid } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {useFetchCategories,useAddCategory}  from '../../hooks/servicesHook/useStockService'
+import PopUp from '../../component/PopUp';
+
 
 // Icons for dynamic categories
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -85,14 +87,9 @@ function StockPage({ isFromBranch }) {
       )}
 
       <Box sx={{ marginTop: 4 }}>
-        <Grid2 container spacing={4} justifyContent="center">
+        <Grid container spacing={4} justifyContent="center">
           {categories.map((category) => (
-            <Grid2
-              xs={12}
-              sm={6}
-              md={4}
-              key={category.categoryName}
-            >
+            <Grid key={category.categoryName}>
               <Tile
                 allowedRoles={["OWNER","ADMIN","STOCK_MANAGER"]}
                 title={category.categoryName}
@@ -100,49 +97,65 @@ function StockPage({ isFromBranch }) {
                 link={`${isFromBranch ? '/branch/stock/brand' : '/stock/brand'}`}
                 state={{ category: category.categoryName }}
               />
-            </Grid2>
+            </Grid>
           ))}
           {/* Add New Category Tile */}
-          <Grid2
-            xs={12}
-            sm={6}
-            md={4}
-          >
+          <Grid >
             <Tile
               allowedRoles={["OWNER","ADMIN","STOCK_MANAGER"]}
               title="Add New Category"
               icon={<AddIcon fontSize="large" />}
               onClick={() => setDialogOpen(true)}
             />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Box>
 
       {/* Dialog for Adding New Category */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>Add New Category</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Category Name"
-            fullWidth
-            variant="outlined"
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleAddCategory} color="primary">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      
+      <PopUp
+          popUpTitle="Add New Category"
+          openPopup={dialogOpen}
+          setOpenPopup={setDialogOpen}
+          setOkButtonAction={handleAddCategory}
+          setCancelButtonAction={() => setDialogOpen(false)}
+          isDefaultButtonsDisplay={false}
+          width="md">
+             <Box sx={{ p: 3, maxWidth: '400px', mx: 'auto' }}>
+              <Grid container spacing={2} direction="column">
+                <Grid size={{ xs:12}}>
+                  <Typography variant="body1" gutterBottom>
+                    Please provide the name of the Category you wish to add to the system:
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs:12}}>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Category Name"
+                        fullWidth
+                        variant="outlined"
+                        value={newCategory}
+                        onChange={(e) => setNewCategory(e.target.value)}
+                      />
+                </Grid>
+                <Grid size={{ xs:12}} container justifyContent="flex-end" spacing={2}>
+                  <Grid>
+                    <Button onClick={() => setDialogOpen(false)} color="secondary">
+                      Cancel
+                    </Button>
+                  </Grid>
+                  <Grid >
+                    <Button
+                      onClick={handleAddCategory}
+                      sx={{ color: 'white', backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}
+                    >
+                      Add
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Box>
+      </PopUp>
     </>
   );
 }

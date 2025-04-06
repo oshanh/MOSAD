@@ -9,31 +9,39 @@ import default_baner from "../../assets/default.png"
 import dsi_baner from "../../assets/dsi.png"
 import rapid_baner from "../../assets/rapid.jpg"
 import linglong_baner from "../../assets/linglong.png"
-import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem } from "../../hooks/servicesHook/useStockService";
+import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem,useFetchStockInHistory } from "../../hooks/servicesHook/useStockService";
 import PopUp from "../../component/PopUp";
-import PriceDetailsSection from "../../component/PriceDetailsSection";
 import ConfirmationDialog from "../../component/ConfirmationDialog";
 import SearchComponent from "../../component/SearchComponent";
 import Box from '@mui/material/Box';
 import { useLocation } from "react-router-dom";
+import useAuth from '../../hooks/useAuth';
+import { DataGrid } from '@mui/x-data-grid';
+import Paper from '@mui/material/Paper';
+import StockInHistory from "./StockInHistory";
 
 const ItemView = () => {
   const addItem = useAddItem(); 
   const fetchItems = useFetchItems(); 
   const deleteItem =useDeleteItem(); 
   const updateItem= useUpdateItem();
+  const fetchStockInHistory = useFetchStockInHistory();
+
+  const {auth}=useAuth();
+  
 
   const passedStates=useLocation();
   const states=passedStates.state;
-  console.log("Location State:",passedStates.state);
+
   //Store passed Category and Brand using Link state & useLocation
   const [selectedCategory, setSelectedCategory] = useState(states?.category);
   const [selectedBrand, setSelectedBrand] = useState(states?.brand );
-  const [selectedBranch, setSelectedBranch] = useState(1); //Adjust based on your branch ID
+  const [selectedBranch, setSelectedBranch] = useState(auth.branch); //Adjust based on your branch ID
   const [searchFilters, setSearchFilters] = useState({ itemName: "", tyreSize: "", vehicleType: "" });
 
 
   const [rows, setRows] = useState([]);
+  const [stockInHistory, setStockInHistory] = useState([]);
 
 
 
@@ -45,12 +53,22 @@ const ItemView = () => {
   const [formData, setFormData] = useState(setItemAddFromFields(selectedCategory, selectedBrand));
   const [message, setMessage] = useState(null);
   const [inputFieldErrors, setInputFieldErrors] = useState({});
-  const [isPriceDetailsPopupOpen, setIsPriceDetailsPopupOpen] = useState(false);
-  const [selectedItemPriceDetails, setSelectedItemPriceDetails] = useState(null);
+  const [stockIn, setStockIn] = useState({ stockIn: "", date: new Date().toISOString().split("T")[0] });
 
 
   const [confirmationDialog, setConfirmationDialog] = useState(false);
   const dialogOpenRef = useRef(false); // ✅ Track whether dialog is open
+  const [openStockInHistory, setOpenStockInHistory] = useState(false);
+
+  const handleOpenStockInHistory = () => {
+    setOpenStockInHistory(true);
+    fetchStockInHistory(selectedRowId)
+      .then((response) => {
+        
+        setStockInHistory(response.data);
+      })
+      .catch((error) => console.error("Error fetching stock in history:", error));
+  };
 
   const openDialog = (item) => {
     if (item) {
@@ -109,18 +127,20 @@ const ItemView = () => {
     });
   };
 
+  
+
 
 
   const fetchandSetItems = async () => {
-    console.log("Inside fetchItems !");
+    
 
     if (selectedCategory && selectedBrand && selectedBranch ) {
-      console.log("Before setRows !" + rows.length);
+      
       fetchItems({ params: { category: selectedCategory, brand: selectedBrand, branchId: selectedBranch, } })
         .then((response) => setRows(response.data))
         .catch((error) => console.error("Error fetching data:", error));
 
-      console.log("Rows set " + rows.length);
+      
 
     }
     else {
@@ -131,20 +151,20 @@ const ItemView = () => {
 
 
   const handleRowClick = (id) => {
-    setSelectedRowId((prevId) => (prevId === id ? null : id)); // Toggle selection
-    console.log("Row Clicked ID:", id);
-
+    
+    setSelectedRowId((prevId) => {
+      const newId = prevId === id ? null : id;
+      
+      return newId;
+    });
   };
+  
+  useEffect(() => {
+    
+  }, [selectedRowId]);
 
-  const openConfirmationDialog = () => {
-    if (selectedRowId !== null) {
-      dialogOpenRef.current = true; // ✅ Mark dialog as open
-      setConfirmationDialog(true);
-    } else {
-      setMessage({ type: "error", text: "Please select an item to delete." });
-      setTimeout(() => setMessage(null), 2000);
-    }
-  };
+
+ 
 
   const closeConfirmationDialog = () => {
     dialogOpenRef.current = false; // ✅ Mark dialog as closed
@@ -174,7 +194,7 @@ const ItemView = () => {
   };
 
   useEffect(() => {
-    console.log("Fetch item called by useEffect!")
+    
 
     const brandImages = {
       atlander: atlander_baner,
@@ -189,32 +209,9 @@ const ItemView = () => {
     fetchandSetItems();
     fetchandSetItems();
 
-    console.log("Fetched items for Category:", selectedCategory, "Brand:", selectedBrand, "Branch:", selectedBranch);
 
 
   }, [selectedBranch, selectedBrand]);
-
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (
-        dialogOpenRef.current || // ✅ Prevent deselection when dialog is open
-        event.target.closest(".item-table") ||
-        event.target.closest(".confirmation-dialog") ||
-        event.target.closest(".confirmation-dialog-overlay")
-      ) {
-        return;
-      }
-
-
-      setSelectedRowId(null);
-    };
-
-    document.addEventListener("click", handleOutsideClick);
-
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, [selectedRowId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -243,8 +240,13 @@ const ItemView = () => {
       "itemBranchDTO": {
         "branchId": selectedBranch, // Adjust based on your branch ID
         "availableQuantity": parseInt(formData.availableQuantity)
+      },
+      "stockInDTO": {
+        "quantity": parseInt(stockIn.stockIn),
+        "date": stockIn.date
       }
     };
+    
 
     const request = currentItem
       ? updateItem(formatedData)
@@ -252,9 +254,10 @@ const ItemView = () => {
 
     request
       .then((response) => {
-        console.log(currentItem ? "Item updated successfully!" : "Backend - " + response.data.message);
+        
         closeDialog();
         fetchandSetItems();
+        setStockIn({ stockIn: "", date: new Date().toISOString().split("T")[0] });  // Reset stock in fields
         setMessage(
           currentItem
             ? { type: "success", text: "Item updated successfully!" }
@@ -276,7 +279,7 @@ const ItemView = () => {
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
     setSearchFilters({ ...searchFilters, [name]: value });
-    console.log("Search Filters:", searchFilters);
+    
   };
 
   const filteredRows = rows.filter((row) =>
@@ -291,6 +294,44 @@ const ItemView = () => {
       setRows([]);
     }, [selectedCategory]
   )
+
+
+  //Table component
+
+  const tableColumns = [
+    { field: 'id', headerName: 'Item ID', width: 130 },
+    { field: 'itemName', headerName: 'Name', width: 200 },
+    { field: 'itemDescription', headerName: 'Description', width: 250 },
+    { field: 'companyPrice', headerName: 'Company Price', width: 150 },
+    { field: 'retailPrice', headerName: 'Retail Price', width: 150 },
+    { field: 'discount', headerName: 'Discount', width: 120 },
+    { field: 'availableQuantity', headerName: 'Available Quantity', width: 180 },
+    ...(selectedCategory === 'Tyre' ? [
+      { field: 'pattern', headerName: 'Pattern', width: 150 },
+      { field: 'tyreSize', headerName: 'Tyre Size', width: 150 },
+      { field: 'vehicleType', headerName: 'Vehicle Type', width: 180 },
+    ] : []), // Add tyre-specific columns only if selectedCategory is 'Tyre'
+  ];
+  
+  const tableRows = filteredRows.map((row) => ({
+    id: row.itemDTO.itemId,
+    itemName: row.itemDTO.itemName,
+    itemDescription: row.itemDTO.itemDescription,
+    companyPrice: row.itemDTO.companyPrice,
+    retailPrice: row.itemDTO.retailPrice,
+    discount: row.itemDTO.discount,
+    availableQuantity: row.itemBranchDTO.availableQuantity,
+    pattern: row.itemTyreDTO?.pattern || '',
+    tyreSize: row.itemTyreDTO?.tyreSize || '',
+    vehicleType: row.itemTyreDTO?.vehicleType || '',
+  }));
+
+
+
+ 
+
+
+
 
   return (
     <>
@@ -331,65 +372,44 @@ const ItemView = () => {
 
         </section>
 
-        <table className="item-table">
-          <caption>{selectedCategory} {selectedBrand}</caption>
-          <thead>
-           
+        
 
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Company Price</th>
-              <th>Retail Price</th>
-              <th>Discount</th>
-              <th>Available Quantity</th>
-              {selectedCategory === "Tyre" && filteredRows[0]?.itemTyreDTO !== null &&
-                <>
-                  <th>Pattern</th>
-                  <th>Tyre Size</th>
-                  <th>Vehicle Type</th>
-                </>
-              }
+<Paper sx={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={tableRows}
+        columns={tableColumns}
+        pageSize={5}
+        rowsPerPageOptions={[5, 10]}
+        onRowClick={(e) => {handleRowClick(e.row.id);}}
+        disableColumnResize
+       
+            sx={{
+              '& .MuiDataGrid-row.Mui-selected': {
+                backgroundColor: '#a0d8a0', // Selected row color
+                '&:hover': {
+                  backgroundColor: '#a0d8af', // A different hover color for better visibility
+                },
+              },
+              border: 0,
+             '& .MuiDataGrid-root': {
+            marginTop: '50px', // Adjust the table position to make space for the filter panel
+            backgroundImage: `url(${bannerImage})`, // URL of the background image
+            backgroundSize: 'cover', // Ensures the image covers the entire background
+            backgroundPosition: 'center', // Center the background image
+            backgroundRepeat: 'no-repeat', // Prevents the background image from repeating
+          },
+            }}
+        
+      />
+    </Paper>
 
-            </tr>
-          </thead>
-          <tbody>
-            {
-              console.log("Rows:", rows.length)
-            }
-            {filteredRows && filteredRows.map((row) => (
-              <tr
-                key={row.itemDTO.itemId}
-                className={selectedRowId === row.itemDTO.itemId ? "selected-row" : ""}
-                onClick={() => {
-                  console.log("Row clicked:", row.itemDTO.itemId);
 
-                  handleRowClick(row.itemDTO.itemId);
 
-                }}
-              >
-                <td>{row.itemDTO.itemName}</td>
-                <td>{row.itemDTO.itemDescription}</td>
-                <td>{row.itemDTO.companyPrice}</td>
-                <td>{row.itemDTO.retailPrice}</td>
-                <td>{row.itemDTO.discount}</td>
-                <td>{row.itemBranchDTO.availableQuantity}</td>
-                {selectedCategory === "Tyre" && row.itemTyreDTO &&
-                  <>
-                    <td>{row.itemTyreDTO.pattern}</td>
-                    <td>{row.itemTyreDTO.tyreSize}</td>
-                    <td>{row.itemTyreDTO.vehicleType}</td>
-                  </>
-                }
-              </tr>
-            ))}
-          </tbody>
-        </table>
         <div className="button-group">
-          <button className="btn delete" onClick={() => openConfirmationDialog()}>Delete</button>
+          
           <button className="btn update" onClick={() => {
             if (selectedRowId) {
-              console.log("On Update Selected Row ID:", selectedRowId);
+             
               const selectedItem = rows.find(row => row.itemDTO.itemId === selectedRowId);
               openDialog(selectedItem);
 
@@ -402,22 +422,29 @@ const ItemView = () => {
           <button className="btn info" onClick={() => {
             if (selectedRowId) {
               const selectedItem = rows.find((row) => row.itemDTO.itemId === selectedRowId);
-              setSelectedItemPriceDetails({
-                officialSellingPrice: selectedItem.itemDTO.companyPrice || 0,
-                discount: selectedItem.itemDTO.discount || 0,
-              });
-              setIsPriceDetailsPopupOpen(true);
+              handleOpenStockInHistory();
+              
+              
             } else {
-              setMessage({ type: "error", text: "Please select an item to view price details!" });
+              setMessage({ type: "error", text: "Please select an item to stock in!" });
               setTimeout(() => setMessage(null), 2000);
             }
-          }}>More Info</button>
+          }}>StockIn History</button>
         </div>
-      </div>
-      <PopUp popUpTitle={currentItem ? "Edit Item" : "Add New Item"} openPopup={isDialogOpen} setOpenPopup={setIsDialogOpen} onSubmit={handleSubmit} setCancelButtonAction={closeDialog} isDefaultButtonsDisplay={false}>
+      </div> 
+      <PopUp popUpTitle={currentItem ? "Edit Item" : "Add New Item"}
+        openPopup={isDialogOpen}
+        setOpenPopup={setIsDialogOpen}
+        onSubmit={handleSubmit}
+        setCancelButtonAction={closeDialog}
+        isDefaultButtonsDisplay={false}
+      >
+
         <ItemDetailsForm
           formData={formData}
           setFormData={setFormData}
+          setStockIn={setStockIn}
+          stockIn={stockIn}
           errors={inputFieldErrors}
           handleChange={validateAddForm}
           onSubmit={handleSubmit}
@@ -425,19 +452,15 @@ const ItemView = () => {
         />
 
       </PopUp>
-      <PopUp
-        popUpTitle="Price Details"
-        openPopup={isPriceDetailsPopupOpen}
-        setOpenPopup={setIsPriceDetailsPopupOpen}
-        onSubmit={() => setIsPriceDetailsPopupOpen(false)}
-        setCancelButtonAction={() => setIsPriceDetailsPopupOpen(false)}
-        isDefaultButtonsDisplay={false}
-      >
-        <PriceDetailsSection
-          officialSellingPrice={selectedItemPriceDetails?.officialSellingPrice || ""}
-          discount={selectedItemPriceDetails?.discount || ""}
-        />
-      </PopUp>
+
+      <StockInHistory open={openStockInHistory} onClose={() => {setOpenStockInHistory(false); }} rows={stockInHistory}/>
+      
+
+
+
+
+
+
     </>
   );
 };
