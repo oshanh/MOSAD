@@ -109,3 +109,17 @@ export const useFetchStockInHistory = () => {
 
   return fetchStockInHistory;
 }
+
+export const useSendHelloWorldTemplate = () => {
+  const apiClient = useApiClient();
+
+  const sendHelloWorldTemplate = (phoneNumber) => {
+    return apiClient.post(`/notifications/hello`, null, {
+      params: {
+        to: phoneNumber,
+      },
+    });
+  };
+
+  return sendHelloWorldTemplate;
+};

@@ -66,10 +66,17 @@ public class ScheduledWANotifications {
 
             String remainingBalance="Rs."+ rb;
 
+            String messageForOwner=customerName +"should pay "+remainingBalance+" by "+formattedDueDate;
+
 
             whatsAppNotificationService.sendCreditReminder(contactNumber,customerName,remainingBalance,formattedDueDate);
         }
 
+    }
+
+    //@Scheduled(fixedRate = 3000)
+    public void sendHelloWorldTemplate(){
+        whatsAppNotificationService.sendHelloWorldTemplate("94717529331");
     }
 
 }

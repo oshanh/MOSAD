@@ -58,7 +58,7 @@ const SearchComponent = ({
   const [error, setError] = useState(""); // Error message for search failures
   const [loadingBrands, setLoadingBrands] = useState(false); // Loading state for fetching brands
 
-  const [message, setMessage] = useState(null);
+ 
 
   const loadBranches = async () => {
     try {
@@ -201,9 +201,9 @@ const SearchComponent = ({
 
 
   return (
-   <> 
-   {message && <GeneralMessage message={message} />}
-    <Grid2 size={{xs:12,sm:6,md:4}} sx={{ minWidth:600,width:"100%" }}>
+  
+   
+    <Grid2 size={{xs:12,sm:6,md:4}} >
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3, borderBottom: 1, borderColor: 'grey.500', borderRadius: 1, p: 2, boxShadow: 3 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold", textAlign: "center" }}>
             Real-Time Product Search
@@ -229,7 +229,7 @@ const SearchComponent = ({
                       }
                     }}
                     label="Branch"
-                    variant="outlined"
+                    variant="filled"
                     fullWidth
                   >
                     {branches.map((b) => (
@@ -311,7 +311,7 @@ const SearchComponent = ({
             />
           </Grid2>
     
-          {(category === "Tyre" && states.category==="Tyre") && (
+          {( (onAddToBill && category === "Tyre")  || states?.category==="Tyre") && (
             <>
               <Grid2 size={{xs:12,sm:6,md:4}} >
                 <TextField
@@ -357,7 +357,7 @@ const SearchComponent = ({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Brand</TableCell>
+                  
                   <TableCell>Name</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Store Count</TableCell>
@@ -365,15 +365,16 @@ const SearchComponent = ({
                     <>
                       <TableCell>Size</TableCell>
                       <TableCell>Pattern</TableCell>
+                      <TableCell>Vehicle Type</TableCell>
                     </>
                   )}
-                  <TableCell>Quantity</TableCell>
+                  
                 </TableRow>
               </TableHead>
               <TableBody>
                 {results.map((result) => (
                   <TableRow key={result.id}>
-                    <TableCell>{brand}</TableCell>
+                    
                     <TableCell>{result.itemDTO.itemName}</TableCell>
                     <TableCell>{result.itemDTO.companyPrice}</TableCell>
                     <TableCell>{result.itemBranchDTO.availableQuantity}</TableCell>
@@ -381,18 +382,10 @@ const SearchComponent = ({
                       <>
                         <TableCell>{result.itemTyreDTO.tyreSize}</TableCell>
                         <TableCell>{result.itemTyreDTO.pattern}</TableCell>
+                        <TableCell>{result.itemTyreDTO.vehicleType}</TableCell>
                       </>
                     )}
-                    <TableCell>
-                      <TextField
-                        type="number"
-                        size="small"
-                        variant="outlined"
-                        placeholder="Qty"
-                        value={quantity}
-                        onChange={(event) => setQuantity(event.target.value)}
-                      />
-                    </TableCell>
+                   
                     <TableCell>
                       <Button
                         variant="contained"
@@ -410,7 +403,7 @@ const SearchComponent = ({
         )}
       </Box>
     </Grid2>
-   </>   
+    
   );
 
 };
@@ -423,6 +416,10 @@ SearchComponent.propTypes = {
   onAddToBill: PropTypes.func,    // A required function for adding to the bill
   handleSearchChange: PropTypes.func.isRequired,    // A required function for handling search changes
   onRetail:PropTypes.bool,
+  onItemView:PropTypes.bool,
+  states: PropTypes.object, // An optional object for additional state management
+  // PropTypes for quantity and setQuantity
+
   quantity: (props, propName, componentName) => {
     const value = props[propName];
 

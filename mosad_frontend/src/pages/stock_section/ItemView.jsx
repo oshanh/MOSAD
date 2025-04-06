@@ -349,12 +349,12 @@ const ItemView = () => {
         />
       )}
 
-<section className="banner">
-          <img src={bannerImage} alt="Brand Banner" className="brand-banner" />
+      <section className="banner">
+        <img src={bannerImage} alt="Brand Banner" className="brand-banner" />
 
-        </section>
+      </section>
 
-<Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+<Box sx={{  width: "95%", margin: "auto", padding: "20px", borderRadius: "8px" }}>
   <SearchComponent
     selectedCategory={selectedCategory}
     setSelectedCategory={setSelectedCategory}
@@ -381,7 +381,7 @@ const ItemView = () => {
 
 
 
-        <Paper sx={{ height: 400, width: '100%' }}>
+        <Paper sx={{ height: 500, width: '95%',margin: "auto", padding: "20px", }}>
           <DataGrid
             rows={tableRows}
             columns={tableColumns}
