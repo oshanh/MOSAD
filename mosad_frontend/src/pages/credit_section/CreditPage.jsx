@@ -4,7 +4,7 @@ import {
   TableContainer, TableHead, TableRow, Typography, Paper, TextField,
   FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, RadioGroup, Radio, FormControl
 } from '@mui/material';
-import { Delete, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon ,AppRegistration as AppRegistrationIcon } from '@mui/icons-material';
+import { Delete, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon  } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
 import {useAddRepayment,useDeleteRepayment,useFetchAllCreditDetails,useUpdateCredit}from '../../hooks/servicesHook/useCreditService'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';

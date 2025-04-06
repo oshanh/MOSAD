@@ -18,6 +18,6 @@ public class NotificationController {
     @PostMapping("/hello")
     public String sendHelloWorldTemplate(@RequestParam String to) {
         notificationService.sendHelloWorldTemplate(to);
-        return "Hello World template sent to " + to;
+        return "Success";
     }
 }
