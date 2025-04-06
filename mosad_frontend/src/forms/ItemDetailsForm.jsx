@@ -103,6 +103,7 @@ ItemDetailsForm.propTypes = {
   errors: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   closeDialog: PropTypes.func.isRequired,
+  operationType: PropTypes.string.isRequired,
   stockIn: PropTypes.shape({
     stockIn: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     date: PropTypes.string.isRequired,

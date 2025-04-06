@@ -19,7 +19,6 @@ import {
   Grid2,
   Divider
 } from "@mui/material";
-import GeneralMessage from "./GeneralMessage";
 import { useFetchBrandAndSizeData,useFetchCategories,useFetchBrands,useFetchBranches } from "../hooks/servicesHook/useStockService";
 import useAuth from '../hooks/useAuth';
 
@@ -71,6 +70,7 @@ const SearchComponent = ({
         setError("Unexpected response from the server:", response);
       }
     } catch (err) {
+      console.error("Error while loading branches:", err);
       setError("Failed to load branches. Please try again.");
     } finally {
       setLoadingBrands(false);
@@ -82,6 +82,7 @@ const SearchComponent = ({
     return fetchBrands(category).then((result) => {
         return result;
       }).catch((error) => {
+        console.error("Error while fetching brands:", error);
         return null; 
       });
   }
@@ -90,6 +91,7 @@ const SearchComponent = ({
     return fetchBrandAndSizeData(category,brand,name,size,branch.branchId).then((result) => {
         return result;
       }).catch((error) => {
+        console.error("Error while fetching brand and size data:", error);
         return null;
       });
   }
@@ -98,6 +100,7 @@ const SearchComponent = ({
     return fetchCategories().then((result) => {
         return result;
       }).catch((error) => {
+
         return null;
       });
   }
@@ -114,6 +117,7 @@ const SearchComponent = ({
         console.error("Unexpected response from the server:", response);
       }
     } catch (err) {
+      console.error("Error while loading brands:", err);
       setError("Failed to load brands. Please try again.");
     } finally {
       setLoadingBrands(false);
@@ -130,7 +134,7 @@ const SearchComponent = ({
         setError("Unexpected response from the server:", response);
       }
     } catch (err) {
-      setError("Failed to load categories. Please try again.");
+      setError("Failed to load categories. Please try again.",err);
     } finally {
       setLoadingBrands(false);
     }
