@@ -56,12 +56,19 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
             type="number"
             label="Stock In"
             value={stockIn.stockIn}
-            onChange={(e) => setStockIn((prev) => ({ ...prev, stockIn: e.target.value }))}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === '' || Number(value) >= 0) {
+                setStockIn((prev) => ({ ...prev, stockIn: value }));
+              }
+            }}
+            htmlInput={{ min: 0 }}
             fullWidth
             variant="outlined"
             size="small"
             sx={{ gridColumn: "span" }}
           />
+
 
 
           <TextField

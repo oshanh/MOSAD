@@ -303,7 +303,7 @@ const ItemView = () => {
     { field: 'id', headerName: 'Item ID', width: 130 },
     { field: 'itemName', headerName: 'Name', width: 200 },
     { field: 'itemDescription', headerName: 'Description', width: 250 },
-    { field: 'companyPrice', headerName: 'Company Price', width: 150 },
+    { field: 'companyPrice', headerName: 'Official Selling Price', width: 150 },
     { field: 'retailPrice', headerName: 'Retail Price', width: 150 },
     { field: 'discount', headerName: 'Discount', width: 120 },
     { field: 'availableQuantity', headerName: 'Available Quantity', width: 180 },
@@ -439,7 +439,7 @@ const ItemView = () => {
           }}>StockIn History</button>
         </div>
       </div>
-      <PopUp popUpTitle={currentItem ? "Edit Item" : "Add New Item"}
+      <PopUp popUpTitle={currentItem ? "Update stock" : "Add New Item"}
         openPopup={isDialogOpen}
         setOpenPopup={setIsDialogOpen}
         onSubmit={handleSubmit}
