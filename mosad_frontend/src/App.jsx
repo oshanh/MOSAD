@@ -69,10 +69,10 @@ function App() {
             <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN"]}/>}>
               <Route path="/dashboard" element={ <HomePage />} />
 
-              <Route path="/stocks" element={ <StockPageLayout />} >
-                <Route index element={<StockPage isFromBranch={false}/>}/>
-                <Route path="brands" element={<BrandPage isFromBranch={false}/>}/>
-                <Route path="item-view" element={<ItemView />} />
+              <Route path="/stocks/category" element={ <StockPageLayout />} >
+                <Route index element={<StockPage allowedRoles={["OWNER","ADMIN"]}/>}/>
+                <Route path="brands" element={<BrandPage allowedRoles={["OWNER","ADMIN"]}/>}/>
+                <Route path="brands/item-view" element={<ItemView />} />
               </Route>
 
               <Route path="/employees" element={ <EmployeePage />} />
@@ -95,14 +95,16 @@ function App() {
               <Route path="/branches" element={ <BranchPageLayout />} >
                 <Route index element={<BranchPage/>}/>
                 <Route path="bill-history" element={<AllBillsPage />}/>
+                <Route path="stock" element={<ItemView />}/>
+                <Route path="employee-view" element={<EmployeePage />}/>
               </Route>
             </Route>
           
             {/* Branch Manager dashboard acording to the role */}
             <Route element={<CheckPrivileges allowedRoles={["STOCK_MANAGER"]}/>}>
-              <Route path="/admin/stock" element={ <StockPageLayout />} >
-                <Route index element={<StockPage isFromBranch={false}/>}/>
-                <Route path="brand" element={<BrandPage isFromBranch={false}/>}/>
+              <Route path="/stock" element={ <StockPageLayout />} >
+                <Route index element={<StockPage allowedRoles={["STOCK_MANAGER"]}/>}/>
+                <Route path="brand" element={<BrandPage allowedRoles={["STOCK_MANAGER"]}/>}/>
                 <Route path="item-view" element={<ItemView />} />
               </Route>
             </Route>
@@ -112,11 +114,7 @@ function App() {
               <Route path="/branch" element={ <BranchPageLayout />} >
                 <Route index element={<BranchPage/>}/>
                 <Route path="bill-history" element={<AllBillsPage />}/>
-                <Route path="stock" element={<BranchStockLayout />}>
-                  <Route index element={<StockPage isFromBranch={true}/>}/>
-                  <Route path="brand" element={<BrandPage isFromBranch={true}/>}/>
-                  <Route path="item-view" element={<ItemView />}/>
-                </Route>
+                <Route path="stock" element={<ItemView />}/>
                 <Route path="employee-view" element={<EmployeePage />}/>
               </Route>
               <Route path="/employee" element={ <EmployeePage />} />
@@ -126,7 +124,6 @@ function App() {
             <Route element={<CheckPrivileges allowedRoles={["MECHANIC"]}/>}>
               <Route path="/employee" element={ <EmployeePage />} />
             </Route>
-
 
              {/* Retailers dashboard acording to the role */}
             <Route element={<CheckPrivileges allowedRoles={["RETAIL_CUSTOMER"]}/>}>

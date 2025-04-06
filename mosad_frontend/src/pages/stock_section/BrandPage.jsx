@@ -20,7 +20,7 @@ const iconMap = {
   RAPID: <CreditCardIcon fontSize="large" />,
 };
 
-function BrandPage({ isFromBranch }) {
+function BrandPage({ allowedRoles }) {
   const fetchBrands = useFetchBrands();
   const addBrand = useAddBrand();
   const location = useLocation();
@@ -80,6 +80,9 @@ function BrandPage({ isFromBranch }) {
     return <h2 style={{ textAlign: 'center' }}>Loading...</h2>;
   }
 
+  const linkForRoutes = allowedRoles.includes("ADMIN") || allowedRoles.includes("OWNER")
+  ? '/stocks/category/brands/item-view'
+  : '/stock/category/brands/item-view'; 
   return (
     <>
       <h1 style={{ textAlign: 'center', color: 'black' }}>Select a Brand</h1>
@@ -104,7 +107,7 @@ function BrandPage({ isFromBranch }) {
                 allowedRoles={["OWNER", "ADMIN", "STOCK_MANAGER"]}
                 title={brand.brandName}
                 icon={iconMap[brand.brandName] || <DescriptionIcon fontSize="large" />}
-                link={`${isFromBranch ? '/branch/stock/brand/item-view' : '/stocks/item-view'}`}
+                link={linkForRoutes}
                 state={{ ...states, brand: brand.brandName }}
               />
             </Grid>
@@ -171,7 +174,7 @@ function BrandPage({ isFromBranch }) {
 }
 
 BrandPage.propTypes = {
-  isFromBranch: PropTypes.bool.isRequired,
+  allowedRoles: PropTypes.object.isRequired,
 };
 
 export default BrandPage;

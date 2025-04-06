@@ -13,6 +13,8 @@ const loadDashboard=()=>{
         return "/employee";
       case "RETAIL_CUSTOMER":
         return "/retail"
+      case "STOCK_MANAGER":
+        return "/stock"
     }
    
 }

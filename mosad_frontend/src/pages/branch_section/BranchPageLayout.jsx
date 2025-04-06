@@ -12,27 +12,29 @@ const BranchPageLayout=()=>{
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };
-
-    const tabRoutes = [
-        { path: '/branch', label: 'Branch Details', id: 'branch_details' },
-        { path: '/branch/bill-history', label: 'Bill History', id: 'bill_history' },
-        { path: '/branch/stock', label: 'Stock', id: 'stock' },
-        { path: '/branch/employee-view', label: 'Employee view', id: 'employee_view' },
-      ];
-
-      const filteredTabRoutes=()=>{
-        let loggedUserRole=auth.roles[0];
-        switch(loggedUserRole){
-          case "BRANCH_MANAGER":
-            return tabRoutes.slice(1); // select the bill-history,stock and employee-view;
+     
+    const handleRouteArray=()=>{
+      switch(auth.roles[0]){
           case "ADMIN":
           case  "OWNER":
-            return tabRoutes.slice(0, 1); // select the branch Details link only
-        }
+            return [
+              { path: '/branches', label: 'Branch Details', id: 'branch_details' },
+              { path: '/branches/bill-history', label: 'Bill History', id: 'bill_history' },
+              { path: '/branches/stock', label: 'Stock', id: 'stock' },
+              { path: '/branches/employee-view', label: 'Employee view', id: 'employee_view' },
+            ];
+          case "BRANCH_MANAGER": 
+          return [
+            { path: '/branch', label: 'Branch Details', id: 'branch_details' },
+            { path: '/branch/bill-history', label: 'Bill History', id: 'bill_history' },
+            { path: '/branch/stock', label: 'Stock', id: 'stock' },
+            { path: '/branch/employee-view', label: 'Employee view', id: 'employee_view' },
+          ];
       }
-      
+    }
+
       const renderTabs = () => {
-        return filteredTabRoutes().map((route, index) => (
+        return handleRouteArray().map((route, index) => (
           <Tab 
             key={"tab"+index} 
             component={Link} 
