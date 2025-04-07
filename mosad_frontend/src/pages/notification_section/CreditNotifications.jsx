@@ -23,7 +23,7 @@ const CreditNotifications = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetchNotificationsByType("Credit");
+        const response = await fetchNotificationsByType("Credit Reminder");
         setNotifications(response.data);
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
