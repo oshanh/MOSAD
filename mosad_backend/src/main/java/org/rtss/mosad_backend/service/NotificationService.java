@@ -6,6 +6,10 @@ import org.rtss.mosad_backend.dto_mapper.NotificationMapper;
 import org.rtss.mosad_backend.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class NotificationService {
 
@@ -24,6 +28,19 @@ public class NotificationService {
         System.out.println("saved notification: " + saved);
         return notificationMapper.toDTO(saved);
     }
+
+
+    public List<NotificationDTO> getNotificationsByType(String type) {
+        List<Notification> notifications = notificationRepository.findByType(type);
+        List<NotificationDTO> list = new ArrayList<>();
+        for (Notification notification : notifications) {
+            NotificationDTO dto = notificationMapper.toDTO(notification);
+            list.add(dto);
+        }
+        return list;
+    }
+
+
 
     public void deleteNotification(Long id) {
         notificationRepository.deleteById(id);
