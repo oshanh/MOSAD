@@ -9,6 +9,7 @@ import useAuth from "../hooks/useAuth"
 import { useLogout } from '../hooks/servicesHook/useApiUserService';
 import ConfirmationDialog from './ConfirmationDialog';
 import Cookies from 'universal-cookie';
+import loadashboard from "../utils/loadDashboard"
 
 function HeaderBar() {
   const [openConfirmationDialog,setOpenConfirmationDialog] =useState(false);
@@ -54,7 +55,7 @@ function HeaderBar() {
 
         
         {/* Center: Professional Text */}
-        <Link to="/home" style={{ textDecoration: 'none' ,flexGrow: 1}}> 
+        <Link to={loadashboard()} style={{ textDecoration: 'none' ,flexGrow: 1}}> 
         <Typography
           component="div"
           sx={{  

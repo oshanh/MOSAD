@@ -13,6 +13,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AddIcon from '@mui/icons-material/Add';
+import useAuth from '../../hooks/useAuth';
 
 const iconMap = {
   Tyre: <DescriptionIcon fontSize="large" />,
@@ -21,7 +22,7 @@ const iconMap = {
   Battery: <CreditCardIcon fontSize="large" />,
 };
 
-function StockPage({ isFromBranch }) {
+function StockPage({ allowedRoles}) {
   const fetchCategories = useFetchCategories();
   const addCategory = useAddCategory();
   const [categories, setCategories] = useState([]);
@@ -30,6 +31,7 @@ function StockPage({ isFromBranch }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [successMessage, setSuccessMessage] = useState(null);
+  const {auth} =useAuth();
 
   useEffect(() => {
     const getCategories = async () => {
@@ -69,6 +71,10 @@ function StockPage({ isFromBranch }) {
   if (loading) {
     return <h2 style={{ textAlign: 'center' }}>Loading...</h2>;
   }
+
+  const linkForRoutes = allowedRoles.includes("ADMIN") || allowedRoles.includes("OWNER")
+  ? '/stocks/category/brands'
+  : '/stock/category/brands'; 
   return (
     <>
       <Outlet />
@@ -94,7 +100,7 @@ function StockPage({ isFromBranch }) {
                 allowedRoles={["OWNER","ADMIN","STOCK_MANAGER"]}
                 title={category.categoryName}
                 icon={iconMap[category.categoryName] || <DescriptionIcon fontSize="large" />}
-                link={`${isFromBranch ? '/branch/stock/brand' : '/stock/brand'}`}
+                link={linkForRoutes}
                 state={{ category: category.categoryName }}
               />
             </Grid>
@@ -161,7 +167,7 @@ function StockPage({ isFromBranch }) {
 }
 
 StockPage.propTypes = {
-  isFromBranch: PropTypes.bool.isRequired,
+  allowedRoles: PropTypes.object.isRequired,
 };
 
 export default StockPage;
