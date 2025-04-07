@@ -3,11 +3,15 @@ import Alert from '@mui/material/Alert';
 import {Container,Box,Typography,Button, Paper } from "@mui/material";
 import { ErrorOutline } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth"
+import loadDashboard from "../utils/loadDashboard"
 
 const NotFoundPage=()=>{
+    const {auth} =useAuth();
     const navigate=useNavigate();
 
-    const goHome= ()=>navigate('/home');
+    const path=loadDashboard();
+    const goHome= ()=>navigate(path);
 
     return(
         <Container maxWidth="sm" sx={{ 

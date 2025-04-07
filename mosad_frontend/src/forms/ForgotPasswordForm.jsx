@@ -1,6 +1,8 @@
-import { Typography, Button, TextField, Box } from "@mui/material";
+import { Typography, Button, TextField, Box,IconButton, InputAdornment } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useFgtPwdMailCheckAndOtpSend,useVerifyOtp,useResendOtp,useChangePassword } from "../hooks/servicesHook/useApiUserService";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const ForgotPasswordForm = () =>{
     const fgtPwdMailCheckAndOtpSend=useFgtPwdMailCheckAndOtpSend();
@@ -17,6 +19,20 @@ const ForgotPasswordForm = () =>{
     const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [passwordStrength, setPasswordStrength] = useState("");
     const [isLoading,setIsLoading] =useState(false);
+
+    //Password hide/show
+    const [type, setType] = useState('password');
+    const [icon, setIcon] = useState(<VisibilityOffIcon />);
+
+    const handlePasswordToggle = () => {
+      if (type === 'password') {
+          setIcon(<VisibilityIcon />);
+          setType('text')
+      } else {
+          setIcon(<VisibilityOffIcon />)
+          setType('password')
+      }
+    }
 
     //Email submititon to backend
     const handleEmailSubmit = async () => {
@@ -268,7 +284,7 @@ const ForgotPasswordForm = () =>{
               <TextField
                   fullWidth
                   label="Enter new password"
-                  type="password"
+                  type={type}
                   value={newPassword}
                   onChange={(e) => handlePasswordChange(e.target.value)}
                   onKeyDown={(e) => {
@@ -277,6 +293,19 @@ const ForgotPasswordForm = () =>{
                     }
                   }}
                   margin="normal"
+                  slotProps={{
+                    input: {
+                        endAdornment:
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle the password"
+                                    onClick={handlePasswordToggle}
+                                >
+                                    {icon}
+                                </IconButton>
+                            </InputAdornment>
+                    },
+                }}
               />
                     {newPassword && (
                       <Typography
@@ -288,7 +317,7 @@ const ForgotPasswordForm = () =>{
               <TextField
                   fullWidth
                   label="Confirm password"
-                  type="password"
+                  type={type}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   onKeyDown={(e) => {
@@ -297,6 +326,20 @@ const ForgotPasswordForm = () =>{
                     }
                   }}
                   margin="normal"
+                  sx={{ mb: 2 }}
+                  slotProps={{
+                      input: {
+                          endAdornment:
+                              <InputAdornment position="end">
+                                  <IconButton
+                                      aria-label="Toggle the password"
+                                      onClick={handlePasswordToggle}
+                                  >
+                                      {icon}
+                                  </IconButton>
+                              </InputAdornment>
+                      },
+                  }}
               />
               {errorMessage && <Typography color="error">{errorMessage}</Typography>}
               <Button

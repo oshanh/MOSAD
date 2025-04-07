@@ -15,6 +15,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom'; 
+import loadDashboard from '../utils/loadDashboard';
 
 export default function SideDrawer() {
   const [open, setOpen] = React.useState(false);
@@ -34,7 +35,7 @@ export default function SideDrawer() {
   }));
 
   const drawerItems = [
-    { title: 'Home', link: '/home',icon: <HomeIcon /> },
+    { title: 'Home', link: loadDashboard(),icon: <HomeIcon /> },
     { title: 'User Management', link: '/user', icon: <PeopleIcon /> },
   ];
   return (

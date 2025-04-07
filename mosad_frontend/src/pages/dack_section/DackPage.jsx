@@ -6,10 +6,6 @@ import {
   Button,
   Box,
   Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Slide,
   Grid2 as Grid,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -23,7 +19,7 @@ import {
   useDeleteRebuildTyre,
   useUpdateRebuildTyre
 } from '../../hooks/servicesHook/useDackService.js'
-
+import GeneralSnackbarAlerts from '../../component/GeneralSnackbarAlerts.jsx';
 
 const theme = createTheme({
   palette: {
@@ -34,10 +30,6 @@ const theme = createTheme({
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
   },
-});
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const RebuildTyrePage = () => {
@@ -53,6 +45,58 @@ const RebuildTyrePage = () => {
   const [openFormPopup, setOpenFormPopup] = useState(false);
   const [openInfoPopup, setOpenInfoPopup] = useState(false);
   const [infoTyre, setInfoTyre] = useState(null);
+
+  //Show alerts using snack bar
+  const [showSnack, setShowSnack] = useState(false);
+  const [alertType, setAlertType] = useState("warning");
+  const [alertMsg, setAlertMsg] = useState("");
+
+  const moreInfoForm = (infoTyre) => {
+    return (
+      <Paper elevation={2} sx={{ p: 3 }}>
+        <Typography variant="h4" gutterBottom sx={{pb:2}}>
+          Tyre Details
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid size={{xs:12,sm:6}}>
+            <Typography variant="body1">
+              Tyre Size: {infoTyre?.tyreSize}
+            </Typography>
+          </Grid>
+          <Grid size={{xs:12,sm:6}}>
+            <Typography variant="body1">
+              Tyre Brand: {infoTyre?.tyreBrand}
+            </Typography>
+          </Grid>
+          <Grid size={{xs:12,sm:6}}>
+            <Typography variant="body1">
+              Date Sent To Company: {infoTyre?.dateSentToCompany}
+            </Typography>
+          </Grid>
+          <Grid size={{xs:12,sm:6}}>
+            <Typography variant="body1">
+              Sales Rep Number: {infoTyre?.salesRepNumber}
+            </Typography>
+          </Grid>
+          <Grid size={{xs:12,sm:6}}>
+            <Typography variant="body1">
+              Job Number: {infoTyre?.jobNumber}
+            </Typography>
+          </Grid>
+          <Grid size={{xs:12,sm:6}}>
+            <Typography variant="body1">
+              Date Received From Company: {infoTyre?.dateReceivedFromCompany}
+            </Typography>
+          </Grid>
+          <Grid size={{xs:12}}>
+            <Typography variant="body1">
+              Date Delivered To Customer: {infoTyre?.dateDeliveredToCustomer}
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
+    );
+  };
 
   const fetchTyres = async () => {
     try {
@@ -131,13 +175,14 @@ const RebuildTyrePage = () => {
   return (
     <ThemeProvider theme={theme}>
       <Container sx={{ py: 4 }}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Rebuild Tyre Management
+      <GeneralSnackbarAlerts open={showSnack} type={alertType} msg={alertMsg} setOpen={setShowSnack}/>
+        <Typography variant="h4" align="center" sx={{mb:2}}>
+          Dack Tyre Management
         </Typography>
 
         <Paper sx={{ p: 2, mb: 3, boxShadow: 3, borderRadius: 2 }}>
           <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={8}>
+            <Grid size={{xs:12,sm:8}}>
               <TextField
                 label="Filter by Contact Number"
                 value={filter}
@@ -146,13 +191,13 @@ const RebuildTyrePage = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} sm={4} container spacing={1}>
-              <Grid item xs={6}>
+            <Grid size={{xs:12,sm:4}} sm={4} container spacing={1}>
+              <Grid size={{xs:12}}>
                 <Button variant="contained" color="primary" onClick={fetchTyres} fullWidth>
                   Search
                 </Button>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{xs:12}}>
                 <Button variant="outlined" onClick={() => setFilter('')} fullWidth>
                   Clear Filter
                 </Button>
@@ -188,47 +233,16 @@ const RebuildTyrePage = () => {
           />
         </PopUp>
 
-        <Dialog
-          open={openInfoPopup}
-          onClose={handleCloseInfo}
-          maxWidth="sm"
-          fullWidth
-          TransitionComponent={Transition}
+
+        <PopUp
+          popUpTitle='More Info'
+          openPopup={openInfoPopup}
+          setOpenPopup={setOpenInfoPopup}
+          setCancelButtonAction={handleCloseInfo}
+          isDefaultButtonsDisplay={false}
         >
-          <DialogTitle>More Info</DialogTitle>
-          <DialogContent dividers>
-            {infoTyre && (
-              <Box>
-                <Typography variant="body1">
-                  <strong>Tyre Size:</strong> {infoTyre.tyreSize}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Tyre Brand:</strong> {infoTyre.tyreBrand}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Date Sent To Company:</strong> {infoTyre.dateSentToCompany}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Sales Rep Number:</strong> {infoTyre.salesRepNumber}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Job Number:</strong> {infoTyre.jobNumber}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Date Received From Company:</strong> {infoTyre.dateReceivedFromCompany}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Date Delivered To Customer:</strong> {infoTyre.dateDeliveredToCustomer}
-                </Typography>
-              </Box>
-            )}
-          </DialogContent>
-          <Box display="flex" justifyContent="flex-end" p={2}>
-            <Button variant="outlined" onClick={handleCloseInfo}>
-              Close
-            </Button>
-          </Box>
-        </Dialog>
+         {infoTyre && moreInfoForm(infoTyre)}
+        </PopUp>
       </Container>
     </ThemeProvider>
   );
