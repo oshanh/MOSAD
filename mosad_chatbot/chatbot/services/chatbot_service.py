@@ -2,7 +2,7 @@ from langchain_openai import ChatOpenAI
 from chatbot.config import OPENAI_API_KEY, OPENAI_MODEL_NAME
 from chatbot.utils.faq_loader import load_faq_dataframe
 from chatbot.agents.customer_agent import get_customer_agent
-from chatbot.agents.admin_agent import get_admin_agent
+# from chatbot.agents.admin_agent import get_admin_agent
 from crewai import Task
 from rapidfuzz import fuzz
 
@@ -11,7 +11,7 @@ faq_df = load_faq_dataframe("faq/mosad_faq.csv")
 
 # Initialize agents once
 customer_agent = get_customer_agent(llm)
-admin_agent = get_admin_agent(llm)
+# admin_agent = get_admin_agent(llm)
 
 def get_top_faq_matches(user_question: str, top_n: int = 3) -> str:
     scored = [

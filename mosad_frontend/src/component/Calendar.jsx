@@ -18,14 +18,14 @@ function ServerDay(props) {
     <Badge
       key={day.toString()}
       overlap="circular"
-      badgeContent={isHighlighted ? <StarIcon/> : undefined}
+      badgeContent={isHighlighted ? <StarIcon sx={{fontSize:'small'}}/> : undefined}
     >
       <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
     </Badge>
   );
 }
 
-export default function DateCalendarWithProps({ highlightedDates = [] }) {
+export default function Calendar({ highlightedDates = [] }) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [currentHighlightedDays, setCurrentHighlightedDays] = React.useState(
     highlightedDates.map((date) => dayjs(date))
@@ -37,9 +37,6 @@ export default function DateCalendarWithProps({ highlightedDates = [] }) {
 
   const handleMonthChange = (date) => {
     setIsLoading(true);
-    // In a real scenario, you might want to fetch data for the new month here
-    // based on your `highlightedDates` prop or a new API call.
-    // For this example, we'll just keep the existing highlighted dates.
     setIsLoading(false);
   };
 
