@@ -94,13 +94,11 @@ const ChatInput = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1),
   borderTop: `1px solid ${theme.palette.divider}`,
 }));
+import useAuth from '../../hooks/useAuth';
+import Chatbot from '../../component/chatbot';
 
 function HomePage() {
-  const { response, sendMessage } = useChatbot();
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const theme = useTheme(); // Access the theme
+  const { auth } = useAuth();
 
   const tiles = [
     { title: 'Bill Generate', icon: <DescriptionIcon />, link: '/bills', authorizedRoles:["OWNER","ADMIN"] },
@@ -113,28 +111,12 @@ function HomePage() {
     { title: 'Dack Tires', icon:<AssessmentIcon/>, link:'/dacks', authorizedRoles:["OWNER","ADMIN"] }
   ];
 
-  const handleSendMessage = () => {
-    if (message.trim() === "") return;
-    setMessages((prev) => [
-      ...prev,
-      { text: message, sender: "user", timestamp: new Date().toLocaleTimeString() },
-    ]);
-    sendMessage(message);
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { text: response, sender: "bot", timestamp: new Date().toLocaleTimeString() },
-      ]);
-    }, 500);
-    setMessage("");
-  };
-
   return (
     <>
      <Typography variant="h4" component="h2" mb={2} textAlign="center" color={theme.palette.primary.main}>
           Admin Dashboard
         </Typography>
-     
+
       <Slideshow />
       <AnalyticalCard/>
       <Box
@@ -167,79 +149,8 @@ function HomePage() {
         </Stack>
       </Box>
 
-      {/* Floating Chatbot Button */}
-      <IconButton
-        sx={{
-          position: "fixed",
-          bottom: 30,
-          right: 30,
-          backgroundColor: theme.palette.primary.main,
-          color: theme.palette.primary.contrastText,
-          "&:hover": { backgroundColor: theme.palette.primary.dark },
-          boxShadow: theme.shadows[2],
-        }}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? <CloseIcon /> : <ChatBubbleOutlineIcon />}
-      </IconButton>
-
-      {/* Chatbot UI */}
-      {isOpen && (
-        <ChatbotContainer>
-          {/* Chat Header */}
-          <ChatHeader>
-            <Typography variant="h6">Chatbot Assistant</Typography>
-          </ChatHeader>
-
-          {/* Chat Messages */}
-          <ChatMessages>
-            {messages.map((msg, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: "flex",
-                  justifyContent: msg.sender === "user" ? "flex-end" : "flex-start",
-                }}
-              >
-                {msg.sender === "bot" && (
-                  <Avatar sx={{ bgcolor: theme.palette.primary.main, marginRight: 1 }}>🤖</Avatar>
-                )}
-                {msg.sender === "user" ? (
-                  <UserMessage elevation={2}>
-                    <Typography>{msg.text}</Typography>
-                    <Typography variant="caption" sx={{ display: "block", textAlign: "right", mt: 0.5 }}>
-                      {msg.timestamp}
-                    </Typography>
-                  </UserMessage>
-                ) : (
-                  <BotMessage elevation={2}>
-                    <Typography>{msg.text}</Typography>
-                    <Typography variant="caption" sx={{ display: "block", mt: 0.5 }}>
-                      {msg.timestamp}
-                    </Typography>
-                  </BotMessage>
-                )}
-              </Box>
-            ))}
-          </ChatMessages>
-
-          {/* Chat Input */}
-          <ChatInput>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              placeholder="Type a message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              sx={{ flexGrow: 1, mr: theme.spacing(1) }}
-            />
-            <Button variant="contained" color="primary" onClick={handleSendMessage}>
-              <SendIcon />
-            </Button>
-          </ChatInput>
-        </ChatbotContainer>
-      )}
+      {/* Floating Chatbot Icon and Window */}
+      <Chatbot />
     </>
   );
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { TextField, Box, Typography,Button,DialogActions } from "@mui/material";
 import PropTypes from "prop-types";
 
-const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,stockIn,setStockIn }) => {
+const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,stockIn,setStockIn,operationType }) => {
 
 
 
@@ -27,17 +27,19 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
             gap: "15px",
           }}
         >
-          {Object.keys(formData).map((key) => (
+          {Object.keys(formData).map((key) => 
+          (key==="itemId" || key==="retailPrice" || key==="discount")?null:(
             <TextField
               key={key}
               type={key === "companyPrice" || key === "availableQuantity" || key=="retailPrice" || key=="discount"  ? "number" : "text"} // Set input type based on the key
-              label={key.replace(/([A-Z])/g, " $1").trim()} // Generate label from the key
+              label={key==="companyPrice" ? "Official selling price": key.replace(/([A-Z])/g, " $1").trim()} // Generate label from the key
               value={formData[key] || ""} // Set input value based on the key
               onChange={(e) =>
                 handleChange(key, e.target.value)
               }
               required={key !== "itemId"} // Mark all fields except 'itemId' as required
-              disabled={key==="itemId" || key==="availableQuantity"} // Disable the 'itemId' field
+              disabled={key==="availableQuantity" || operationType=="Edit"} // Disable the 'itemId' field
+              
               error={!!errors[key]} // Highlight the field in red if it has an error
               helperText={errors[key] || ""} // Show error message if available
               fullWidth
@@ -47,6 +49,11 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
                 gridColumn: "span", // Ensures consistent spacing
                 backgroundColor: "#fff",
               }}
+              slotProps={{
+                input: {
+                  inputProps: key === "companyPrice"  ? {min:0} : undefined, // Set min value for number inputs
+                },
+              }}
             />
           ))}
           {/* New Stock Input Field */}
@@ -54,12 +61,19 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
             type="number"
             label="Stock In"
             value={stockIn.stockIn}
-            onChange={(e) => setStockIn((prev) => ({ ...prev, stockIn: e.target.value }))}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === '' || Number(value) >= 0) {
+                setStockIn((prev) => ({ ...prev, stockIn: value }));
+              }
+            }}
+            htmlInput={{ min: 0 }}
             fullWidth
             variant="outlined"
             size="small"
             sx={{ gridColumn: "span" }}
           />
+
 
 
           <TextField
@@ -89,6 +103,7 @@ ItemDetailsForm.propTypes = {
   errors: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   closeDialog: PropTypes.func.isRequired,
+  operationType: PropTypes.string.isRequired,
   stockIn: PropTypes.shape({
     stockIn: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     date: PropTypes.string.isRequired,
