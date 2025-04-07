@@ -366,4 +366,14 @@ public class ItemService {
         return stockInDTOS;
     }
 
+    public List<Item> stockQty(int qty){
+        List<ItemBranch> items=itemBranchRepository.findByAvailableQuantityLessThan(qty);
+        List<Item> item=new ArrayList<>();
+        for(ItemBranch itemBranch:items){
+            item.add(itemBranch.getItem());
+        }
+        return item;
+
+    }
+
 }

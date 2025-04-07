@@ -20,4 +20,9 @@ public class NotificationController {
         notificationService.sendHelloWorldTemplate(to);
         return "Success";
     }
+    @PostMapping("/credit")
+    public String sendCreditReminderTemplate(@RequestParam String to, @RequestParam String name,@RequestParam String amount,@RequestParam String dueDate) {
+        notificationService.sendCreditReminder(to, name, amount, dueDate);
+        return "Success";
+    }
 }
