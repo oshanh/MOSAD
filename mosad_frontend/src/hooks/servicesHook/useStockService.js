@@ -84,7 +84,7 @@ export const useFetchBrandAndSizeData = () => {
   const apiClient = useApiClient();
 
   const fetchBrandAndSizeData = (category,brand,name, size,branchId) => {
-    return apiClient.get(`/item/search?Category=${category}&Brand=${brand}&name=${name}&tyreSize=${size}&branchId=${branchId}`);
+    return apiClient.get(`/item/search?category=${category}&brand=${brand}&name=${name}&tyreSize=${size}&branchId=${branchId}`);
   };
 
   return fetchBrandAndSizeData;
@@ -109,3 +109,17 @@ export const useFetchStockInHistory = () => {
 
   return fetchStockInHistory;
 }
+
+export const useSendHelloWorldTemplate = () => {
+  const apiClient = useApiClient();
+
+  const sendHelloWorldTemplate = (phoneNumber) => {
+    return apiClient.post(`/notifications/hello`, null, {
+      params: {
+        to: phoneNumber,
+      },
+    });
+  };
+
+  return sendHelloWorldTemplate;
+};

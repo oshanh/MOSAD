@@ -7,15 +7,17 @@
 
 /* Banner */
 .banner {
-  width: auto;
+  width: 100%;
   height: 300px;
-  overflow: hidden;
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 10px;
+  margin: auto;
 }
 
 .brand-banner {
-  width: 100%;
+  width: 90%;
   height: 100%;
   object-fit: fill;
 }

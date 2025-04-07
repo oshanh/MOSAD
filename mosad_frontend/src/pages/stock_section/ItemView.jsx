@@ -29,6 +29,7 @@ const ItemView = () => {
 
   const {auth}=useAuth();
   
+  
 
   const passedStates=useLocation();
   const states=passedStates.state;
@@ -302,9 +303,8 @@ const ItemView = () => {
     { field: 'id', headerName: 'Item ID', width: 130 },
     { field: 'itemName', headerName: 'Name', width: 200 },
     { field: 'itemDescription', headerName: 'Description', width: 250 },
-    { field: 'companyPrice', headerName: 'Company Price', width: 150 },
-    { field: 'retailPrice', headerName: 'Retail Price', width: 150 },
-    { field: 'discount', headerName: 'Discount', width: 120 },
+    { field: 'companyPrice', headerName: 'Official Selling Price', width: 150 },
+    
     { field: 'availableQuantity', headerName: 'Available Quantity', width: 180 },
     ...(selectedCategory === 'Tyre' ? [
       { field: 'pattern', headerName: 'Pattern', width: 150 },
@@ -318,8 +318,7 @@ const ItemView = () => {
     itemName: row.itemDTO.itemName,
     itemDescription: row.itemDTO.itemDescription,
     companyPrice: row.itemDTO.companyPrice,
-    retailPrice: row.itemDTO.retailPrice,
-    discount: row.itemDTO.discount,
+    
     availableQuantity: row.itemBranchDTO.availableQuantity,
     pattern: row.itemTyreDTO?.pattern || '',
     tyreSize: row.itemTyreDTO?.tyreSize || '',
@@ -348,7 +347,12 @@ const ItemView = () => {
         />
       )}
 
-<Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
+      <section className="banner">
+        <img src={bannerImage} alt="Brand Banner" className="brand-banner" />
+
+      </section>
+
+<Box sx={{  width: "95%", margin: "auto", padding: "20px", borderRadius: "8px" }}>
   <SearchComponent
     selectedCategory={selectedCategory}
     setSelectedCategory={setSelectedCategory}
@@ -358,6 +362,10 @@ const ItemView = () => {
     setSelectedBranch={setSelectedBranch}
     fetchandSetItems={fetchandSetItems}
     handleSearchChange={handleSearchChange}
+    onItemView={true}
+    auth={auth}
+    states={states}
+    
   />
   
 </Box>
@@ -367,22 +375,19 @@ const ItemView = () => {
 
       <div className="item-view-container">
 
-        <section className="banner">
-          <img src={bannerImage} alt="Brand Banner" className="brand-banner" />
-
-        </section>
-
         
 
-<Paper sx={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={tableRows}
-        columns={tableColumns}
-        pageSize={5}
-        rowsPerPageOptions={[5, 10]}
-        onRowClick={(e) => {handleRowClick(e.row.id);}}
-        disableColumnResize
-       
+
+
+        <Paper sx={{ height: 500, width: '95%',margin: "auto", padding: "20px", }}>
+          <DataGrid
+            rows={tableRows}
+            columns={tableColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5, 10]}
+            onRowClick={(e) => { handleRowClick(e.row.id); }}
+            disableColumnResize
+
             sx={{
               '& .MuiDataGrid-row.Mui-selected': {
                 backgroundColor: '#a0d8a0', // Selected row color
@@ -391,25 +396,25 @@ const ItemView = () => {
                 },
               },
               border: 0,
-             '& .MuiDataGrid-root': {
-            marginTop: '50px', // Adjust the table position to make space for the filter panel
-            backgroundImage: `url(${bannerImage})`, // URL of the background image
-            backgroundSize: 'cover', // Ensures the image covers the entire background
-            backgroundPosition: 'center', // Center the background image
-            backgroundRepeat: 'no-repeat', // Prevents the background image from repeating
-          },
+              '& .MuiDataGrid-root': {
+                marginTop: '50px', // Adjust the table position to make space for the filter panel
+                backgroundImage: `url(${bannerImage})`, // URL of the background image
+                backgroundSize: 'cover', // Ensures the image covers the entire background
+                backgroundPosition: 'center', // Center the background image
+                backgroundRepeat: 'no-repeat', // Prevents the background image from repeating
+              },
             }}
-        
-      />
-    </Paper>
+
+          />
+        </Paper>
 
 
 
         <div className="button-group">
-          
+
           <button className="btn update" onClick={() => {
             if (selectedRowId) {
-             
+
               const selectedItem = rows.find(row => row.itemDTO.itemId === selectedRowId);
               openDialog(selectedItem);
 
@@ -417,22 +422,22 @@ const ItemView = () => {
               setMessage({ type: "error", text: "Please select an item to update!" });
               setTimeout(() => setMessage(null), 2000);
             }
-          }}>Update</button>
+          }}>Update Stock</button>
           <button className="btn add" onClick={() => openDialog(null)}>Add Item</button>
           <button className="btn info" onClick={() => {
             if (selectedRowId) {
-              const selectedItem = rows.find((row) => row.itemDTO.itemId === selectedRowId);
+            
               handleOpenStockInHistory();
-              
-              
+
+
             } else {
               setMessage({ type: "error", text: "Please select an item to stock in!" });
               setTimeout(() => setMessage(null), 2000);
             }
           }}>StockIn History</button>
         </div>
-      </div> 
-      <PopUp popUpTitle={currentItem ? "Edit Item" : "Add New Item"}
+      </div>
+      <PopUp popUpTitle={currentItem ? "Update stock" : "Add New Item"}
         openPopup={isDialogOpen}
         setOpenPopup={setIsDialogOpen}
         onSubmit={handleSubmit}
@@ -449,12 +454,13 @@ const ItemView = () => {
           handleChange={validateAddForm}
           onSubmit={handleSubmit}
           closeDialog={closeDialog}
+          operationType={currentItem ? "Edit" : "Add"}
         />
 
       </PopUp>
 
-      <StockInHistory open={openStockInHistory} onClose={() => {setOpenStockInHistory(false); }} rows={stockInHistory}/>
-      
+      <StockInHistory open={openStockInHistory} onClose={() => { setOpenStockInHistory(false); }} rows={stockInHistory} />
+
 
 
 

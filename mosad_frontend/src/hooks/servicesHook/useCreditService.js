@@ -62,3 +62,21 @@ export const useUpdateCredit = () => {
   
     return updateCredit;
   };  
+
+  export const useSendCreditReminder = () => {
+    const apiClient = useApiClient();
+  
+    const sendCreditReminder = ({ to, name, amount, dueDate }) => {
+      return apiClient.post("/notifications/credit", null, {
+        params: {
+          to,
+          name,
+          amount,
+          dueDate,
+        },
+      });
+    };
+  
+    return sendCreditReminder;
+  };
+  
