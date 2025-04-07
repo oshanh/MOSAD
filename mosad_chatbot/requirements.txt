@@ -13,3 +13,4 @@ langchain-openai
 langchain_community
 onnxruntime
 rapidfuzz
+crewai-tools
