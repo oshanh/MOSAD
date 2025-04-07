@@ -2,7 +2,7 @@ fastapi
 numpy<2
 uvicorn
 crewai 
-psycopg2
+psycopg2 //not istalleed
 websockets
 openai
 websockets
