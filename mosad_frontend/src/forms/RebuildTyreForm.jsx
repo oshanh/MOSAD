@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Button, MenuItem, Box, Stack, Paper } from '@mui/material';
+import { TextField, Button, MenuItem, Box, Grid2 as Grid, Paper,Typography } from '@mui/material';
 
 const statusOptions = [
   { value: 'IN_HOLD', label: 'In Hold' },
@@ -53,39 +53,78 @@ const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel }) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 3, transition: 'all 0.3s ease-in-out' }}>
-      <Box component="form" onSubmit={handleSubmit}>
-        <Stack spacing={2}>
-          <TextField label="Tyre Number" name="tyreNumber" type="number" value={formData.tyreNumber} onChange={handleChange} required fullWidth />
-          <TextField label="Tyre Size" name="tyreSize" value={formData.tyreSize} onChange={handleChange} required fullWidth />
-          <TextField label="Tyre Brand" name="tyreBrand" value={formData.tyreBrand} onChange={handleChange} required fullWidth />
-          <TextField label="Customer Name" name="customerName" value={formData.customerName} onChange={handleChange} required fullWidth />
-          <TextField label="Contact Number" name="contactNumber" value={formData.contactNumber} onChange={handleChange} required fullWidth />
-          <TextField label="Date Received" name="dateReceived" type="date" value={formData.dateReceived} onChange={handleChange} required fullWidth InputLabelProps={{ shrink: true }} />
-          <TextField label="Date Sent To Company" name="dateSentToCompany" type="date" value={formData.dateSentToCompany} onChange={handleChange} fullWidth InputLabelProps={{ shrink: true }} />
-          <TextField label="Sales Rep Number" name="salesRepNumber" value={formData.salesRepNumber} onChange={handleChange} fullWidth />
-          <TextField label="Job Number" name="jobNumber" value={formData.jobNumber} onChange={handleChange} fullWidth />
-          <TextField label="Date Received From Company" name="dateReceivedFromCompany" type="date" value={formData.dateReceivedFromCompany} onChange={handleChange} fullWidth InputLabelProps={{ shrink: true }} />
-          <TextField label="Date Delivered To Customer" name="dateDeliveredToCustomer" type="date" value={formData.dateDeliveredToCustomer} onChange={handleChange} fullWidth InputLabelProps={{ shrink: true }} />
-          <TextField label="Bill Number" name="billNumber" value={formData.billNumber} onChange={handleChange} fullWidth />
-          <TextField label="Price" name="price" type="number" value={formData.price} onChange={handleChange} fullWidth />
-          <TextField select label="Status" name="status" value={formData.status} onChange={handleChange} required fullWidth>
-            {statusOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Stack>
-        <Box mt={2}>
-          <Button type="submit" variant="contained" color="primary" sx={{ mr: 2 }}>
-            Submit
-          </Button>
+    <Paper elevation={3} sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
+      <Typography variant="h5" gutterBottom>
+        {initialData.id ? 'Edit Rebuild Tyre' : 'Add New Rebuild Tyre'}
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+        <Grid container spacing={3}>
+          {/* Left Column - Tyre Information */}
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle1" gutterBottom>
+              Tyre Information
+            </Typography>
+            <TextField label="Tyre Number" name="tyreNumber" type="number" value={formData.tyreNumber} onChange={handleChange} required fullWidth />
+            <TextField label="Tyre Size" name="tyreSize" value={formData.tyreSize} onChange={handleChange} required fullWidth sx={{ mt: 2 }} />
+            <TextField label="Tyre Brand" name="tyreBrand" value={formData.tyreBrand} onChange={handleChange} required fullWidth sx={{ mt: 2 }} />
+          </Grid>
+
+          {/* Right Column - Customer and Dates */}
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle1" gutterBottom>
+              Customer & Dates
+            </Typography>
+            <TextField label="Customer Name" name="customerName" value={formData.customerName} onChange={handleChange} required fullWidth />
+            <TextField label="Contact Number" name="contactNumber" value={formData.contactNumber} onChange={handleChange} required fullWidth sx={{ mt: 2 }} />
+            <TextField label="Date Received" name="dateReceived" type="date" value={formData.dateReceived} onChange={handleChange} required fullWidth InputLabelProps={{ shrink: true }} sx={{ mt: 2 }} />
+            <TextField label="Status" name="status" select value={formData.status} onChange={handleChange} required fullWidth sx={{ mt: 2 }}>
+              {statusOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+
+          {/* Full Width - Optional Details */}
+          <Grid item xs={12}>
+            <Typography variant="subtitle1" gutterBottom sx={{ mt: 3 }}>
+              Optional Details
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField label="Date Sent To Company" name="dateSentToCompany" type="date" value={formData.dateSentToCompany} onChange={handleChange} fullWidth InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField label="Sales Rep Number" name="salesRepNumber" value={formData.salesRepNumber} onChange={handleChange} fullWidth />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField label="Job Number" name="jobNumber" value={formData.jobNumber} onChange={handleChange} fullWidth />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField label="Date Received From Company" name="dateReceivedFromCompany" type="date" value={formData.dateReceivedFromCompany} onChange={handleChange} fullWidth InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField label="Date Delivered To Customer" name="dateDeliveredToCustomer" type="date" value={formData.dateDeliveredToCustomer} onChange={handleChange} fullWidth InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField label="Bill Number" name="billNumber" value={formData.billNumber} onChange={handleChange} fullWidth />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField label="Price" name="price" type="number" value={formData.price} onChange={handleChange} fullWidth />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Box mt={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           {onCancel && (
-            <Button variant="outlined" color="secondary" onClick={onCancel}>
+            <Button variant="outlined" color="secondary" onClick={onCancel} sx={{ mr: 2 }}>
               Cancel
             </Button>
           )}
+          <Button type="submit" variant="contained" color="primary">
+            Submit
+          </Button>
         </Box>
       </Box>
     </Paper>

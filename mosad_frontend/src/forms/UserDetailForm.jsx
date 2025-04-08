@@ -10,7 +10,8 @@
     IconButton,
     Button,
     FormHelperText,
-   
+    InputAdornment,
+    Divider,
  } from '@mui/material';
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -18,7 +19,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { blue } from '@mui/material/colors';
 import PropTypes from "prop-types";
 import useAuth from "../hooks/useAuth";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useFetchAllBranchNames } from "../hooks/servicesHook/useBranchService";
+
 
 const initialContactNumError = {
     contactNumError: ''
@@ -40,6 +44,20 @@ export default function UserDetailsForm(
     const [contactNumErrors,setContactNumErrors]=useState(initialContactNumError);
     const {auth} = useAuth();
     let location = useLocation();
+
+    //Password hide/show
+    const [type, setType] = useState('password');
+    const [icon, setIcon] = useState(<VisibilityOffIcon />);
+
+    const handlePasswordToggle = () => {
+        if (type === 'password') {
+            setIcon(<VisibilityIcon />);
+            setType('text')
+        } else {
+            setIcon(<VisibilityOffIcon />)
+            setType('password')
+        }
+    }
 
     const loadAllBranches=()=>{
         setIsLoadingBranchNames(true)
@@ -102,8 +120,10 @@ export default function UserDetailsForm(
     
     return(
         <form onSubmit={onSubmit}>
+            <Typography variant="h5">User Details: </Typography>
             {/* User details view */}
-            <Paper elevation={1} sx={{p:2,m:2}} >
+            <Paper elevation={1} sx={{p:2,m:2}} >  
+            <Grid container spacing={2} direction={'column'} sx={{mb:2}}>
                 <Grid container spacing={2} >
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
@@ -128,6 +148,7 @@ export default function UserDetailsForm(
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                         disabled={!editMode} 
+                        required
                         label="Last name" 
                         variant="standard" 
                         name="lastName" 
@@ -168,6 +189,7 @@ export default function UserDetailsForm(
                         <TextField
                         disabled={!editMode} 
                         label="Email" 
+                        required
                         variant="standard" 
                         name="email" 
                         value={userUpdateData.userDto.email || ''}
@@ -222,8 +244,14 @@ export default function UserDetailsForm(
                     ))}
                     </Grid>
                 </Grid>
+            </Grid>
             </Paper>
 
+            <Divider variant="middle" sx={{mt:5}}>
+                Select your Role and branch
+            </Divider>
+
+            <Typography variant="caption">*Only administraion can change this </Typography>
             {/* User role and branch section */}
             <Paper elevation={1} sx={{p:2,m:2}}>
                 <Grid container direction="row" sx={{justifyContent: "space-between",alignItems: "center",}} >
@@ -272,7 +300,7 @@ export default function UserDetailsForm(
                             id="branch" 
                             value={userUpdateData.branchName || ''} 
                             onChange={handleBranchNameChange}
-                            error={!!error.roleNameError} 
+                            error={!!error.branchNameError} 
                             label="Branch"
                             sx={{
                                 "& .MuiInputBase-input.Mui-disabled": {
@@ -287,7 +315,7 @@ export default function UserDetailsForm(
                             }
                         
                         </Select>
-                        <FormHelperText>{error.roleNameError}</FormHelperText>
+                        <FormHelperText>{error.branchNameError}</FormHelperText>
                     </FormControl>
                 </Grid>
                 </Grid>
@@ -300,7 +328,7 @@ export default function UserDetailsForm(
             <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                     required
-                    type='password'
+                    type={type}
                     label="Password" 
                     variant="standard" 
                     name="pwd_1" 
@@ -308,13 +336,26 @@ export default function UserDetailsForm(
                     onChange={handlePwds} 
                     error={!!error.pwd_1Error}
                     helperText={error.pwd_1Error}
-                    fullWidth 
+                    fullWidth
+                    slotProps={{
+                        input: {
+                            endAdornment:
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="Toggle the password"
+                                        onClick={handlePasswordToggle}
+                                    >
+                                        {icon}
+                                    </IconButton>
+                                </InputAdornment>
+                        },
+                    }} 
                 />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField 
                     required
-                    type='password'
+                    type={type}
                     label="Re-enter Password" 
                     variant="standard" 
                     name="pwd_2" 
@@ -323,6 +364,19 @@ export default function UserDetailsForm(
                     helperText={error.pwd_2Error}
                     onChange={handlePwds} 
                     fullWidth 
+                    slotProps={{
+                    input: {
+                        endAdornment:
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle the password"
+                                    onClick={handlePasswordToggle}
+                                >
+                                    {icon}
+                                </IconButton>
+                            </InputAdornment>
+                    },
+                }}
                 />
                 </Grid>
                 </Grid>

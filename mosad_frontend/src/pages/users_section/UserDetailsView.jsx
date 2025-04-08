@@ -3,13 +3,16 @@ import Grid from "@mui/material/Grid2";
 import { 
     Container,
     Typography,
-    Button
+    Button,
+    Avatar,
+    Paper,
+    Box
  } from '@mui/material';
 import React,{ useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth"
 import {useGetUserDetailsByUsername,useUpdateUserDetails} from '../../hooks/servicesHook/useApiUserService';
 import { initialErrors, validateGeneralForm } from '../../utils/validateUserDetailsForm'; // Import the utility function
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const initialUserData={
     userDto:{
@@ -107,42 +110,68 @@ const UserDetailsView=()=>{
     }
 
 
-    return(
-       <Container>
-            <Typography sx={{pt:2}}>
-                WELCOME 
-            </Typography>
+    return(   
+    <Container sx={{ py: 4 }} disableGutters>
+        <Paper elevation={3} sx={{ p: 4 }}>
+            <Grid container spacing={2}>
+                {/* Left Side - Big Icon */}
+                <Grid size={{xs:12,md:2}} container direction={"column"} sx={{
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    mt: 3
+                }}>  
+                    <Avatar
+                        sx={{
+                            bgcolor: "primary.main",
+                            width: 120,
+                            height: 120,
+                        }}
+                    >
+                        <AccountCircleIcon sx={{ fontSize: 80 }} />
+                    </Avatar>
+                    <Typography variant="h6" textAlign={"center"}>
+                        Welcome {userData.userDto.firstName+" "+userData.userDto.lastName}
+                    </Typography>
+                </Grid>
 
-            {/* Render the user details form */}
-            {!isLoading &&
-            <UserDetailsForm 
-            onSubmit={handleUpdatedDataSubmit} 
-            userUpdateData={userData} 
-            editMode={editMode}
-            setUserUpdateData={setUserData}
-            error={errors}
-            setError={setErrors}
-            
-            />
-            }         
+                {/* Right Side - Form */}
+                <Grid size={{xs:12,md:10}}>
+                    {!isLoading && (
+                        <UserDetailsForm
+                            onSubmit={handleUpdatedDataSubmit}
+                            userUpdateData={userData}
+                            editMode={editMode}
+                            setUserUpdateData={setUserData}
+                            error={errors}
+                            setError={setErrors}
+                        />
+                    )}
+                    {isLoading && <Typography>Loading user details...</Typography>}
 
-             {/* form handling buttons */}
-            <Grid container spacing={2} justifyContent="end">
-                <Grid size={{xs:"auto"}}>
-                <Button type="submit" variant="contained" color="primary" onClick={handleUpdatedDataSubmit} >
-                    Save
-                </Button>
+                    {/* Form Handling Buttons */}
+                    <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleUpdatedDataSubmit}
+                            disabled={!editMode || isLoading}
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            variant={editMode ? "contained" : "outlined"}
+                            color={editMode ? "secondary" : "primary"}
+                            onClick={handleEditMode}
+                            disabled={isLoading}
+                        >
+                            {editMode ? 'Reset' : 'Edit'}
+                        </Button>
+                    </Box>
                 </Grid>
-                <Grid size={{xs:"auto"}}>
-                <Button type="submit" variant="contained" color="primary" onClick={handleEditMode}>
-                    {editMode? 'Reset': 'Edit'}
-                </Button>
-                </Grid>
-                
-                <Grid size={{xs:"auto"}}>
-                </Grid>
-            </Grid>  
-       </Container>
+            </Grid>
+        </Paper>
+    </Container>
+        
     )
     
 }

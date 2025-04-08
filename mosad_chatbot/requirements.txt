@@ -2,7 +2,7 @@ fastapi
 numpy<2
 uvicorn
 crewai 
-psycopg2
+
 websockets
 openai
 websockets
@@ -13,3 +13,4 @@ langchain-openai
 langchain_community
 onnxruntime
 rapidfuzz
+crewai-tools
