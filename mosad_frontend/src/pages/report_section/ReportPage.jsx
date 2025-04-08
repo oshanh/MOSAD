@@ -1,40 +1,60 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Divider, Stack, Box, FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material';
 import { Paper, Typography, Grid2 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import SalesGraph from '../../component/GraphComponent'; // Assuming this path is correct
 import { cyan } from '@mui/material/colors';
+import { useItemCounts } from '../../hooks/servicesHook/useReportService';
+import GeneralSnackbarAlerts from '../../component/GeneralSnackbarAlerts';
 
 const StockReport = () => {
   const [reportName, setReportName] = useState('');
+  const [itemCount,setItemCount]=useState([]);
+  const fetchItemCount=useItemCounts();
+  //Show alerts using snack bar
+  const [showSnack, setShowSnack] = useState(false);
+  const [alertType, setAlertType] = useState("warning");
+  const [alertMsg, setAlertMsg] = useState("");
+
+  const [loading, setLoading] = useState(true);
 
   const handleReportNameChange = (event) => {
     setReportName(event.target.value);
   };
 
-  const handleGenerateReport = () => {
-    // Implement your report generation logic here
+  const loadItemCount=async ()=>{
+    try {
+      const response = await fetchItemCount();
+      const dataWithIds = response.data.map((item, index) => ({
+        id: index + 1,
+        ...item,
+      }));
+      setItemCount(dataWithIds);
+    } catch (error) {
+      setAlertMsg(error.response?.data || error.message || 'Table data  fetching ailed.')
+      setShowSnack(true)
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(()=>{
+    loadItemCount();
+  },[])
+
+  const handleGenerateReport = () => { 
     console.log(`Generating report with name: ${reportName}`);
-    // You might trigger a download or API call here
   };
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'category', headerName: 'Category', width: 150 },
+    { field: 'categoryName', headerName: 'Category', width: 150 },
     { field: 'totalBrands', headerName: 'Total Brands', width: 130 },
     { field: 'totalItems', headerName: 'Total Items', width: 130 },
   ];
 
-  const rows = [
-    { id: 1, category: 'Electronics', totalBrands: 5, totalItems: 25 },
-    { id: 2, category: 'Clothing', totalBrands: 10, totalItems: 150 },
-    { id: 3, category: 'Books', totalBrands: 20, totalItems: 500 },
-    { id: 4, category: 'Home Goods', totalBrands: 8, totalItems: 80 },
-    { id: 5, category: 'Food', totalBrands: 15, totalItems: 200 },
-  ];
-
   return (
     <Box sx={{mx:5}}>
+      <GeneralSnackbarAlerts open={showSnack} type={alertType} msg={alertMsg} setOpen={setShowSnack}/>
       <Paper elevation={3} sx={{px:5,py:3,width:'100%'}}>
         <Stack spacing={2}>
             <Typography variant="h6" gutterBottom>
@@ -70,7 +90,7 @@ const StockReport = () => {
               </Typography>
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
-                  rows={rows}
+                  rows={itemCount}
                   columns={columns}
                   pageSizeOptions={[5, 10, 25]}
                   checkboxSelection
