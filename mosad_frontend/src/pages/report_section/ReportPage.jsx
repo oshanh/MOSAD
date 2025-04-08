@@ -84,9 +84,9 @@ const StockReport = () => {
           </Box>
         </Grid2>
           <Grid2 container spacing={2}>
-            <Grid2  size={{xs:12,md:6}}>
+            <Grid2 item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>
-                Table of all products
+                Table of All Products
               </Typography>
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
@@ -97,12 +97,12 @@ const StockReport = () => {
                 />
               </div>
             </Grid2>
-            <Grid2  size={{xs:12,md:6}}>
+
+            <Grid2 item xs={12} md={6}>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <Typography variant="h6" gutterBottom>
                   Calendar with Due Dates
                 </Typography>
-                {/* You can integrate a calendar component here */}
                 <Typography variant="body2">
                   (Calendar component will be implemented here)
                 </Typography>
@@ -110,10 +110,12 @@ const StockReport = () => {
             </Grid2>
           </Grid2>
 
+          {/* Report Generation Section */}
           <Paper elevation={3} sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
               Report Generation
             </Typography>
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <FormControl fullWidth>
                 <InputLabel id="report-name-label">Select Report Name</InputLabel>
@@ -128,9 +130,55 @@ const StockReport = () => {
                   <MenuItem value="sales_overview">Sales Overview</MenuItem>
                 </Select>
               </FormControl>
-              <Button variant="contained" color="primary" onClick={handleGenerateReport} disabled={!reportName}>
-                Generate Report
+
+              {reportName === 'sales_overview' && (
+              <a
+                href="http://127.0.0.1:8001/forecast/download/revenue-forecast"
+                download="sales_revenue_forecast.csv"
+                style={{ textDecoration: 'none' }}
+              >
+              <Button variant="contained" color="primary">
+                  Download Sales Overview Report
               </Button>
+              </a>
+             )}
+
+              {reportName === 'tyre_forecast' && (
+              <a
+                href="http://127.0.0.1:8001/forecast/download/tyre-forecast"
+                download="tyre_forecast.csv"
+                style={{ textDecoration: 'none' }}
+              >
+              <Button variant="contained" color="primary">
+                Download Tyre Forecast
+              </Button>
+                </a>
+              )}
+
+{reportName === 'tube_forecast' && (
+  <a
+    href="http://127.0.0.1:8001/forecast/download/tube-forecast"
+    download="tube_forecast.csv"
+    style={{ textDecoration: 'none' }}
+  >
+    <Button variant="contained" color="primary">
+      Download Tube Forecast
+    </Button>
+  </a>
+)}
+
+{(reportName !== 'sales_overview' &&
+  reportName !== 'tyre_forecast' &&
+  reportName !== 'tube_forecast') && (
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={handleGenerateReport}
+    disabled={!reportName}
+  >
+    Generate Report
+  </Button>
+)}
             </Box>
           </Paper>
         </Stack>
