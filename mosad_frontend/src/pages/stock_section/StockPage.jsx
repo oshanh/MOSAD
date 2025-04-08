@@ -72,9 +72,17 @@ function StockPage({ allowedRoles}) {
     return <h2 style={{ textAlign: 'center' }}>Loading...</h2>;
   }
 
-  const linkForRoutes = allowedRoles.includes("ADMIN") || allowedRoles.includes("OWNER")
-  ? '/stocks/category/brands'
-  : '/stock/category/brands'; 
+  const linkForRoutes = ()=>{
+    if( allowedRoles.includes("ADMIN") || allowedRoles.includes("OWNER")){
+      return '/stocks/category/brands'
+    }
+    if( allowedRoles.includes("STOCK_MANAGER")){
+      return '/stock/category/brand'
+    }
+    if( allowedRoles.includes("BRANCH_MANAGER")){
+      return '/branch/stock/category/brand'
+    }
+  }  
   return (
     <>
       <Outlet />
@@ -97,10 +105,10 @@ function StockPage({ allowedRoles}) {
           {categories.map((category) => (
             <Grid key={category.categoryName}>
               <Tile
-                allowedRoles={["OWNER","ADMIN","STOCK_MANAGER"]}
+                allowedRoles={["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER"]}
                 title={category.categoryName}
                 icon={iconMap[category.categoryName] || <DescriptionIcon fontSize="large" />}
-                link={linkForRoutes}
+                link={linkForRoutes()}
                 state={{ category: category.categoryName }}
               />
             </Grid>
@@ -108,7 +116,7 @@ function StockPage({ allowedRoles}) {
           {/* Add New Category Tile */}
           <Grid >
             <Tile
-              allowedRoles={["OWNER","ADMIN","STOCK_MANAGER"]}
+              allowedRoles={["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER"]}
               title="Add New Category"
               icon={<AddIcon fontSize="large" />}
               onClick={() => setDialogOpen(true)}

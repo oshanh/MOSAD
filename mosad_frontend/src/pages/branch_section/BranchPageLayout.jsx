@@ -20,14 +20,14 @@ const BranchPageLayout=()=>{
             return [
               { path: '/branches', label: 'Branch Details', id: 'branch_details' },
               { path: '/branches/bill-history', label: 'Bill History', id: 'bill_history' },
-              { path: '/branches/stock', label: 'Stock', id: 'stock' },
+              { path: '/branches/stocks/category', label: 'Stock', id: 'stock' },
               { path: '/branches/employee-view', label: 'Employee view', id: 'employee_view' },
             ];
           case "BRANCH_MANAGER": 
           return [
             { path: '/branch', label: 'Branch Details', id: 'branch_details' },
             { path: '/branch/bill-history', label: 'Bill History', id: 'bill_history' },
-            { path: '/branch/stock', label: 'Stock', id: 'stock' },
+            { path: '/branch/stock/category', label: 'Stock', id: 'stock' },
             { path: '/branch/employee-view', label: 'Employee view', id: 'employee_view' },
           ];
       }
