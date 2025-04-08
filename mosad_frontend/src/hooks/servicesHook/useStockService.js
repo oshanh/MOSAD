@@ -123,3 +123,13 @@ export const useSendHelloWorldTemplate = () => {
 
   return sendHelloWorldTemplate;
 };
+
+export const useHomeStats = () => {
+  const apiClient = useApiClient();
+
+  const fetchHomeStats = () => {
+    return apiClient.get('/homestats');
+  };
+
+  return fetchHomeStats;
+}

@@ -8,7 +8,7 @@ const statusOptions = [
   { value: 'DONE', label: 'Done' },
 ];
 
-const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel }) => {
+const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel,setAlert }) => {
   const [formData, setFormData] = useState({
     tyreNumber: '',
     tyreSize: '',
@@ -34,19 +34,37 @@ const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel }) => {
     }));
   }, [initialData]);
 
+  const [error, setError] = useState('');
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+     // Validate phone number (10 digits)
+     if (name === 'contactNumber') {
+      const phoneRegex = /^[0-9]{10}$/;
+      if (!phoneRegex.test(value)) {
+        setError('Please enter a valid 10-digit phone number.');
+      } else {
+        setError('');
+      }
+    }
+ 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+   
+    if (error){
+      setAlert("warning",error);
+      return
+      }; // Prevent submission if there's an error
     const { tyreNumber, tyreSize, tyreBrand, customerName, contactNumber, dateReceived, status } = formData;
     if (!tyreNumber || !tyreSize || !tyreBrand || !customerName || !contactNumber || !dateReceived || !status) {
-      alert('Please fill in all required fields.');
+      setAlert("warning","Please fill in all required fields.");
       return;
     }
     onSubmit(formData);
@@ -75,8 +93,24 @@ const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel }) => {
               Customer & Dates
             </Typography>
             <TextField label="Customer Name" name="customerName" value={formData.customerName} onChange={handleChange} required fullWidth />
-            <TextField label="Contact Number" name="contactNumber" value={formData.contactNumber} onChange={handleChange} required fullWidth sx={{ mt: 2 }} />
-            <TextField label="Date Received" name="dateReceived" type="date" value={formData.dateReceived} onChange={handleChange} required fullWidth InputLabelProps={{ shrink: true }} sx={{ mt: 2 }} />
+            <TextField
+              type='tel'
+              label="Contact Number"
+              name="contactNumber"
+              value={formData.contactNumber}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d{0,10}$/.test(value)) {
+                  handleChange(e);
+                }
+              }}
+              required
+              fullWidth
+              sx={{ mt: 2 }}
+              error={!!error} // Show error style if error exists
+              helperText={error} // Show error message
+            />            
+      <TextField label="Date Received" name="dateReceived" type="date" value={formData.dateReceived} onChange={handleChange} required fullWidth InputLabelProps={{ shrink: true }} sx={{ mt: 2 }} />
             <TextField label="Status" name="status" select value={formData.status} onChange={handleChange} required fullWidth sx={{ mt: 2 }}>
               {statusOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>

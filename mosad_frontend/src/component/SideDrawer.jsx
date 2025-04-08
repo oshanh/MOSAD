@@ -54,7 +54,7 @@ export default function SideDrawer() {
           <List>
             {['Inbox'].map((text) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
+              <ListItemButton component={Link} to='/notifications/credit'>
                 <ListItemText primary={text} />
               </ListItemButton>
             </ListItem>

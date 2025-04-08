@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useEffect ,useState} from "react";
 import Slideshow from '../../component/Slideshow';
 import Tile from '../../component/Tile';
 import { Box, Stack, Typography, useTheme, Paper, Button, Divider, Grid2,MenuItem,
@@ -22,9 +22,8 @@ import { teal, cyan } from '@mui/material/colors';
 import Calendar from '../../component/Calendar';
 import LineGraph from "../../component/LineGraph";
 import { useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
 import PopUp from "../../component/PopUp";
-import { useFetchBrands } from "../../hooks/servicesHook/useStockService";
+import { useFetchBrands,useHomeStats } from "../../hooks/servicesHook/useStockService";
 
 // Styled Tile Component for a modern look
 const ModernTile = styled(Tile)(({ theme }) => ({
@@ -54,13 +53,36 @@ const mockData = {
 };
 
 function HomePage() {
+
+  const homestats = useHomeStats();
+  const { theme } = useTheme();
+  const [stats, setStats] = useState({}); // Initialize stats with an empty object
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await homestats();
+        setStats(response.data); // Update stats state with the fetched data
+        //console.log("Home stats fetched successfully:", stats);
+      } catch (error) {
+        console.error("Error fetching home stats:", error);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  console.log("Home stats after :", stats);
+
+  console.log("Home stats before :", stats.past7DaysBillCount);
+  const billsData = stats.past7DaysBillCount?.map(item => item.billsCount);
+  console.log(billsData);
+
   const fetchBrands = useFetchBrands();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(""); // Changed state name for clarity
   const [allbrands,setAllBrands]=useState([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { theme } = useTheme();
   const navigate = useNavigate();
 
   const handleBrandSelection = () => {
@@ -135,6 +157,7 @@ function HomePage() {
     )
   }
 
+
   const tiles = [
     { title: 'Bill Generate', icon: <DescriptionIcon />, link: '/bills', authorizedRoles: ["OWNER", "ADMIN"] },
     { title: 'Stock', icon: <InventoryIcon />, link: '/stocks/category', authorizedRoles: ["OWNER", "ADMIN", "STOCK_MANAGER"] },
@@ -157,7 +180,7 @@ function HomePage() {
           <Slideshow />
         </Grid2>
         <Grid2 size={{xs:12}}>
-          <AnalyticalCard />
+          <AnalyticalCard stats={stats}/>
         </Grid2>
         <Grid2 size={{xs:12}}>
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 3 }}>

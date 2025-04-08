@@ -1,5 +1,6 @@
 package org.rtss.mosad_backend.repository.credit_repository;
 
+import org.rtss.mosad_backend.dto.credit_dtos.CreditDetailsDTO;
 import org.rtss.mosad_backend.entity.credit.Credit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -38,13 +39,6 @@ public interface CreditRepository extends JpaRepository<Credit,Long> {
     List<Credit> findCreditByDueDate(Date date);
 
 
-
-
-
-
-
-
-
-
-
+    @Query("SELECT c FROM Credit c WHERE c.bill.id = :billId")
+    Credit findCreditByBillId(Long billId);
 }

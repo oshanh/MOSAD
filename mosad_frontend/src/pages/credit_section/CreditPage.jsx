@@ -6,9 +6,10 @@ import {
 } from '@mui/material';
 import { Delete, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon  } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
-import {useAddRepayment,useDeleteRepayment,useFetchAllCreditDetails,useUpdateCredit}from '../../hooks/servicesHook/useCreditService'
+import {useAddRepayment,useDeleteRepayment,useFetchAllCreditDetails,useUpdateCredit,useSendCreditReminder}from '../../hooks/servicesHook/useCreditService'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Tooltip } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import GeneralMessage from '../../component/GeneralMessage';
@@ -16,28 +17,22 @@ import Loading from '../../component/Loading';
 import ConfirmationDialog from '../../component/ConfirmationDialog';
 import PropTypes from 'prop-types';
 import { useSendHelloWorldTemplate } from '../../hooks/servicesHook/useStockService/';
-import { useSendCreditReminder } from '../../hooks/servicesHook/useCreditService';
 
 //Table row handling
 function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,columns,state,updateCredit }) {
   const sendHello = useSendHelloWorldTemplate();
   const sendNotification = useSendCreditReminder();
 
+  const remainingBalance = row.balance - row.repayments.reduce((acc, repayment) => acc + repayment.amount, 0);
 
-  const handleSend = async () => {
-    try {
-      const response = await sendHello('94717529331');
-      console.log(response.data);
-    } catch (err) {
-      console.error('Failed to send message:', err);
-    }
-  };
+
   const handleSendNotification =()=>{
-    const data={
-      to:row.contactNumber,
-      name:row.customerName,
-      amount:row.balance,
-      dueDate:row.dueDate
+    
+    const data = {
+      to: row.contactNumber,
+      name: row.customerName,
+      amount: remainingBalance,
+      dueDate: dayjs(row.dueDate).format('YYYY-MM-DD')
     };
     sendNotification(data).then((response) => {
       console.log(response.data);
@@ -45,7 +40,7 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
       setTimeout(() => setMessage(null), 2000);
     }).catch((error) => {
       console.error('Failed to send notification:', error.response?.data || error.message);
-      setMessage({ type: 'error', text: 'Failed to send notification!' });
+      setMessage({ type: 'error', text: 'Failed to send notification!\nAccess token has expired on free account.!' });
       setTimeout(() => setMessage(null), 2000);
     });
    
@@ -76,7 +71,7 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
   const handleAddRepayment = () => {
     if (newRepayment.date && newRepayment.amount) {
       onAddRepayment(row.creditId, newRepayment); // Call the parent callback with new repayment details
-      if(newRepayment.amount == row.balance){
+      if(newRepayment.amount == remainingBalance){
         const credit={
           creditId:row.creditId,
           dueDate:row.dueDate,
@@ -104,7 +99,6 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
 
   
 
-  const remainingBalance = row.balance - row.repayments.reduce((acc, repayment) => acc + repayment.amount, 0);
 
   return (
     <>
@@ -134,9 +128,11 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
         </TableCell>
         {state.all && <TableCell>{row.completed ? "Completed":"Pending"}</TableCell>}
         <TableCell>
-          <Button onClick={handleSendNotification}>
-          <SendIcon  />
-          </Button>
+        <Tooltip title="Send a reminder" arrow>
+    <Button onClick={handleSendNotification}>
+      <SendIcon />
+    </Button>
+  </Tooltip>
         </TableCell>
         </>}
       </TableRow>
