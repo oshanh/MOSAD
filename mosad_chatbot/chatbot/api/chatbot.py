@@ -6,13 +6,13 @@ router = APIRouter()
 @router.websocket("/chat")
 async def chat_endpoint(websocket: WebSocket):
     await websocket.accept()
-    role = "customer"  # Default role is customer
+    role = "customer"  
 
     try:
         while True:
             data = await websocket.receive_text()
 
-            # Check if the message is an admin login command
+            
             if data.startswith("/admin login"):
                 password = data.split(" ")[-1]
                 if password == "admin123":
@@ -20,9 +20,9 @@ async def chat_endpoint(websocket: WebSocket):
                     await websocket.send_text("✅ Admin access granted. You can now perform management tasks.")
                 else:
                     await websocket.send_text("❌ Incorrect admin password.")
-                continue  # Don't send this login message to chatbot
+                continue  
 
-            # Handle normal chat flow
+            
             response = handle_chat(data, role)
             await websocket.send_text(response)
 
