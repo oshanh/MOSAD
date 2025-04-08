@@ -85,6 +85,9 @@ public class InitialCommandRunnerService implements CommandLineRunner {
                 SELECT 'STOCK_MANAGER'
                     WHERE NOT EXISTS (SELECT 1 FROM public.user_roles WHERE role_name = 'STOCK_MANAGER')
                 UNION ALL
+                SELECT 'BRANCH_MANAGER'
+                    WHERE NOT EXISTS (SELECT 1 FROM public.user_roles WHERE role_name = 'BRANCH_MANAGER')
+                UNION ALL
                 SELECT 'RETAIL_CUSTOMER'
                     WHERE NOT EXISTS (SELECT 1 FROM public.user_roles WHERE role_name = 'RETAIL_CUSTOMER')
                 UNION ALL

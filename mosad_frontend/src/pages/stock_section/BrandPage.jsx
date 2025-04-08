@@ -80,9 +80,19 @@ function BrandPage({ allowedRoles }) {
     return <h2 style={{ textAlign: 'center' }}>Loading...</h2>;
   }
 
-  const linkForRoutes = allowedRoles.includes("ADMIN") || allowedRoles.includes("OWNER")
-  ? '/stocks/category/brands/item-view'
-  : '/stock/category/brands/item-view'; 
+
+  const linkForRoutes = ()=>{
+    if( allowedRoles.includes("ADMIN") || allowedRoles.includes("OWNER")){
+      return '/stocks/category/brands/item-view'
+    }
+    if( allowedRoles.includes("STOCK_MANAGER")){
+      return '/stock/category/brand/item-view'
+    }
+    if( allowedRoles.includes("BRANCH_MANAGER")){
+      return '/branch/stock/category/brand/item-view'
+    }
+  } 
+ 
   return (
     <>
       <h1 style={{ textAlign: 'center', color: 'black' }}>Select a Brand</h1>
@@ -104,10 +114,10 @@ function BrandPage({ allowedRoles }) {
           {brands.map((brand) => (
             <Grid key={brand.brandName}>
               <Tile
-                allowedRoles={["OWNER", "ADMIN", "STOCK_MANAGER"]}
+                allowedRoles={["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER"]}
                 title={brand.brandName}
                 icon={iconMap[brand.brandName] || <DescriptionIcon fontSize="large" />}
-                link={linkForRoutes}
+                link={linkForRoutes()}
                 state={{ ...states, brand: brand.brandName }}
               />
             </Grid>
@@ -115,7 +125,7 @@ function BrandPage({ allowedRoles }) {
           {/* Add New Brand Tile */}
           <Grid>
             <Tile
-              allowedRoles={["OWNER", "ADMIN", "STOCK_MANAGER"]}
+              allowedRoles={["OWNER","ADMIN","STOCK_MANAGER","BRANCH_MANAGER"]}
               title="Add New Brand"
               icon={<AddIcon fontSize="large" />}
               onClick={() => setDialogOpen(true)}

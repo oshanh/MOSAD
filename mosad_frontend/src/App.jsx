@@ -100,7 +100,11 @@ function App() {
               <Route path="/branches" element={ <BranchPageLayout />} >
                 <Route index element={<BranchPage/>}/>
                 <Route path="bill-history" element={<AllBillsPage />}/>
-                <Route path="stock" element={<ItemView />}/>
+                <Route path="stocks/category" element={<BranchStockLayout />}>
+                  <Route index element={<StockPage allowedRoles={["OWNER","ADMIN"]}/>}/>
+                  <Route path="brands" element={<BrandPage allowedRoles={["OWNER","ADMIN"]}/>}/>
+                  <Route path="brands/item-view" element={<ItemView />} />
+                </Route>
                 <Route path="employee-view" element={<EmployeePage />}/>
               </Route>
             </Route>
@@ -119,7 +123,11 @@ function App() {
               <Route path="/branch" element={ <BranchPageLayout />} >
                 <Route index element={<BranchPage/>}/>
                 <Route path="bill-history" element={<AllBillsPage />}/>
-                <Route path="stock" element={<ItemView />}/>
+                <Route path="stock/category" element={<BranchStockLayout />}>
+                  <Route index element={<StockPage allowedRoles={["BRANCH_MANAGER"]}/>}/>
+                  <Route path="brand" element={<BrandPage allowedRoles={["BRANCH_MANAGER"]} />}/>
+                  <Route path="brand/item-view" element={<ItemView />} />
+                </Route>
                 <Route path="employee-view" element={<EmployeePage />}/>
               </Route>
               <Route path="/employee" element={ <EmployeePage />} />
