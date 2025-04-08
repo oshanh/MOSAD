@@ -27,11 +27,12 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
 
 
   const handleSendNotification =()=>{
-    const data={
-      to:row.contactNumber,
-      name:row.customerName,
-      amount:remainingBalance,
-      dueDate:row.dueDate
+    
+    const data = {
+      to: row.contactNumber,
+      name: row.customerName,
+      amount: remainingBalance,
+      dueDate: dayjs(row.dueDate).format('YYYY-MM-DD')
     };
     sendNotification(data).then((response) => {
       console.log(response.data);

@@ -41,6 +41,11 @@ const PurchaseHistory =lazy(()=>import( './pages/retail_section/PurchaseHistory'
 const IncompleteTransactions =lazy(()=>import( './pages/retail_section/IncompleteTransactions'));
 const FindProductAvailability =lazy(()=>import( './pages/retail_section/FindProductAvailability'));
 
+const NotificationLayout =lazy(()=>import( './pages/notification_section/NotificationLayout'));
+const NotificationCredit =lazy(()=>import( './pages/notification_section/CreditNotifications'));
+const NotificationStock =lazy(()=>import( './pages/notification_section/StockNotifications'));
+
+
 function App() {
   const {auth}=useAuth();
 
@@ -143,6 +148,11 @@ function App() {
                 <Route path="view-all" element={<AllUsersView />}/>
               </Route>
             </Route>
+            <Route path='/notifications' element={<NotificationLayout />}>
+              <Route path="credit" element={<NotificationCredit />} />
+              <Route path="stock" element={<NotificationStock />} />
+            </Route>
+               
 
           </Route>
         </Route>

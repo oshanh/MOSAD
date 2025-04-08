@@ -297,27 +297,27 @@ const handleCreateCredit = async (creditData) => {
                 Telephone Number:
               </Typography>
               <TextField
-  variant="outlined"
-  type="tel" // use "tel" instead of "number"
-  placeholder="Enter 10 digit number"
-  error={telephone.length !== 10 && telephone.length > 0}
-  helperText={
-    telephone.length !== 10 && telephone.length > 0
-      ? "Please enter a valid 10-digit number"
-      : ""
-  }
-  size="small"
-  fullWidth
-  required
-  sx={{ fontSize: "1.2rem" }}
-  value={telephone}
-  onChange={(e) => {
-    const value = e.target.value;
-    if (/^\d{0,10}$/.test(value)) {
-      setTelephone(value);
-    }
-  }}
-/>
+                variant="outlined"
+                type="tel" // use "tel" instead of "number"
+                placeholder="Enter 10 digit number"
+                error={telephone.length !== 10 && telephone.length > 0}
+                helperText={
+                  telephone.length !== 10 && telephone.length > 0
+                    ? "Please enter a valid 10-digit number"
+                    : ""
+                }
+                size="small"
+                fullWidth
+                required
+                sx={{ fontSize: "1.2rem" }}
+                value={telephone}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,10}$/.test(value)) {
+                    setTelephone(value);
+                  }
+                }}
+              />
 
             </Grid2>
             <Grid2 item xs={12} sm={4}>
