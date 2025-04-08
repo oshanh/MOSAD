@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Divider, Stack, Box, FormControl, InputLabel, Select, MenuItem, Button, Paper, Typography } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid2 from '@mui/material/Unstable_Grid2';
 import { DataGrid } from '@mui/x-data-grid';
 import SalesGraph from '../../component/GraphComponent';
 import { cyan } from '@mui/material/colors';
@@ -62,8 +62,8 @@ const StockReport = () => {
             />
           </Box>
 
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+          <Grid2 container spacing={2}>
+            <Grid2 item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>
                 Table of All Products
               </Typography>
@@ -75,9 +75,9 @@ const StockReport = () => {
                   checkboxSelection
                 />
               </div>
-            </Grid>
+            </Grid2>
 
-            <Grid item xs={12} md={6}>
+            <Grid2 item xs={12} md={6}>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <Typography variant="h6" gutterBottom>
                   Calendar with Due Dates
@@ -86,8 +86,8 @@ const StockReport = () => {
                   (Calendar component will be implemented here)
                 </Typography>
               </Paper>
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
 
           {/* Report Generation Section */}
           <Paper elevation={3} sx={{ p: 2 }}>
