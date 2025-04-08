@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Stack, Box, FormControl, InputLabel, Select, MenuItem, Button, Paper, Typography } from '@mui/material';
-import Grid2 from '@mui/material';
+import { Divider, Stack, Box, FormControl, InputLabel, Select, MenuItem, Button, Paper, Typography,Grid2 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import SalesGraph from '../../component/GraphComponent';
 import { cyan } from '@mui/material/colors';
