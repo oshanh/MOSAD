@@ -75,4 +75,6 @@ public class AccountManagerController {
         return ResponseEntity.ok().body(accountManagementService.changeToNewPassword(newPassword,escapedEmail));
     }
 
+
+
 }

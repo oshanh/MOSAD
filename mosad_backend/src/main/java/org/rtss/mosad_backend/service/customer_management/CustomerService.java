@@ -71,8 +71,5 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
-    public List<CustomerDTO> getCustomersByContact(String contactNumber) {
-        List<Customer> customers = customerContactRepository.findCustomersByContactNumber(contactNumber);
-        return customers.stream().map(customerDTOMapper::toCustomerDTO).toList();
-    }
+
 }
