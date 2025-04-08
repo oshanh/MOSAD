@@ -28,7 +28,7 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
           }}
         >
           {Object.keys(formData).map((key) => 
-          (key==="itemId" || key==="retailPrice" || key==="discount")?null:(
+          ((operationType=="Add" && key==="availableQuantity") || key==="itemId" || key==="retailPrice" || key==="discount")?null:(
             <TextField
               key={key}
               type={key === "companyPrice" || key === "availableQuantity" || key=="retailPrice" || key=="discount"  ? "number" : "text"} // Set input type based on the key
@@ -39,7 +39,7 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
               }
               required={key !== "itemId"} // Mark all fields except 'itemId' as required
               //disabled={key!=="companyPrice"} // Enable the companyPrice field in Edit mode
-              disabled={operationType=="Edit"} // Disable the All fields in Edit mode
+              disabled={operationType=="Edit" || key==="availableQuantity"} // Disable the All fields in Edit mode
 
               error={!!errors[key]} // Highlight the field in red if it has an error
               helperText={errors[key] || ""} // Show error message if available
