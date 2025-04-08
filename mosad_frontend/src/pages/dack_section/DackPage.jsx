@@ -109,7 +109,7 @@ const RebuildTyrePage = () => {
       setTyres(response.data);
     } catch (error) {
       console.error(error);
-      alert('Error fetching tyre data');
+      handleAlert("error", "Error fetching tyres");
     }
   };
 
@@ -131,7 +131,7 @@ const RebuildTyrePage = () => {
       setOpenFormPopup(false);
     } catch (error) {
       console.error(error);
-      alert(editingTyre ? 'Error updating tyre' : 'Error creating tyre');
+      handleAlert("error", editingTyre ? 'Error updating tyre' : 'Error creating tyre');
     }
   };
 
@@ -142,7 +142,7 @@ const RebuildTyrePage = () => {
         setRefresh(!refresh);
       } catch (error) {
         console.error(error);
-        alert('Error deleting tyre');
+        handleAlert("error", "Error deleting tyre");
       }
     }
   };

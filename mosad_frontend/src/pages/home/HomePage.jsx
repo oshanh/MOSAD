@@ -58,7 +58,7 @@ function HomePage() {
       try {
         const response = await homestats();
         setStats(response.data); // Update stats state with the fetched data
-        console.log("Home stats fetched successfully:", stats);
+        //console.log("Home stats fetched successfully:", stats);
       } catch (error) {
         console.error("Error fetching home stats:", error);
       }

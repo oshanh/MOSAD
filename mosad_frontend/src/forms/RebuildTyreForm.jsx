@@ -58,8 +58,10 @@ const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel,setAlert }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
    
-    setAlert("warning",error);
-    if (error) return; // Prevent submission if there's an error
+    if (error){
+      setAlert("warning",error);
+      return
+      }; // Prevent submission if there's an error
     const { tyreNumber, tyreSize, tyreBrand, customerName, contactNumber, dateReceived, status } = formData;
     if (!tyreNumber || !tyreSize || !tyreBrand || !customerName || !contactNumber || !dateReceived || !status) {
       alert('Please fill in all required fields.');
