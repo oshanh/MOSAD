@@ -4,7 +4,7 @@ import os
 
 class RebuildTyreCheckerTool(BaseTool):
     name: str = "RebuildTyreCheckerTool"
-    description: str = "Check the rebuild tyre stock customer names from the MOSAD system database."
+    description: str = "Check the rebuild tyre customer names from the MOSAD system database."
 
     def _run(self, query: str) -> str:
      try:
@@ -18,7 +18,7 @@ class RebuildTyreCheckerTool(BaseTool):
         )
         cur = conn.cursor()
 
-        cur.execute("SELECT customer_name FROM rebuild_tyre")
+        cur.execute("SELECT customer_name FROM public.rebuild_tyre")
         rows = cur.fetchall()
 
         if not rows:

@@ -104,7 +104,6 @@ const StockReport = () => {
                   onChange={handleReportNameChange}
                 >
                   <MenuItem value="stock_summary">Stock Summary</MenuItem>
-                  <MenuItem value="low_stock_items">Low Stock Items</MenuItem>
                   <MenuItem value="sales_overview">Sales Overview</MenuItem>
                   {/* Add more report name options as needed */}
                 </Select>
