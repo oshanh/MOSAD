@@ -97,17 +97,6 @@ const StockReport = () => {
                 />
               </div>
             </Grid2>
-
-            <Grid2 item xs={12} md={6}>
-              <Paper elevation={3} sx={{ p: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  Calendar with Due Dates
-                </Typography>
-                <Typography variant="body2">
-                  (Calendar component will be implemented here)
-                </Typography>
-              </Paper>
-            </Grid2>
           </Grid2>
 
           {/* Report Generation Section */}
