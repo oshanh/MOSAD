@@ -1,7 +1,10 @@
 import React from "react";
 import Slideshow from '../../component/Slideshow';
 import Tile from '../../component/Tile';
-import { Box, Stack, Typography, useTheme, Paper, Button, Divider, Grid2 } from "@mui/material";
+import { Box, Stack, Typography, useTheme, Paper, Button, Divider, Grid2,MenuItem,
+  Select,
+  FormControl,
+  InputLabel } from "@mui/material";
 import DescriptionIcon from '@mui/icons-material/Description';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import StorefrontIcon from '@mui/icons-material/Storefront';
@@ -18,6 +21,10 @@ import Chatbot from '../../component/chatbot';
 import { teal, cyan } from '@mui/material/colors';
 import Calendar from '../../component/Calendar';
 import LineGraph from "../../component/LineGraph";
+import { useNavigate } from "react-router-dom";
+import { useState,useEffect } from "react";
+import PopUp from "../../component/PopUp";
+import { useFetchBrands } from "../../hooks/servicesHook/useStockService";
 
 // Styled Tile Component for a modern look
 const ModernTile = styled(Tile)(({ theme }) => ({
@@ -47,7 +54,86 @@ const mockData = {
 };
 
 function HomePage() {
+  const fetchBrands = useFetchBrands();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState(""); // Changed state name for clarity
+  const [allbrands,setAllBrands]=useState([])
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { theme } = useTheme();
+  const navigate = useNavigate();
+
+  const handleBrandSelection = () => {
+    if (selectedBrand) {
+      navigate('/stocks/category/brands/item-view', { state: { brand: selectedBrand,category:"Tyre" } });
+      setDialogOpen(false); // Close the dialog after navigation
+    } else {
+      // Optionally handle the case where no brand is selected
+      console.warn("Please select a brand.");
+    }
+  };
+
+  useEffect(() => {
+    const getBrands = async () => {
+      try {
+        const response = await fetchBrands("Tyre");
+        setAllBrands(response.data.map((brand) => brand.brandName));
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getBrands();
+  }, []); // Added fetchBrands to the dependency array
+
+  const brandSelectForm=()=>{
+    return (
+      <Box sx={{ p: 3, maxWidth: '400px', mx: 'auto' }}>
+            <Stack spacing={2} direction="column">
+                <Typography variant="body1" gutterBottom>
+                  Please select the brand
+                </Typography>
+                <FormControl fullWidth sx={{ minWidth: 120 }}>
+                  <InputLabel id="brand-select-label">Brand</InputLabel>
+                  <Select
+                    labelId="brand-select-label"
+                    value={selectedBrand}
+                    onChange={(e) => {
+                      setSelectedBrand(e.target.value); // Update selectedBrand state
+                    }}
+                    label="Brand"
+                    variant="outlined"
+                    fullWidth
+                  >
+                    {allbrands.map((b) => (
+                      <MenuItem key={b} value={b}>
+                        {b}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+              <Grid2 size={{ xs:12}} container justifyContent="flex-end" spacing={2}>
+                <Grid2 >
+                  <Button onClick={() => setDialogOpen(false)} color="secondary">
+                    Cancel
+                  </Button>
+                </Grid2>
+                <Grid2 >
+                  <Button
+                    onClick={handleBrandSelection} // Call handleBrandSelection on click
+                    sx={{ color: 'white', backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}
+                  >
+                    Go
+                  </Button>
+                </Grid2>
+              </Grid2>
+            </Stack>
+      </Box>
+    )
+  }
 
   const tiles = [
     { title: 'Bill Generate', icon: <DescriptionIcon />, link: '/bills', authorizedRoles: ["OWNER", "ADMIN"] },
@@ -87,11 +173,11 @@ function HomePage() {
         </Grid2>
         <Grid2 container size={{xs:12}} justifyContent={{ md: 'center' }}>
           <Grid2 size={{xs:12,md:4}}>
-            <Paper elevation={2} sx={{ 
-              p: 3, 
-              borderRadius: 2, 
+            <Paper elevation={2} sx={{
+              p: 3,
+              borderRadius: 2,
               height: '100%',
-              display: 'flex', 
+              display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between'
             }}>
@@ -111,8 +197,8 @@ function HomePage() {
 
           {/* Vertical Divider - Only shows on medium screens and up */}
           <Grid2 size={{xs:'none',md:'block'}}>
-            <Divider orientation="vertical" flexItem sx={{ 
-              borderRightWidth: 2, 
+            <Divider orientation="vertical" flexItem sx={{
+              borderRightWidth: 2,
               borderColor: cyan[200],
               mx: 'auto',
               height: '100%'
@@ -121,78 +207,87 @@ function HomePage() {
 
           {/* Horizontal Divider - Only shows on small screens */}
           <Grid2 size={{xs:'block' ,md:'none'}}>
-            <Divider sx={{ 
-              borderBottomWidth: 2, 
+            <Divider sx={{
+              borderBottomWidth: 2,
               borderColor: cyan[200],
               my: 2
             }} />
           </Grid2>
 
           <Grid2 size={{xs:12,md:4}}>
-            <Paper elevation={2} sx={{ 
-              p: 3, 
-              borderRadius: 2, 
+            <Paper elevation={2} sx={{
+              p: 3,
+              borderRadius: 2,
               height: '100%',
-              display: 'flex', 
+              display: 'flex',
               flexDirection: 'column'
             }}>
               <Typography variant="h6" component="h3" mb={3} textAlign="center" color={teal[500]}>
                 Quick Access
               </Typography>
-              
+
               <Stack spacing={2} sx={{ flexGrow: 1 }}>
                 <Button
                   variant="outlined"
                   size="large"
                   startIcon={<SearchIcon />}
                   fullWidth
-                  sx={{ 
+                  sx={{
                     py: 1.5,
                     borderColor: teal[300],
                     color: teal[700],
-                    '&:hover': { 
+                    '&:hover': {
                       backgroundColor: teal[50],
                       borderColor: teal[500]
                     }
                   }}
+                  onClick={()=>{
+                    navigate('/retails/product-availability')
+                  }}
                 >
                   Product Search
                 </Button>
-                
+
                 <Button
                   variant="outlined"
                   size="large"
                   startIcon={<ReceiptIcon />}
                   fullWidth
-                  sx={{ 
+                  sx={{
                     py: 1.5,
                     borderColor: teal[300],
                     color: teal[700],
-                    '&:hover': { 
+                    '&:hover': {
                       backgroundColor: teal[50],
                       borderColor: teal[500]
                     }
                   }}
+                  onClick={()=>{
+                    navigate('/bills/all-bills')
+                  }}
                 >
                   View All Bills
                 </Button>
-                
+
                 <Button
                   variant="outlined"
                   size="large"
                   startIcon={<VisibilityIcon />}
                   fullWidth
-                  sx={{ 
+                  sx={{
                     py: 1.5,
                     borderColor: teal[300],
                     color: teal[700],
-                    '&:hover': { 
+                    '&:hover': {
                       backgroundColor: teal[50],
                       borderColor: teal[500]
                     }
                   }}
+                  onClick={()=>{
+                    setDialogOpen(true);
+                  }}
                 >
-                  Item View
+                  View tires
                 </Button>
 
                 {/* Additional Quick Actions */}
@@ -201,31 +296,34 @@ function HomePage() {
                     variant="contained"
                     size="medium"
                     fullWidth
-                    sx={{ 
+                    sx={{
                       backgroundColor: teal[500],
                       '&:hover': { backgroundColor: teal[700] }
                     }}
+                    onClick={()=>{
+                      navigate('/reports')
+                    }}
                   >
-                    Generate Monthly Report
+                    Overivew
                   </Button>
                 </Box>
               </Stack>
             </Paper>
           </Grid2>
-            
+
           <Grid2 size={{xs:10}} >
             <Typography variant="h5" color="text.secondary" textAlign="center" mt={2}>
-                    Sales Acros the past 7 days
+              Sales Snapshot
             </Typography>
-            <LineGraph 
+            <LineGraph
             dataSet={[{
               data: [2, 5.5, 2, 8.5, 1.5, 5,23,43,3],
-            }]} 
+            }]}
               xaxis={[1, 2, 3, 5, 8, 10,12,14,16]}/>
-            
-          </Grid2> 
+
+          </Grid2>
         </Grid2>
-        
+
         <Grid2 size={{xs:12}}>
           <Typography variant="h4" component="h2" gutterBottom textAlign="center" mt={4} color={teal[500]}>
             Choose a section
@@ -251,6 +349,17 @@ function HomePage() {
           </Stack>
         </Grid2>
       </Grid2>
+       {/* Dialog for choose brand and category */}
+        <PopUp
+            popUpTitle="Choose you brand"
+            openPopup={dialogOpen}
+            setOpenPopup={setDialogOpen}
+            // Removed setOkButtonAction here, the action is handled directly in the button
+            setCancelButtonAction={() => setDialogOpen(false)}
+            isDefaultButtonsDisplay={false}
+            width="md">
+            {brandSelectForm()}
+        </PopUp>
 
       {/* Floating Chatbot Icon and Window */}
       <Chatbot />
