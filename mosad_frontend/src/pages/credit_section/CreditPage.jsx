@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import { Delete, KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon  } from '@mui/icons-material';
 import SendIcon from '@mui/icons-material/Send';
-import {useAddRepayment,useDeleteRepayment,useFetchAllCreditDetails,useUpdateCredit}from '../../hooks/servicesHook/useCreditService'
+import {useAddRepayment,useDeleteRepayment,useFetchAllCreditDetails,useUpdateCredit,useSendCreditReminder}from '../../hooks/servicesHook/useCreditService'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Tooltip } from '@mui/material';
@@ -17,7 +17,6 @@ import Loading from '../../component/Loading';
 import ConfirmationDialog from '../../component/ConfirmationDialog';
 import PropTypes from 'prop-types';
 import { useSendHelloWorldTemplate } from '../../hooks/servicesHook/useStockService/';
-import { useSendCreditReminder } from '../../hooks/servicesHook/useCreditService';
 
 //Table row handling
 function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,columns,state,updateCredit }) {
