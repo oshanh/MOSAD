@@ -8,7 +8,7 @@ const statusOptions = [
   { value: 'DONE', label: 'Done' },
 ];
 
-const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel }) => {
+const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel,setAlert }) => {
   const [formData, setFormData] = useState({
     tyreNumber: '',
     tyreSize: '',
@@ -52,10 +52,14 @@ const RebuildTyreForm = ({ initialData = {}, onSubmit, onCancel }) => {
         setError('');
       }
     }
+ 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+   
+    setAlert("warning",error);
+    if (error) return; // Prevent submission if there's an error
     const { tyreNumber, tyreSize, tyreBrand, customerName, contactNumber, dateReceived, status } = formData;
     if (!tyreNumber || !tyreSize || !tyreBrand || !customerName || !contactNumber || !dateReceived || !status) {
       alert('Please fill in all required fields.');

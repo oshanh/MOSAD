@@ -172,6 +172,12 @@ const RebuildTyrePage = () => {
     setOpenFormPopup(true);
   };
 
+  const handleAlert = (type, msg) => {
+    setAlertType(type);
+    setAlertMsg(msg);
+    setShowSnack(true);
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container sx={{ py: 4 }}>
@@ -230,6 +236,7 @@ const RebuildTyrePage = () => {
             initialData={editingTyre || {}}
             onSubmit={handleFormSubmit}
             onCancel={handleCancelUpdate}
+            setAlert={handleAlert}
           />
         </PopUp>
 
