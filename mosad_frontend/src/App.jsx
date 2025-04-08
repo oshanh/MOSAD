@@ -148,9 +148,11 @@ function App() {
                 <Route path="view-all" element={<AllUsersView />}/>
               </Route>
             </Route>
-            <Route path='/notifications' element={<NotificationLayout />}>
-              <Route path="credit" element={<NotificationCredit />} />
-              <Route path="stock" element={<NotificationStock />} />
+            <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN"]}/>}>
+              <Route path='/notifications' element={<NotificationLayout />}>
+                <Route path="credit" element={<NotificationCredit />} />
+                <Route path="stock" element={<NotificationStock />} />
+              </Route>
             </Route>
                
 
