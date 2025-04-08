@@ -223,6 +223,7 @@ const handleCreateCredit = async (creditData) => {
     setAdvance(0);
     setCustomerName("");
     setTelephone("");
+    setQuantity(1);
     setSelectedNormalCustomer(null);
     setSelectedRetailCustomer(null);
   };
