@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useEffect ,useState} from "react";
 import Slideshow from '../../component/Slideshow';
 import Tile from '../../component/Tile';
 import { Box, Stack, Typography, useTheme, Paper, Button, Divider, Grid2,MenuItem,
@@ -21,12 +21,9 @@ import Chatbot from '../../component/chatbot';
 import { teal, cyan } from '@mui/material/colors';
 import Calendar from '../../component/Calendar';
 import LineGraph from "../../component/LineGraph";
-import { useHomeStats } from "../../hooks/servicesHook/useStockService";
-import { useEffect ,useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { useState,useEffect } from "react";
 import PopUp from "../../component/PopUp";
-import { useFetchBrands } from "../../hooks/servicesHook/useStockService";
+import { useFetchBrands,useHomeStats } from "../../hooks/servicesHook/useStockService";
 
 // Styled Tile Component for a modern look
 const ModernTile = styled(Tile)(({ theme }) => ({
@@ -56,6 +53,7 @@ const mockData = {
 };
 
 function HomePage() {
+
   const homestats = useHomeStats();
   const { theme } = useTheme();
   const [stats, setStats] = useState({}); // Initialize stats with an empty object
@@ -158,6 +156,7 @@ function HomePage() {
       </Box>
     )
   }
+
 
   const tiles = [
     { title: 'Bill Generate', icon: <DescriptionIcon />, link: '/bills', authorizedRoles: ["OWNER", "ADMIN"] },
