@@ -1,6 +1,7 @@
 package org.rtss.mosad_backend.service;
 
 import org.rtss.mosad_backend.dto.NotificationDTO;
+import org.rtss.mosad_backend.dto.ResponseDTO;
 import org.rtss.mosad_backend.entity.Notification;
 import org.rtss.mosad_backend.dto_mapper.NotificationMapper;
 import org.rtss.mosad_backend.repository.NotificationRepository;
@@ -22,11 +23,12 @@ public class NotificationService {
         this.notificationMapper = notificationMapper;
     }
 
-    public NotificationDTO addNotification(NotificationDTO dto) {
+    public ResponseDTO addNotification(NotificationDTO dto) {
         Notification entity = notificationMapper.toEntity(dto);
         Notification saved = notificationRepository.save(entity);
         System.out.println("saved notification: " + saved);
-        return notificationMapper.toDTO(saved);
+        //return notificationMapper.toDTO(saved);
+        return new ResponseDTO(true, "Notification added successfully");
     }
 
 

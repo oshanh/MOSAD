@@ -1,6 +1,7 @@
 package org.rtss.mosad_backend.controller;
 
 import org.rtss.mosad_backend.dto.NotificationDTO;
+import org.rtss.mosad_backend.dto.ResponseDTO;
 import org.rtss.mosad_backend.service.NotificationService;
 import org.rtss.mosad_backend.service.mail_service.WhatsAppNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,10 @@ public class NotificationController {
     public ResponseEntity<List<NotificationDTO>> getNotificationsByType(@PathVariable String type) {
         List<NotificationDTO> notifications = notificationService.getNotificationsByType(type);
         return ResponseEntity.ok(notifications);
+    }
+    @PostMapping("/add")
+    public ResponseEntity<ResponseDTO> addNotification(@RequestBody NotificationDTO notificationDTO) {
+        return ResponseEntity.ok().body(notificationService.addNotification(notificationDTO));
     }
 
 

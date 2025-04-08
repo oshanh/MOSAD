@@ -40,7 +40,7 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
       setTimeout(() => setMessage(null), 2000);
     }).catch((error) => {
       console.error('Failed to send notification:', error.response?.data || error.message);
-      setMessage({ type: 'error', text: 'Failed to send notification!' });
+      setMessage({ type: 'error', text: 'Failed to send notification!\nAccess token has expired on free account.!' });
       setTimeout(() => setMessage(null), 2000);
     });
    

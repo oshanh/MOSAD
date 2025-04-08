@@ -2,6 +2,7 @@ package org.rtss.mosad_backend.service.mail_service;
 
 import jakarta.transaction.Transactional;
 import org.rtss.mosad_backend.dto.NotificationDTO;
+import org.rtss.mosad_backend.dto.ResponseDTO;
 import org.rtss.mosad_backend.entity.credit.Credit;
 import org.rtss.mosad_backend.entity.credit.Repayment;
 import org.rtss.mosad_backend.entity.stock_management_entity.Item;
@@ -75,8 +76,8 @@ public class ScheduledWANotifications {
             String remainingBalance="Rs."+ rb;
 
             String messageForOwner=customerName +" should pay "+remainingBalance+" by "+formattedDueDate;
-            NotificationDTO ndto=notificationService.addNotification(new NotificationDTO("Credit Reminder",messageForOwner));
-            System.out.println("\n\n"+ndto.getType()+" "+ndto.getMsg()+"\n\n");
+            ResponseDTO ndto=notificationService.addNotification(new NotificationDTO("Credit Reminder",messageForOwner));
+
 
 
             whatsAppNotificationService.sendCreditReminder(contactNumber,customerName,remainingBalance,formattedDueDate);
@@ -89,8 +90,8 @@ public class ScheduledWANotifications {
         List<Item> items=itemService.stockQty(10);
         for(Item item:items){
             String message=item.getItemName()+" is running low in stock.";
-            NotificationDTO ndto=notificationService.addNotification(new NotificationDTO("Low Stock Notification",message));
-            System.out.println("\n\n"+ndto.getType()+" "+ndto.getMsg()+"\n\n");
+            ResponseDTO ndto=notificationService.addNotification(new NotificationDTO("Low Stock Notification",message));
+
         }
     }
 

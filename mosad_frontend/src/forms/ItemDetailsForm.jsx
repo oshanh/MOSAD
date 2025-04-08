@@ -38,8 +38,9 @@ const ItemDetailsForm = ({ formData,handleChange,errors,onSubmit,closeDialog,sto
                 handleChange(key, e.target.value)
               }
               required={key !== "itemId"} // Mark all fields except 'itemId' as required
-              disabled={key==="availableQuantity" || operationType=="Edit"} // Disable the 'itemId' field
-              
+              //disabled={key!=="companyPrice"} // Enable the companyPrice field in Edit mode
+              disabled={operationType=="Edit"} // Disable the All fields in Edit mode
+
               error={!!errors[key]} // Highlight the field in red if it has an error
               helperText={errors[key] || ""} // Show error message if available
               fullWidth
