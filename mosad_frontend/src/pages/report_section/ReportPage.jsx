@@ -4,6 +4,7 @@ import { Paper, Typography, Grid2 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import SalesGraph from '../../component/GraphComponent'; // Assuming this path is correct
 import { cyan } from '@mui/material/colors';
+
 const StockReport = () => {
   const [reportName, setReportName] = useState('');
 
