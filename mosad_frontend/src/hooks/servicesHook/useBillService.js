@@ -40,5 +40,25 @@ export const useCreateBill=()=>{
 
 };
 
+export const useFetchNormalCustomer = () => {
+  const apiClient = useApiClient();
+
+  const fetchNormalCustomer = (params) => {
+    return apiClient.get('/bills/getnormal', { params });
+  };
+
+  return fetchNormalCustomer;
+};
+
+export const useFetchRetailCustomer = () => {
+  const apiClient = useApiClient();
+
+  const fetchRetailCustomer = (params) => {
+    return apiClient.get('/bills/getretail', { params });
+  };
+
+  return fetchRetailCustomer;
+}
+
 
 

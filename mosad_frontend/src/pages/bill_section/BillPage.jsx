@@ -13,12 +13,17 @@ import {
   Button,
   IconButton,
   Grid2,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"; // Import DeleteIcon
 import SearchComponent from "../../component/SearchComponent"; // Import SearchComponent
 import { jsPDF } from "jspdf"; // Import jsPDF library
-import { useUpdateItemQuantity ,useCreateBill} from "../../hooks/servicesHook/useBillService";
+import { useUpdateItemQuantity ,useCreateBill,useFetchNormalCustomer,useFetchRetailCustomer} from "../../hooks/servicesHook/useBillService";
 import { useCreateCredit } from "../../hooks/servicesHook/useCreditService";
+import GeneralMessage from "../../component/GeneralMessage";
 
 
 
@@ -30,12 +35,53 @@ const BillPage = () => {
   const updateStock = useUpdateItemQuantity();
   const createBill = useCreateBill();
   const createCredit = useCreateCredit();
+  const fetchNormalCustomer = useFetchNormalCustomer();
+  const fetchRetailCustomer = useFetchRetailCustomer();
+  const [selectedRetailCustomer, setSelectedRetailCustomer] = useState(null); // State to store selected customer
+  const [selectedNormalCustomer, setSelectedNormalCustomer] = useState(null); // State to store selected customer
 
   const [rows, setRows] = React.useState([]); // Start with an empty array
   const [advance, setAdvance] = React.useState(0);
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState("");
   const [telephone, setTelephone] = useState("");
+  const [customerType, setCustomerType] = useState("normal"); // Default to "normal"
+  const [message, setMessage] = useState();
+
+  const fetchAndSetNormalCustomer = async (telephone) => {
+    try {
+      const response = await fetchNormalCustomer({ contactNumber: telephone });
+      if(response.data.length === 0) {
+      
+        setMessage({ type: 'error', text: 'No customer found with this telephone number.' });
+        setTimeout(() => setMessage(null), 2000);
+        return;
+      }
+      setSelectedNormalCustomer(response.data); // Set the selected customer from the API response
+      const customerN=response.data[0].customerName;
+      setCustomerName(customerN); // Set the customer name from the API response
+    } catch (error) {
+      console.error("Error fetching normal customer:", error);
+    }
+  };
+
+  const fetchAndSetRetailCustomer = async (telephone) => {
+    try {
+      const response = await fetchRetailCustomer({ contactNumber: telephone });
+      if(response.data.length === 0) {
+        
+        setMessage({ type: 'error', text: 'No customer found with this telephone number.' });
+        setTimeout(() => setMessage(null), 2000);
+        return;
+      }
+      setSelectedRetailCustomer(response.data); // Set the selected customer from the API response
+      console.log("Selected Retail Customer:", selectedRetailCustomer); // Log the selected customer
+      const customerN=response.data[0].firstName+" "+response.data[0].lastName;
+      setCustomerName(customerN); // Set the customer name from the API response
+    } catch (error) {
+      console.error("Error fetching retail customer:", error);
+    }
+  };
 
   const handleAddToBill = (item) => {
     console.log(item);
@@ -216,11 +262,12 @@ const handleCreateCredit = async (creditData) => {
       clearAllFields();
     }, 2000);
   };
-  
+ 
   
 
   return (
     <Box sx={{ p: 4 }}>
+      {message && <GeneralMessage message={message} />}
       {/* Search Component */}
       <Box sx={{ mb: 4 }}>
         <SearchComponent onAddToBill={handleAddToBill} quantity={quantity} setQuantity={setQuantity}/>
@@ -274,6 +321,46 @@ const handleCreateCredit = async (creditData) => {
             <Typography sx={{ fontSize: "1.2rem", color: "#555", mt: 1 }}>
               Contact Us: <strong>078 3918504, 0764690290, 0332274577</strong>
             </Typography>
+          </Box>
+
+          {/* Customer Search */}
+          <Box
+            sx={{
+              mb: 2,
+              textAlign: "left",
+              background: "#f1f1f1",
+              p: 2,
+              borderRadius: "8px",
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                if (customerType === "normal") {
+                  fetchAndSetNormalCustomer(telephone);
+                } else {
+                  fetchAndSetRetailCustomer(telephone);
+                }
+
+
+              }}
+              sx={{ mt: 2 }}
+            >
+              Search Customer
+            </Button>
+            <RadioGroup
+              row
+              value={customerType}
+              onChange={(e) => setCustomerType(e.target.value)}
+              sx={{ mt: 2 }}
+            >
+              <FormControlLabel value="normal" control={<Radio />} label="Normal" />
+              <FormControlLabel value="retail" control={<Radio />} label="Retail" />
+            </RadioGroup>
+            
           </Box>
 
           {/* Customer Info */}
