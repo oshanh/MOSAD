@@ -46,6 +46,7 @@ const BillPage = () => {
   const [customerName, setCustomerName] = useState("");
   const [telephone, setTelephone] = useState("");
   const [customerType, setCustomerType] = useState("normal"); // Default to "normal"
+  const [customerId, setCustomerId] = useState("");
   const [message, setMessage] = useState();
 
   const fetchAndSetNormalCustomer = async (telephone) => {
@@ -59,6 +60,7 @@ const BillPage = () => {
       }
       setSelectedNormalCustomer(response.data); // Set the selected customer from the API response
       const customerN=response.data[0].customerName;
+      setCustomerId(response.data[0].customerId); // Set the customer ID from the API response
       setCustomerName(customerN); // Set the customer name from the API response
     } catch (error) {
       console.error("Error fetching normal customer:", error);
@@ -75,7 +77,7 @@ const BillPage = () => {
         return;
       }
       setSelectedRetailCustomer(response.data); // Set the selected customer from the API response
-      console.log("Selected Retail Customer:", selectedRetailCustomer); // Log the selected customer
+      
       const customerN=response.data[0].firstName+" "+response.data[0].lastName;
       setCustomerName(customerN); // Set the customer name from the API response
     } catch (error) {
