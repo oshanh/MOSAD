@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Divider, Stack, Box, FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material';
-import { Paper, Typography, Grid2 } from '@mui/material';
+import { Divider, Stack, Box, FormControl, InputLabel, Select, MenuItem, Button, Paper, Typography,Grid2 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import SalesGraph from '../../component/GraphComponent'; // Assuming this path is correct
+import SalesGraph from '../../component/GraphComponent';
 import { cyan } from '@mui/material/colors';
 
 const StockReport = () => {
@@ -12,10 +11,8 @@ const StockReport = () => {
     setReportName(event.target.value);
   };
 
-  const handleGenerateReport = () => {
-    // Implement your report generation logic here
-    console.log(`Generating report with name: ${reportName}`);
-    // You might trigger a download or API call here
+  const handleGenerateReport = async () => {
+    console.log(`Generating report for: ${reportName}`);
   };
 
   const columns = [
@@ -34,13 +31,14 @@ const StockReport = () => {
   ];
 
   return (
-    <Box sx={{mx:5}}>
-      <Paper elevation={3} sx={{px:5,py:3,width:'100%'}}>
+    <Box sx={{ mx: 5 }}>
+      <Paper elevation={3} sx={{ px: 5, py: 3, width: '100%' }}>
         <Stack spacing={2}>
-            <Typography variant="h6" gutterBottom>
-                  Sales graph acros past 7 days
-            </Typography>
-          <Paper elevation={3}>  
+          <Typography variant="h6" gutterBottom>
+            Sales Graph Across Past 7 Days
+          </Typography>
+
+          <Paper elevation={3}>
             <SalesGraph
               dataSet={[
                 { data: [35, 44, 24, 34] },
@@ -51,7 +49,7 @@ const StockReport = () => {
               xaxis={['Q1', 'Q2', 'Q3', 'Q4']}
             />
           </Paper>
-          <Grid2 size={{xs:12}}>
+
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 3 }}>
             <Divider
               variant="middle"
@@ -62,11 +60,11 @@ const StockReport = () => {
               }}
             />
           </Box>
-        </Grid2>
+
           <Grid2 container spacing={2}>
-            <Grid2  size={{xs:12,md:6}}>
+            <Grid2 item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>
-                Table of all products
+                Table of All Products
               </Typography>
               <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
@@ -77,12 +75,12 @@ const StockReport = () => {
                 />
               </div>
             </Grid2>
-            <Grid2  size={{xs:12,md:6}}>
+
+            <Grid2 item xs={12} md={6}>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <Typography variant="h6" gutterBottom>
                   Calendar with Due Dates
                 </Typography>
-                {/* You can integrate a calendar component here */}
                 <Typography variant="body2">
                   (Calendar component will be implemented here)
                 </Typography>
@@ -90,28 +88,78 @@ const StockReport = () => {
             </Grid2>
           </Grid2>
 
+          {/* Report Generation Section */}
           <Paper elevation={3} sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
               Report Generation
             </Typography>
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <FormControl fullWidth>
                 <InputLabel id="report-name-label">Select Report Name</InputLabel>
                 <Select
-                  labelId="report-name-label"
-                  id="report-name"
-                  value={reportName}
-                  label="Select Report Name"
-                  onChange={handleReportNameChange}
+                 labelId="report-name-label"
+                 id="report-name"
+                 value={reportName}
+                 label="Select Report Name"
+                 onChange={handleReportNameChange}
                 >
-                  <MenuItem value="stock_summary">Stock Summary</MenuItem>
-                  <MenuItem value="sales_overview">Sales Overview</MenuItem>
-                  {/* Add more report name options as needed */}
+                 
+                 
+                 <MenuItem value="sales_overview">Sales Overview</MenuItem>
+                 <MenuItem value="tyre_forecast">Tyre Forecast</MenuItem> {/* new */}
+                 <MenuItem value="tube_forecast">Tube Forecast</MenuItem> {/* new */}
                 </Select>
               </FormControl>
-              <Button variant="contained" color="primary" onClick={handleGenerateReport} disabled={!reportName}>
-                Generate Report
+
+              {reportName === 'sales_overview' && (
+              <a
+                href="http://127.0.0.1:8001/forecast/download/revenue-forecast"
+                download="sales_revenue_forecast.csv"
+                style={{ textDecoration: 'none' }}
+              >
+              <Button variant="contained" color="primary">
+                  Download Sales Overview Report
               </Button>
+              </a>
+             )}
+
+              {reportName === 'tyre_forecast' && (
+              <a
+                href="http://127.0.0.1:8001/forecast/download/tyre-forecast"
+                download="tyre_forecast.csv"
+                style={{ textDecoration: 'none' }}
+              >
+              <Button variant="contained" color="primary">
+                Download Tyre Forecast
+              </Button>
+                </a>
+              )}
+
+{reportName === 'tube_forecast' && (
+  <a
+    href="http://127.0.0.1:8001/forecast/download/tube-forecast"
+    download="tube_forecast.csv"
+    style={{ textDecoration: 'none' }}
+  >
+    <Button variant="contained" color="primary">
+      Download Tube Forecast
+    </Button>
+  </a>
+)}
+
+{(reportName !== 'sales_overview' &&
+  reportName !== 'tyre_forecast' &&
+  reportName !== 'tube_forecast') && (
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={handleGenerateReport}
+    disabled={!reportName}
+  >
+    Generate Report
+  </Button>
+)}
             </Box>
           </Paper>
         </Stack>
