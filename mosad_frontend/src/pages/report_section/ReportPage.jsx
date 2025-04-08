@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Divider, Stack, Box, FormControl, InputLabel, Select, MenuItem, Button, Paper, Typography, Grid } from '@mui/material';
+import { Divider, Stack, Box, FormControl, InputLabel, Select, MenuItem, Button, Paper, Typography } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { DataGrid } from '@mui/x-data-grid';
 import SalesGraph from '../../component/GraphComponent';
 import { cyan } from '@mui/material/colors';
@@ -104,17 +105,11 @@ const StockReport = () => {
                  label="Select Report Name"
                  onChange={handleReportNameChange}
                 >
-<<<<<<< HEAD
                  
                  
                  <MenuItem value="sales_overview">Sales Overview</MenuItem>
                  <MenuItem value="tyre_forecast">Tyre Forecast</MenuItem> {/* new */}
                  <MenuItem value="tube_forecast">Tube Forecast</MenuItem> {/* new */}
-=======
-                  <MenuItem value="stock_summary">Stock Summary</MenuItem>
-                  <MenuItem value="sales_overview">Sales Overview</MenuItem>
-                  {/* Add more report name options as needed */}
->>>>>>> db3097e278d614e2f7c17208b6706bf76ae76dd8
                 </Select>
               </FormControl>
 
