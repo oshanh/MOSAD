@@ -71,7 +71,7 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
   const handleAddRepayment = () => {
     if (newRepayment.date && newRepayment.amount) {
       onAddRepayment(row.creditId, newRepayment); // Call the parent callback with new repayment details
-      if(newRepayment.amount == row.balance){
+      if(newRepayment.amount == remainingBalance){
         const credit={
           creditId:row.creditId,
           dueDate:row.dueDate,

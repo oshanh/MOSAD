@@ -190,9 +190,16 @@ const RebuildTyrePage = () => {
           <Grid container spacing={2} alignItems="center">
             <Grid size={{xs:12,sm:8}}>
               <TextField
+                type='tel'
                 label="Filter by Contact Number"
                 value={filter}
-                onChange={handleFilterChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                if (/^\d{0,10}$/.test(value)) {
+                  handleFilterChange(e);
+                }
+                }}
+                //onChange={handleFilterChange}
                 variant="outlined"
                 fullWidth
               />
