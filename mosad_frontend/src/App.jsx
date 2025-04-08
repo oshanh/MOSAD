@@ -105,7 +105,7 @@ function App() {
               </Route>
             </Route>
           
-            {/* Branch Manager dashboard acording to the role */}
+            {/* Stock Manager dashboard acording to the role */}
             <Route element={<CheckPrivileges allowedRoles={["STOCK_MANAGER"]}/>}>
               <Route path="/stock" element={ <StockPageLayout />} >
                 <Route index element={<StockPage allowedRoles={["STOCK_MANAGER"]}/>}/>
