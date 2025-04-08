@@ -2,7 +2,6 @@ fastapi
 numpy<2
 uvicorn
 crewai 
-
 websockets
 openai
 websockets
