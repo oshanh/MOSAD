@@ -31,7 +31,7 @@ const StockReport = () => {
       }));
       setItemCount(dataWithIds);
     } catch (error) {
-      setAlertMsg(error.response?.data || error.message || 'Table data  fetching ailed.')
+      setAlertMsg(error.response?.data || error.message || 'Table data  fetching failed.')
       setShowSnack(true)
     } finally {
       setLoading(false);
@@ -126,7 +126,6 @@ const StockReport = () => {
                 >
                   <MenuItem value="stock_summary">Stock Summary</MenuItem>
                   <MenuItem value="sales_overview">Sales Overview</MenuItem>
-                  {/* Add more report name options as needed */}
                 </Select>
               </FormControl>
               <Button variant="contained" color="primary" onClick={handleGenerateReport} disabled={!reportName}>
