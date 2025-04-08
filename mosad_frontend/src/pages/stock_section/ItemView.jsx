@@ -9,7 +9,7 @@ import default_baner from "../../assets/default.png"
 import dsi_baner from "../../assets/dsi.png"
 import rapid_baner from "../../assets/rapid.jpg"
 import linglong_baner from "../../assets/linglong.png"
-import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem,useFetchStockInHistory } from "../../hooks/servicesHook/useStockService";
+import { useAddItem, useFetchItems, useDeleteItem, useUpdateItem, useFetchStockInHistory } from "../../hooks/servicesHook/useStockService";
 import PopUp from "../../component/PopUp";
 import ConfirmationDialog from "../../component/ConfirmationDialog";
 import SearchComponent from "../../component/SearchComponent";
@@ -19,24 +19,25 @@ import useAuth from '../../hooks/useAuth';
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import StockInHistory from "./StockInHistory";
+import { Button, Typography } from "@mui/material";
 
 const ItemView = () => {
-  const addItem = useAddItem(); 
-  const fetchItems = useFetchItems(); 
-  const deleteItem =useDeleteItem(); 
-  const updateItem= useUpdateItem();
+  const addItem = useAddItem();
+  const fetchItems = useFetchItems();
+  const deleteItem = useDeleteItem();
+  const updateItem = useUpdateItem();
   const fetchStockInHistory = useFetchStockInHistory();
 
-  const {auth}=useAuth();
-  
-  
+  const { auth } = useAuth();
 
-  const passedStates=useLocation();
-  const states=passedStates.state;
+
+
+  const passedStates = useLocation();
+  const states = passedStates.state;
 
   //Store passed Category and Brand using Link state & useLocation
   const [selectedCategory, setSelectedCategory] = useState(states?.category);
-  const [selectedBrand, setSelectedBrand] = useState(states?.brand );
+  const [selectedBrand, setSelectedBrand] = useState(states?.brand);
   const [selectedBranch, setSelectedBranch] = useState(auth.branch); //Adjust based on your branch ID
   const [searchFilters, setSearchFilters] = useState({ itemName: "", tyreSize: "", vehicleType: "" });
 
@@ -44,7 +45,7 @@ const ItemView = () => {
   const [rows, setRows] = useState([]);
   const [stockInHistory, setStockInHistory] = useState([]);
 
-
+  const [restockRequestDialog, setRestockRequestDialog] = useState(false);
 
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [bannerImage, setBannerImage] = useState("");
@@ -58,14 +59,22 @@ const ItemView = () => {
 
 
   const [confirmationDialog, setConfirmationDialog] = useState(false);
-  const dialogOpenRef = useRef(false); // ✅ Track whether dialog is open
+  const dialogOpenRef = useRef(false); // Track whether dialog is open
   const [openStockInHistory, setOpenStockInHistory] = useState(false);
+
+  const handleRestockSubmit = () => {
+    console.log("send")
+  }
+
+  const closeRestockDialog = () => {
+    setRestockRequestDialog(false)
+  }
 
   const handleOpenStockInHistory = () => {
     setOpenStockInHistory(true);
     fetchStockInHistory(selectedRowId)
       .then((response) => {
-        
+
         setStockInHistory(response.data);
       })
       .catch((error) => console.error("Error fetching stock in history:", error));
@@ -128,20 +137,14 @@ const ItemView = () => {
     });
   };
 
-  
-
-
-
   const fetchandSetItems = async () => {
-    
 
-    if (selectedCategory && selectedBrand && selectedBranch ) {
-      
+    if (selectedCategory && selectedBrand && selectedBranch) {
+
       fetchItems({ params: { category: selectedCategory, brand: selectedBrand, branchId: selectedBranch, } })
         .then((response) => setRows(response.data))
         .catch((error) => console.error("Error fetching data:", error));
 
-      
 
     }
     else {
@@ -152,20 +155,20 @@ const ItemView = () => {
 
 
   const handleRowClick = (id) => {
-    
+
     setSelectedRowId((prevId) => {
       const newId = prevId === id ? null : id;
-      
+
       return newId;
     });
   };
-  
+
   useEffect(() => {
-    
+
   }, [selectedRowId]);
 
 
- 
+
 
   const closeConfirmationDialog = () => {
     dialogOpenRef.current = false; // ✅ Mark dialog as closed
@@ -195,7 +198,7 @@ const ItemView = () => {
   };
 
   useEffect(() => {
-    
+
 
     const brandImages = {
       atlander: atlander_baner,
@@ -247,7 +250,7 @@ const ItemView = () => {
         "date": stockIn.date
       }
     };
-    
+
 
     const request = currentItem
       ? updateItem(formatedData)
@@ -255,7 +258,7 @@ const ItemView = () => {
 
     request
       .then((response) => {
-        
+
         closeDialog();
         fetchandSetItems();
         setStockIn({ stockIn: "", date: new Date().toISOString().split("T")[0] });  // Reset stock in fields
@@ -280,7 +283,7 @@ const ItemView = () => {
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
     setSearchFilters({ ...searchFilters, [name]: value });
-    
+
   };
 
   const filteredRows = rows.filter((row) =>
@@ -291,7 +294,7 @@ const ItemView = () => {
 
   useEffect(
     () => {
-     
+
       setRows([]);
     }, [selectedCategory]
   )
@@ -304,7 +307,7 @@ const ItemView = () => {
     { field: 'itemName', headerName: 'Name', width: 200 },
     { field: 'itemDescription', headerName: 'Description', width: 250 },
     { field: 'companyPrice', headerName: 'Official Selling Price', width: 150 },
-    
+
     { field: 'availableQuantity', headerName: 'Available Quantity', width: 180 },
     ...(selectedCategory === 'Tyre' ? [
       { field: 'pattern', headerName: 'Pattern', width: 150 },
@@ -312,13 +315,13 @@ const ItemView = () => {
       { field: 'vehicleType', headerName: 'Vehicle Type', width: 180 },
     ] : []), // Add tyre-specific columns only if selectedCategory is 'Tyre'
   ];
-  
+
   const tableRows = filteredRows.map((row) => ({
     id: row.itemDTO.itemId,
     itemName: row.itemDTO.itemName,
     itemDescription: row.itemDTO.itemDescription,
     companyPrice: row.itemDTO.companyPrice,
-    
+
     availableQuantity: row.itemBranchDTO.availableQuantity,
     pattern: row.itemTyreDTO?.pattern || '',
     tyreSize: row.itemTyreDTO?.tyreSize || '',
@@ -327,7 +330,7 @@ const ItemView = () => {
 
 
 
- 
+
 
 
 
@@ -352,34 +355,25 @@ const ItemView = () => {
 
       </section>
 
-<Box sx={{  width: "95%", margin: "auto", padding: "20px", borderRadius: "8px" }}>
-  <SearchComponent
-    selectedCategory={selectedCategory}
-    setSelectedCategory={setSelectedCategory}
-    selectedBrand={selectedBrand}
-    setSelectedBrand={setSelectedBrand}
-    selectedBranch={selectedBranch}
-    setSelectedBranch={setSelectedBranch}
-    fetchandSetItems={fetchandSetItems}
-    handleSearchChange={handleSearchChange}
-    onItemView={true}
-    auth={auth}
-    states={states}
-    
-  />
-  
-</Box>
+      <Box sx={{ width: "95%", margin: "auto", padding: "20px", borderRadius: "8px" }}>
+        <SearchComponent
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          selectedBrand={selectedBrand}
+          setSelectedBrand={setSelectedBrand}
+          selectedBranch={selectedBranch}
+          setSelectedBranch={setSelectedBranch}
+          fetchandSetItems={fetchandSetItems}
+          handleSearchChange={handleSearchChange}
+          onItemView={true}
+          auth={auth}
+          states={states}
 
+        />
 
-
-
+      </Box>
       <div className="item-view-container">
-
-        
-
-
-
-        <Paper sx={{ height: 500, width: '95%',margin: "auto", padding: "20px", }}>
+        <Paper sx={{ height: 500, width: '95%', margin: "auto", padding: "20px", }}>
           <DataGrid
             rows={tableRows}
             columns={tableColumns}
@@ -426,7 +420,7 @@ const ItemView = () => {
           <button className="btn add" onClick={() => openDialog(null)}>Add Item</button>
           <button className="btn info" onClick={() => {
             if (selectedRowId) {
-            
+
               handleOpenStockInHistory();
 
 
@@ -435,6 +429,9 @@ const ItemView = () => {
               setTimeout(() => setMessage(null), 2000);
             }
           }}>StockIn History</button>
+          {auth.roles[0] == "BRANCH_MANAGER" &&
+            <Button variant="contained" onClick={() => setRestockRequestDialog(true)}>Send Restock request</Button>}
+
         </div>
       </div>
       <PopUp popUpTitle={currentItem ? "Update stock" : "Add New Item"}
@@ -458,6 +455,26 @@ const ItemView = () => {
         />
 
       </PopUp>
+      <PopUp popUpTitle={"Send Restock Message"}
+        openPopup={restockRequestDialog}
+        setOpenPopup={setRestockRequestDialog}
+        onSubmit={handleRestockSubmit}
+        setCancelButtonAction={closeRestockDialog}
+        setOkButtonAction={handleRestockSubmit}
+        isDefaultButtonsDisplay={true}
+      >
+        <Typography variant="subtitle1">
+          Do you need to send a restock message for:
+        </Typography>
+        <Typography variant="body1">
+          Category: {selectedCategory}
+        </Typography>
+        <Typography variant="body1">
+          Brand: {selectedBrand}
+        </Typography>
+
+      </PopUp>
+
 
       <StockInHistory open={openStockInHistory} onClose={() => { setOpenStockInHistory(false); }} rows={stockInHistory} />
 

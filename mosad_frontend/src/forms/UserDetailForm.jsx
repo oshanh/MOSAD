@@ -280,6 +280,7 @@ export default function UserDetailsForm(
                     {auth.roles.includes("ADMIN")&& <MenuItem value="ADMIN">Admin</MenuItem>}
                     {auth.roles.includes("ADMIN")&& <MenuItem value="OWNER">Owner</MenuItem>}
                     <MenuItem value="STOCK_MANAGER">Stock Manager</MenuItem>
+                    <MenuItem value="BRANCH_MANAGER">Branch Manager</MenuItem>
                     <MenuItem value="RETAIL_CUSTOMER">Retail Customer</MenuItem>
                     <MenuItem value="MECHANIC">Mechanic</MenuItem>
                     </Select>

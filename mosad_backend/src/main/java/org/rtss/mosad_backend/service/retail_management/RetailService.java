@@ -6,6 +6,7 @@ import org.rtss.mosad_backend.entity.bill_management.Bill;
 import org.rtss.mosad_backend.entity.bill_management.BillItem;
 import org.rtss.mosad_backend.entity.user_management.Users;
 import org.rtss.mosad_backend.repository.bill_repository.BillRepository;
+import org.rtss.mosad_backend.repository.credit_repository.CreditRepository;
 import org.rtss.mosad_backend.repository.user_management.UsersRepo;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,11 @@ public class RetailService {
     public static final String ADMIN = "admin";
     private final BillRepository billRepository;
     private final UsersRepo userRepository;
-    public RetailService(BillRepository billRepository, UsersRepo userRepository) {
+    private final CreditRepository creditRepository;
+    public RetailService(BillRepository billRepository, UsersRepo userRepository, CreditRepository creditRepository) {
         this.billRepository = billRepository;
         this.userRepository = userRepository;
+        this.creditRepository = creditRepository;
     }
 //    public List<PaymentHistoryDTO> getPaymentHistory(String username) {
 //        // Fetch the logged-in user
@@ -236,10 +239,16 @@ public class RetailService {
         } else {
             // Regular user: Fetch only their transactions, excluding completed bills (balance > 0)
             bills = billRepository.findBillByUser(user); // Assuming this method exists in billRepository
-            // Filter for only unpaid bills (balance > 0)
+            // Filter for only unpaid bills (balance > 0) and isCompleted = false in Credit
             bills = bills.stream()
-                    .filter(bill -> bill.getBalance() > 0)
+                    .filter(bill -> bill.getBalance() > 0) // Check for unpaid bills
+                    .filter(bill -> !(creditRepository.findCreditByBillId(bill.getBillId())).getCompleted()) // Check for completed credit
                     .toList();
+
+            // Filter for only unpaid bills (balance > 0)
+//            bills = bills.stream()
+//                    .filter(bill -> bill.getBalance() > 0)
+//                    .toList();
         }
 
         return bills.stream()

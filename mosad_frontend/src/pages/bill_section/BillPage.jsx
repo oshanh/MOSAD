@@ -13,12 +13,17 @@ import {
   Button,
   IconButton,
   Grid2,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"; // Import DeleteIcon
 import SearchComponent from "../../component/SearchComponent"; // Import SearchComponent
 import { jsPDF } from "jspdf"; // Import jsPDF library
-import { useUpdateItemQuantity ,useCreateBill} from "../../hooks/servicesHook/useBillService";
+import { useUpdateItemQuantity ,useCreateBill,useFetchNormalCustomer,useFetchRetailCustomer} from "../../hooks/servicesHook/useBillService";
 import { useCreateCredit } from "../../hooks/servicesHook/useCreditService";
+import GeneralMessage from "../../component/GeneralMessage";
 
 
 
@@ -30,12 +35,55 @@ const BillPage = () => {
   const updateStock = useUpdateItemQuantity();
   const createBill = useCreateBill();
   const createCredit = useCreateCredit();
+  const fetchNormalCustomer = useFetchNormalCustomer();
+  const fetchRetailCustomer = useFetchRetailCustomer();
+  const [selectedRetailCustomer, setSelectedRetailCustomer] = useState(null); // State to store selected customer
+  const [selectedNormalCustomer, setSelectedNormalCustomer] = useState(null); // State to store selected customer
 
   const [rows, setRows] = React.useState([]); // Start with an empty array
   const [advance, setAdvance] = React.useState(0);
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState("");
   const [telephone, setTelephone] = useState("");
+  const [customerType, setCustomerType] = useState("normal"); // Default to "normal"
+  const [customerId, setCustomerId] = useState("");
+  const [message, setMessage] = useState();
+
+  const fetchAndSetNormalCustomer = async (telephone) => {
+    try {
+      const response = await fetchNormalCustomer({ contactNumber: telephone });
+      if(response.data.length === 0) {
+      
+        setMessage({ type: 'error', text: 'No customer found with this telephone number.' });
+        setTimeout(() => setMessage(null), 2000);
+        return;
+      }
+      setSelectedNormalCustomer(response.data); // Set the selected customer from the API response
+      const customerN=response.data[0].customerName;
+      setCustomerId(response.data[0].customerId); // Set the customer ID from the API response
+      setCustomerName(customerN); // Set the customer name from the API response
+    } catch (error) {
+      console.error("Error fetching normal customer:", error);
+    }
+  };
+
+  const fetchAndSetRetailCustomer = async (telephone) => {
+    try {
+      const response = await fetchRetailCustomer({ contactNumber: telephone });
+      if(response.data.length === 0) {
+        
+        setMessage({ type: 'error', text: 'No customer found with this telephone number.' });
+        setTimeout(() => setMessage(null), 2000);
+        return;
+      }
+      setSelectedRetailCustomer(response.data); // Set the selected customer from the API response
+      
+      const customerN=response.data[0].firstName+" "+response.data[0].lastName;
+      setCustomerName(customerN); // Set the customer name from the API response
+    } catch (error) {
+      console.error("Error fetching retail customer:", error);
+    }
+  };
 
   const handleAddToBill = (item) => {
     console.log(item);
@@ -216,11 +264,12 @@ const handleCreateCredit = async (creditData) => {
       clearAllFields();
     }, 2000);
   };
-  
+ 
   
 
   return (
     <Box sx={{ p: 4 }}>
+      {message && <GeneralMessage message={message} />}
       {/* Search Component */}
       <Box sx={{ mb: 4 }}>
         <SearchComponent onAddToBill={handleAddToBill} quantity={quantity} setQuantity={setQuantity}/>
@@ -276,6 +325,46 @@ const handleCreateCredit = async (creditData) => {
             </Typography>
           </Box>
 
+          {/* Customer Search */}
+          <Box
+            sx={{
+              mb: 2,
+              textAlign: "left",
+              background: "#f1f1f1",
+              p: 2,
+              borderRadius: "8px",
+              boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                if (customerType === "normal") {
+                  fetchAndSetNormalCustomer(telephone);
+                } else {
+                  fetchAndSetRetailCustomer(telephone);
+                }
+
+
+              }}
+              sx={{ mt: 2 }}
+            >
+              Search Customer
+            </Button>
+            <RadioGroup
+              row
+              value={customerType}
+              onChange={(e) => setCustomerType(e.target.value)}
+              sx={{ mt: 2 }}
+            >
+              <FormControlLabel value="normal" control={<Radio />} label="Normal" />
+              <FormControlLabel value="retail" control={<Radio />} label="Retail" />
+            </RadioGroup>
+            
+          </Box>
+
           {/* Customer Info */}
           <Grid2 container spacing={2} sx={{ mb: 2 }}>
             <Grid2 item xs={12} sm={4}>
@@ -297,27 +386,27 @@ const handleCreateCredit = async (creditData) => {
                 Telephone Number:
               </Typography>
               <TextField
-  variant="outlined"
-  type="tel" // use "tel" instead of "number"
-  placeholder="Enter 10 digit number"
-  error={telephone.length !== 10 && telephone.length > 0}
-  helperText={
-    telephone.length !== 10 && telephone.length > 0
-      ? "Please enter a valid 10-digit number"
-      : ""
-  }
-  size="small"
-  fullWidth
-  required
-  sx={{ fontSize: "1.2rem" }}
-  value={telephone}
-  onChange={(e) => {
-    const value = e.target.value;
-    if (/^\d{0,10}$/.test(value)) {
-      setTelephone(value);
-    }
-  }}
-/>
+                variant="outlined"
+                type="tel" // use "tel" instead of "number"
+                placeholder="Enter 10 digit number"
+                error={telephone.length !== 10 && telephone.length > 0}
+                helperText={
+                  telephone.length !== 10 && telephone.length > 0
+                    ? "Please enter a valid 10-digit number"
+                    : ""
+                }
+                size="small"
+                fullWidth
+                required
+                sx={{ fontSize: "1.2rem" }}
+                value={telephone}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d{0,10}$/.test(value)) {
+                    setTelephone(value);
+                  }
+                }}
+              />
 
             </Grid2>
             <Grid2 item xs={12} sm={4}>

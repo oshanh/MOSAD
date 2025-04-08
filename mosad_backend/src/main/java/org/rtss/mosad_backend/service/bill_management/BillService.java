@@ -1,5 +1,6 @@
 package org.rtss.mosad_backend.service.bill_management;
 
+import org.rtss.mosad_backend.dto.NotificationDTO;
 import org.rtss.mosad_backend.dto.ResponseDTO;
 import org.rtss.mosad_backend.dto.bill_dtos.BillDetailsDTO;
 import org.rtss.mosad_backend.dto.bill_dtos.BillDTO;
@@ -8,22 +9,36 @@ import org.rtss.mosad_backend.dto.bill_dtos.BillResponeDTO;
 import org.rtss.mosad_backend.dto.customer_dtos.CustomerContactDTO;
 import org.rtss.mosad_backend.dto.customer_dtos.CustomerDTO;
 import org.rtss.mosad_backend.dto.customer_dtos.CustomerDetailsDTO;
+import org.rtss.mosad_backend.dto.user_dtos.UserDTO;
+import org.rtss.mosad_backend.dto.user_dtos.UserDetailsDTO;
 import org.rtss.mosad_backend.dto_mapper.bill_dto_mapper.BillDTOMapper;
 import org.rtss.mosad_backend.dto_mapper.bill_dto_mapper.BillItemDTOMapper;
 import org.rtss.mosad_backend.dto_mapper.customer_dto_mapper.CustomerContactDTOMapper;
 import org.rtss.mosad_backend.dto_mapper.customer_dto_mapper.CustomerDTOMapper;
+import org.rtss.mosad_backend.dto_mapper.user_dto_mapper.UserDTOMapper;
 import org.rtss.mosad_backend.entity.bill_management.Bill;
 import org.rtss.mosad_backend.entity.bill_management.BillItem;
 import org.rtss.mosad_backend.entity.customer.Customer;
+import org.rtss.mosad_backend.entity.customer.CustomerContact;
 import org.rtss.mosad_backend.entity.stock_management_entity.ItemBranch;
+import org.rtss.mosad_backend.entity.user_management.UserContacts;
+import org.rtss.mosad_backend.entity.user_management.Users;
 import org.rtss.mosad_backend.repository.bill_repository.BillItemRepository;
 import org.rtss.mosad_backend.repository.bill_repository.BillRepository;
+import org.rtss.mosad_backend.repository.customer_repository.CustomerContactRepository;
 import org.rtss.mosad_backend.repository.stock_management_repository.ItemBranchRepository;
 import org.rtss.mosad_backend.repository.stock_management_repository.ItemRepo;
+import org.rtss.mosad_backend.repository.user_management.UserContactsRepo;
+import org.rtss.mosad_backend.repository.user_management.UsersRepo;
+import org.rtss.mosad_backend.service.NotificationService;
 import org.rtss.mosad_backend.service.customer_management.CustomerService;
+import org.rtss.mosad_backend.service.mail_service.ScheduledWANotifications;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +52,7 @@ public class BillService {
     private final CustomerContactDTOMapper customerContactDTOMapper;
     private final BillItemDTOMapper billItemDTOMapper;
 
+
     //Services Injection
     private final CustomerService customerService;
 
@@ -49,8 +65,16 @@ public class BillService {
 
     private final BillItemRepository billItemRepository;
 
+    private final NotificationService notifications;
 
-    public BillService(BillRepository billRepository, CustomerService customerService, BillDTOMapper billDTOMapper, CustomerDTOMapper customerDTOMapper, CustomerContactDTOMapper customerContactDTOMapper, BillItemDTOMapper billItemDTOMapper, ItemBranchRepository itemBranchRepository, ItemRepo itemRepository, BillItemRepository billItemRepository) {
+    private final UsersRepo usersRepo;
+
+    private final UserContactsRepo userContactsRepo;
+    private final UserDTOMapper userDTOMapper;
+    private final CustomerContactRepository customerContactRepository;
+
+
+    public BillService(BillRepository billRepository, CustomerService customerService, BillDTOMapper billDTOMapper, CustomerDTOMapper customerDTOMapper, CustomerContactDTOMapper customerContactDTOMapper, BillItemDTOMapper billItemDTOMapper, ItemBranchRepository itemBranchRepository, ItemRepo itemRepository, BillItemRepository billItemRepository, NotificationService notifications, UsersRepo usersRepo, UserContactsRepo userContactsRepo, UserDTOMapper userDTOMapper, CustomerContactRepository customerContactRepository) {
         this.billRepository = billRepository;
         this.customerService = customerService;
         this.billDTOMapper = billDTOMapper;
@@ -60,6 +84,11 @@ public class BillService {
         this.itemBranchRepository = itemBranchRepository;
         this.itemRepository = itemRepository;
         this.billItemRepository = billItemRepository;
+        this.notifications = notifications;
+        this.usersRepo = usersRepo;
+        this.userContactsRepo = userContactsRepo;
+        this.userDTOMapper = userDTOMapper;
+        this.customerContactRepository = customerContactRepository;
     }
 
 
@@ -154,10 +183,36 @@ public class BillService {
             // Save the updated entity
             itemBranchRepository.save(itemBranch);
 
+            //send low stock notification
+            if(quantity<10){
+                notifications.addNotification(new NotificationDTO("Low Stock",itemBranch.getItem().getItemName()+" is running low in stock."));
+            }
+
             return new ResponseDTO(true, "Stock updated");
         } else {
             return new ResponseDTO(false, "ItemBranch not found for the given itemId and branchId");
         }
+    }
+
+    public List<UserDTO> getUsersByContact(String contactNumber){
+        List<Users> users = new ArrayList<>();
+        List<UserContacts> userContacts = userContactsRepo.findByContactNum(contactNumber);
+        for (UserContacts userContact : userContacts) {
+            Users user = userContact.getUser();
+            users.add(user);
+        }
+
+        return  users.stream().map(userDTOMapper::usersToUserDTO).toList();
+
+    }
+    public List<CustomerDTO> getCustomersByContact(String contactNumber) {
+        List<CustomerContact> customersContacts = customerContactRepository.findCustomersByContactNumber(contactNumber);
+        List<Customer> customers = customersContacts.stream()
+                .map(CustomerContact::getCustomer)
+                .toList();
+
+
+        return customers.stream().map(customerDTOMapper::toCustomerDTO).toList();
     }
 
 

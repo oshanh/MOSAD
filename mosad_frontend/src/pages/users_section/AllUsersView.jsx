@@ -5,6 +5,7 @@ import UserDetailsForm from "../../forms/UserDetailForm";
 import { DataGrid } from '@mui/x-data-grid';
 import { useGetAllUsername, useRegister } from '../../hooks/servicesHook/useApiUserService'
 import { initialErrors, validateFullForm } from '../../utils/validateUserDetailsForm'; // Import the utility function
+import GeneralSnackbarAlerts from "../../component/GeneralSnackbarAlerts";
 
 const initialUserRegData = {
     userDto: {
@@ -40,6 +41,10 @@ const columns = [
 const AllUsersView = () => {
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    //Show alerts using snack bar
+    const [showSnack, setShowSnack] = useState(false);
+    const [alertType, setAlertType] = useState("warning");
+    const [alertMsg, setAlertMsg] = useState("");
     const getAllUsername = useGetAllUsername();
     const loadAllUsers = () => {
         setIsLoading(true)
@@ -97,8 +102,8 @@ const AllUsersView = () => {
                 // Update table data after successful registration
                 loadAllUsers(); // Fetch updated user data
             } catch (error) {
-                console.error('Error during registration:', error);
-                alert('Registration failed. Please try again.');
+                setAlertMsg(error.response?.data || error.message || 'user registration failed.')
+                setShowSnack(true)
             }
         }
         setErrors(initialErrors);
@@ -117,6 +122,7 @@ const AllUsersView = () => {
 
     return (
         <Container sx={{ pt: 2 }} disableGutters>
+            <GeneralSnackbarAlerts open={showSnack} type={alertType} msg={alertMsg} setOpen={setShowSnack}/>
             <Paper sx={{ height: "auto", width: '100%' }}>
                 {!isLoading &&
                     <DataGrid

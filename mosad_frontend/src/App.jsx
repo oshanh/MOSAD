@@ -41,6 +41,11 @@ const PurchaseHistory =lazy(()=>import( './pages/retail_section/PurchaseHistory'
 const IncompleteTransactions =lazy(()=>import( './pages/retail_section/IncompleteTransactions'));
 const FindProductAvailability =lazy(()=>import( './pages/retail_section/FindProductAvailability'));
 
+const NotificationLayout =lazy(()=>import( './pages/notification_section/NotificationLayout'));
+const NotificationCredit =lazy(()=>import( './pages/notification_section/CreditNotifications'));
+const NotificationStock =lazy(()=>import( './pages/notification_section/StockNotifications'));
+
+
 function App() {
   const {auth}=useAuth();
 
@@ -95,17 +100,21 @@ function App() {
               <Route path="/branches" element={ <BranchPageLayout />} >
                 <Route index element={<BranchPage/>}/>
                 <Route path="bill-history" element={<AllBillsPage />}/>
-                <Route path="stock" element={<ItemView />}/>
+                <Route path="stocks/category" element={<BranchStockLayout />}>
+                  <Route index element={<StockPage allowedRoles={["OWNER","ADMIN"]}/>}/>
+                  <Route path="brands" element={<BrandPage allowedRoles={["OWNER","ADMIN"]}/>}/>
+                  <Route path="brands/item-view" element={<ItemView />} />
+                </Route>
                 <Route path="employee-view" element={<EmployeePage />}/>
               </Route>
             </Route>
           
-            {/* Branch Manager dashboard acording to the role */}
+            {/* Stock Manager dashboard acording to the role */}
             <Route element={<CheckPrivileges allowedRoles={["STOCK_MANAGER"]}/>}>
-              <Route path="/stock" element={ <StockPageLayout />} >
+              <Route path="/stock/category" element={ <StockPageLayout />} >
                 <Route index element={<StockPage allowedRoles={["STOCK_MANAGER"]}/>}/>
                 <Route path="brand" element={<BrandPage allowedRoles={["STOCK_MANAGER"]}/>}/>
-                <Route path="item-view" element={<ItemView />} />
+                <Route path="brand/item-view" element={<ItemView />} />
               </Route>
             </Route>
 
@@ -114,7 +123,11 @@ function App() {
               <Route path="/branch" element={ <BranchPageLayout />} >
                 <Route index element={<BranchPage/>}/>
                 <Route path="bill-history" element={<AllBillsPage />}/>
-                <Route path="stock" element={<ItemView />}/>
+                <Route path="stock/category" element={<BranchStockLayout />}>
+                  <Route index element={<StockPage allowedRoles={["BRANCH_MANAGER"]}/>}/>
+                  <Route path="brand" element={<BrandPage allowedRoles={["BRANCH_MANAGER"]} />}/>
+                  <Route path="brand/item-view" element={<ItemView />} />
+                </Route>
                 <Route path="employee-view" element={<EmployeePage />}/>
               </Route>
               <Route path="/employee" element={ <EmployeePage />} />
@@ -143,6 +156,13 @@ function App() {
                 <Route path="view-all" element={<AllUsersView />}/>
               </Route>
             </Route>
+            <Route element={<CheckPrivileges allowedRoles={["OWNER","ADMIN"]}/>}>
+              <Route path='/notifications' element={<NotificationLayout />}>
+                <Route path="credit" element={<NotificationCredit />} />
+                <Route path="stock" element={<NotificationStock />} />
+              </Route>
+            </Route>
+               
 
           </Route>
         </Route>

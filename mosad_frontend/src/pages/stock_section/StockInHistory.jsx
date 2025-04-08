@@ -8,7 +8,7 @@ const StockInHistory = ({ open, onClose,rows }) => {
     const columns = [
         { field: 'date', headerName: 'Date', width: 150 },
         { field: 'quantity', headerName: 'Quantity', width: 150 },
-        { field: 'price', headerName: 'Price', width: 150 },
+        //{ field: 'price', headerName: 'Price', width: 150 },
     ];
 
     const rowsEx = rows.map((row,index) => {
@@ -16,7 +16,7 @@ const StockInHistory = ({ open, onClose,rows }) => {
             id: index,
             date: row.date,
             quantity: row.quantity,
-            price: row.officialSellingPrice,
+            //price: row.officialSellingPrice,
         };
     }
     );
@@ -25,11 +25,11 @@ const StockInHistory = ({ open, onClose,rows }) => {
 
     return (
         <div>
-            <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+            <Dialog open={open} onClose={onClose} maxWidth="md"  width="50%">
                 <DialogTitle>Stock In History</DialogTitle>
                 <DialogContent>
                     <div style={{ height: 400, width: '100%' }}>
-                        <DataGrid rows={rowsEx} columns={columns} pageSize={5} />
+                        <DataGrid rows={rowsEx} columns={columns} pageSize={3} />
                     </div>
                 </DialogContent>
                 <DialogActions>
