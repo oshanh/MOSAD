@@ -9,6 +9,7 @@ import SendIcon from '@mui/icons-material/Send';
 import {useAddRepayment,useDeleteRepayment,useFetchAllCreditDetails,useUpdateCredit}from '../../hooks/servicesHook/useCreditService'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Tooltip } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import GeneralMessage from '../../component/GeneralMessage';
@@ -23,20 +24,14 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
   const sendHello = useSendHelloWorldTemplate();
   const sendNotification = useSendCreditReminder();
 
+  const remainingBalance = row.balance - row.repayments.reduce((acc, repayment) => acc + repayment.amount, 0);
 
-  const handleSend = async () => {
-    try {
-      const response = await sendHello('94717529331');
-      console.log(response.data);
-    } catch (err) {
-      console.error('Failed to send message:', err);
-    }
-  };
+
   const handleSendNotification =()=>{
     const data={
       to:row.contactNumber,
       name:row.customerName,
-      amount:row.balance,
+      amount:remainingBalance,
       dueDate:row.dueDate
     };
     sendNotification(data).then((response) => {
@@ -104,7 +99,6 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
 
   
 
-  const remainingBalance = row.balance - row.repayments.reduce((acc, repayment) => acc + repayment.amount, 0);
 
   return (
     <>
@@ -134,9 +128,11 @@ function Row({ row, onAddRepayment,onDeleteRepayment, setMessage, message,column
         </TableCell>
         {state.all && <TableCell>{row.completed ? "Completed":"Pending"}</TableCell>}
         <TableCell>
-          <Button onClick={handleSendNotification}>
-          <SendIcon  />
-          </Button>
+        <Tooltip title="Send a reminder" arrow>
+    <Button onClick={handleSendNotification}>
+      <SendIcon />
+    </Button>
+  </Tooltip>
         </TableCell>
         </>}
       </TableRow>
