@@ -109,7 +109,7 @@ const RebuildTyrePage = () => {
       setTyres(response.data);
     } catch (error) {
       console.error(error);
-      alert('Error fetching tyre data');
+      handleAlert("error", "Error fetching tyres");
     }
   };
 
@@ -131,7 +131,7 @@ const RebuildTyrePage = () => {
       setOpenFormPopup(false);
     } catch (error) {
       console.error(error);
-      alert(editingTyre ? 'Error updating tyre' : 'Error creating tyre');
+      handleAlert("error", editingTyre ? 'Error updating tyre' : 'Error creating tyre');
     }
   };
 
@@ -142,7 +142,7 @@ const RebuildTyrePage = () => {
         setRefresh(!refresh);
       } catch (error) {
         console.error(error);
-        alert('Error deleting tyre');
+        handleAlert("error", "Error deleting tyre");
       }
     }
   };
@@ -172,6 +172,12 @@ const RebuildTyrePage = () => {
     setOpenFormPopup(true);
   };
 
+  const handleAlert = (type, msg) => {
+    setAlertType(type);
+    setAlertMsg(msg);
+    setShowSnack(true);
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container sx={{ py: 4 }}>
@@ -184,9 +190,16 @@ const RebuildTyrePage = () => {
           <Grid container spacing={2} alignItems="center">
             <Grid size={{xs:12,sm:8}}>
               <TextField
+                type='tel'
                 label="Filter by Contact Number"
                 value={filter}
-                onChange={handleFilterChange}
+                onChange={(e) => {
+                  const value = e.target.value;
+                if (/^\d{0,10}$/.test(value)) {
+                  handleFilterChange(e);
+                }
+                }}
+                //onChange={handleFilterChange}
                 variant="outlined"
                 fullWidth
               />
@@ -230,6 +243,7 @@ const RebuildTyrePage = () => {
             initialData={editingTyre || {}}
             onSubmit={handleFormSubmit}
             onCancel={handleCancelUpdate}
+            setAlert={handleAlert}
           />
         </PopUp>
 

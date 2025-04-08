@@ -342,7 +342,7 @@ const SearchComponent = ({
           )}
         </Grid2>
     
-        {onAddToBill && (
+        {(onAddToBill || onRetail) && (
           <Button
             variant="contained"
             color="primary"

@@ -11,6 +11,14 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import { teal } from '@mui/material/colors'; // Import the teal color palette
 
+
+function AnalyticalCard({stats}) {
+  const theme = useTheme();
+
+  console.log(stats);
+
+
+  
 const customLimits = {
   categories:50,
   brands:50,
@@ -22,28 +30,28 @@ const analyticalData = [
   {
     id: 1,
     title: 'Total Item Categories',
-    value: 5,
+    value: stats.totalCategories,
     progress: (5 / customLimits.categories)*100,
     icon: CategoryIcon,
   },
   {
     id: 2,
     title: 'Total Brands We Have',
-    value: 25,
+    value: stats.totalBrands,
     progress: (25 /customLimits.brands)*100,
     icon: TrendingUpIcon,
   },
   {
     id: 3,
     title: 'Total Items in Stock',
-    value: 342,
+    value: stats.totalItems,
     progress: (342/customLimits.items)*100,
     icon: Inventory2Icon,
   },
   {
     id: 4,
-    title: 'Total Sold Items Today',
-    value: 15,
+    title: 'Total Bills Issued Today',
+    value: stats.totalBillsToday,
     progress: (15/customLimits.daily_goal)*100,
     icon: ShoppingCartCheckoutIcon,
   },
@@ -112,8 +120,11 @@ const ModernLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-function AnalyticalCard() {
-  const theme = useTheme();
+
+
+
+
+
 
   return (
     <Box
