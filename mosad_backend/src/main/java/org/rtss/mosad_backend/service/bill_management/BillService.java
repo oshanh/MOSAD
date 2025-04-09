@@ -91,7 +91,7 @@ public class BillService {
 
     public BillResponeDTO createBill(BillDetailsDTO billDetailsDTO, CustomerDetailsDTO customerDetailsDTO, List<BillItemDTO> billItemDTO) {
 
-
+        BillResponeDTO responeDTO=new BillResponeDTO();
 
         for(BillItemDTO item : billItemDTO){
             System.out.println("\n"+item.getItemId()+"\n");
@@ -99,16 +99,22 @@ public class BillService {
 
 
         Bill bill = billDTOMapper.toEntity(billDetailsDTO.getBillDTO());
+
         Customer customer = customerService.extractCustomer(customerDetailsDTO);
+        Users user;
         if(customerDetailsDTO.getCustomerId() !=null || customerDetailsDTO.getUserId()!=null){
             if(customerDetailsDTO.getCustomerId()!=null){
-                customer = customerRepository.findById(customerDetailsDTO.getCustomerId()).orElse(null);
+                //customer = customerRepository.findById(customerDetailsDTO.getCustomerId()).orElse(null);
+                customer=customerService.getCustomerById(customerDetailsDTO.getCustomerId());
                 bill.setCustomer(customer);
+                responeDTO.setCustomerId(customerDetailsDTO.getCustomerId());
 
             }
             else{
-                Users user = usersRepo.findById(Math.toIntExact(customerDetailsDTO.getUserId())).orElse(null);
+                user = usersRepo.findById(Math.toIntExact(customerDetailsDTO.getUserId())).orElse(null);
                 bill.setUser(user);
+                responeDTO.setUserId(customerDetailsDTO.getUserId());
+
             }
         }
         else{
@@ -137,6 +143,7 @@ public class BillService {
         bill.setBillItems(billItems);
 
         Bill savedBill = billRepository.save(bill);
+        responeDTO.setBillId(bill.getBillId());
 
          //Save all BillItems
         billItemRepository.saveAll(billItems);
@@ -159,7 +166,7 @@ public class BillService {
 
         // Convert the saved Bill entity back to DTO and return it
 
-        return new BillResponeDTO(bill.getBillId(),customer.getCustomerId());
+        return responeDTO;
     }
 
 

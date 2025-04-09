@@ -203,6 +203,7 @@ const addOneMonth = (date) => {
 const handleCreateCredit = async (creditData) => {
   const data = {
     customerId:creditData.customerId ,  // Example customer ID
+    userId: creditData.userId, // Example user ID
     billId: creditData.billId,      // Example bill ID
     balance: balance, // Negative balance indicating credit
     dueDate: addOneMonth(new Date()), // Due date for the credit payment
@@ -223,6 +224,7 @@ const handleCreateCredit = async (creditData) => {
     setAdvance(0);
     setCustomerName("");
     setTelephone("");
+    setQuantity(1);
     setSelectedNormalCustomer(null);
     setSelectedRetailCustomer(null);
   };
