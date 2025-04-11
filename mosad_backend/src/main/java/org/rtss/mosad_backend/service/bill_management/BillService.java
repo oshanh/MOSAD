@@ -175,18 +175,22 @@ public class BillService {
         if(bills.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no bills recorded in system");
         }
-        return bills.stream().map(bill -> {
-            BillDTO billDTO = billDTOMapper.toDTO(bill);
-            CustomerDTO customerDTO = customerDTOMapper.toCustomerDTO(bill.getCustomer());
-            CustomerContactDTO customerContactDTO = customerContactDTOMapper.customerContactToCustomerContactDTO(bill.getCustomer().getCustomerContact());
-            CustomerDetailsDTO customerDetailsDTO = new CustomerDetailsDTO(customerDTO,customerContactDTO,null,null);
 
-            List<BillItemDTO> billItems = bill.getBillItems().stream()
-                    .map(billItemDTOMapper::toBillItemDTO)
-                    .toList();
+        List<BillDetailsDTO> billDetailsList = new ArrayList<>();
+        for (Bill bill : bills) {
+            if (bill.getCustomer() != null) {
+                BillDTO billDTO = billDTOMapper.toDTO(bill);
+                CustomerDTO customerDTO = customerDTOMapper.toCustomerDTO(bill.getCustomer());
+                CustomerContactDTO customerContactDTO = customerContactDTOMapper.customerContactToCustomerContactDTO(bill.getCustomer().getCustomerContact());
 
-            return new BillDetailsDTO(billDTO, customerDetailsDTO, billItems);
-        }).toList();
+                CustomerDetailsDTO customerDetailsDTO = new CustomerDetailsDTO(customerDTO, customerContactDTO, null, null);
+                List<BillItemDTO> billItems = bill.getBillItems().stream()
+                        .map(billItemDTOMapper::toBillItemDTO)
+                        .toList();
+                billDetailsList.add(new BillDetailsDTO(billDTO, customerDetailsDTO, billItems));
+            }
+        }
+        return billDetailsList;
 
     }
 
